@@ -3,6 +3,7 @@ const $ = (id) => document.getElementById(id);
 const screenTitle = $("screen-title");
 const screenGame  = $("screen-game");
 const modeLabel   = $("modeLabel");
+const titleMap    = $("titleMap");
 
 const backBtn    = $("backToTitle");
 const questionEl = $("question");
@@ -13,7 +14,7 @@ const nextBtn    = $("next");
 const revealBtn  = $("reveal");
 const logEl      = document.getElementById("log");
 
-// いまはデモ用（あとで47都道府県に差し替えOK）
+// デモ用（あとで47都道府県データに差し替えOK）
 const DATA = {
   region: {
     hokkaido_tohoku: [
@@ -73,6 +74,12 @@ function playJapanBolt(){
   if (japanBoltPlayed) return; // 1回だけ
   japanBoltPlayed = true;
 
+  // 背景地図も「前に出て光る」
+  if (titleMap){
+    titleMap.classList.add("is-complete");
+    setTimeout(() => titleMap.classList.remove("is-complete"), 1200);
+  }
+
   const flash = document.createElement("div");
   flash.className = "effect-flash";
   document.body.appendChild(flash);
@@ -127,7 +134,7 @@ document.querySelectorAll("button[data-mode][data-key]").forEach((btn) => {
     const mode = btn.dataset.mode;
     const key  = btn.dataset.key;
 
-    // 日本列島制覇だけ「雷＋光」を重ねる（無音）
+    // 日本列島制覇だけ「雷＋光＋背景地図の光」を重ねる（無音）
     if (mode === "conquest" && key === "all") {
       playJapanBolt();
     }

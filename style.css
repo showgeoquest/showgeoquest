@@ -9,6 +9,11 @@
   --btn: rgba(20, 45, 105, .78);
   --btn2: rgba(35, 95, 210, .28);
   --btnPrimary2: rgba(55, 165, 255, .24);
+
+  /* 地図（淡い青） */
+  --mapStroke: rgba(140, 200, 255, .28);
+  --mapFill: rgba(140, 200, 255, .06);
+  --mapRegionStroke: rgba(160, 220, 255, .50);
 }
 
 *{ box-sizing: border-box; }
@@ -35,9 +40,55 @@ body{
   border: 1px solid rgba(255,255,255,.05);
   box-shadow: 0 20px 60px rgba(0,0,0,.55);
   backdrop-filter: blur(6px);
+  position: relative;
+  overflow: hidden;
 }
 
-.screen{ width:100%; }
+.screen{ width:100%; position: relative; }
+
+/* ===== タイトル背景：日本列島SVG ===== */
+.title-map{
+  position: absolute;
+  inset: -10px;
+  pointer-events: none;
+  opacity: .22;
+  z-index: 0;
+  display: grid;
+  place-items: center;
+  transform: translateY(6px);
+}
+.title-map svg{
+  width: 112%;
+  height: auto;
+  max-width: 920px;
+}
+
+/* ★淡い青＆地方境界強調（B） */
+.title-map .prefecture,
+.title-map .prefecture path,
+.title-map .prefecture polygon{
+  fill: var(--mapFill) !important;
+  stroke: var(--mapStroke) !important;     /* 県境は控えめ */
+  stroke-width: .85 !important;
+}
+
+/* 地方境界ライン（SVGにある boundary-line を強調） */
+.title-map .boundary-line,
+.title-map .boundary-line line{
+  stroke: var(--mapRegionStroke) !important;
+  stroke-width: 3.0 !important;           /* 太すぎるので上書き */
+  opacity: .75 !important;
+}
+
+/* 日本列島制覇：背景地図が前に出て光る（C） */
+.title-map.is-complete{
+  opacity: .70;
+  filter: drop-shadow(0 0 20px rgba(120,200,255,.65));
+  transform: translateY(0);
+}
+
+/* タイトルコンテンツは前面へ */
+.hero, .menu{ position: relative; z-index: 1; }
 
 .hero{
   text-align:center;
@@ -120,7 +171,7 @@ body{
   transition: transform .12s ease, filter .12s ease;
 }
 .btn:hover{ filter: brightness(1.08); }
-.btn:active{ transform: translateY(2px); }
+.btn:active{ transform: translateY(2px); } /* 押した時だけ沈む */
 
 .btn.primary{
   background:
