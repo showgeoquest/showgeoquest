@@ -3,34 +3,130 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>北海道・東北クエスト</title>
+  <title>北海道・東北クエスト｜SHOW GEO QUEST</title>
   <link rel="stylesheet" href="../style.css" />
+
+  <style>
+    /* ===== 上部ナビ（トップへ戻る） ===== */
+    .top-nav{
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(0,0,0,.25);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      padding: 10px 14px;
+    }
+    .back-home{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      text-decoration:none;
+      font-weight:900;
+      letter-spacing:.04em;
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background:
+        linear-gradient(135deg, var(--btn), var(--btn2));
+      box-shadow:
+        0 8px 18px rgba(0,0,0,.35),
+        inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    .back-home:hover{ filter: brightness(1.08); }
+
+    /* ===== モード選択 ===== */
+    .mode-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 18px;
+    }
+    @media (max-width: 700px){
+      .mode-grid{ grid-template-columns: 1fr; }
+    }
+
+    .mode-title{
+      text-align:center;
+      font-weight: 900;
+      letter-spacing: .06em;
+      margin: 12px 0 4px;
+    }
+    .mode-sub{
+      text-align:center;
+      opacity:.8;
+      margin: 0 0 12px;
+      font-size: 14px;
+    }
+
+    .btn.mode{
+      min-height: 92px;
+      font-size: 20px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 10px;
+      flex-wrap: wrap;
+      line-height: 1.15;
+    }
+
+    .difficulty{
+      font-size: 18px;
+      opacity: .95;
+      white-space: nowrap;
+      filter: drop-shadow(0 0 10px rgba(120,180,255,.28));
+    }
+  </style>
 </head>
 
 <body>
-  <div class="page">
 
-    <div class="header">
-      <div class="title">北海道・東北クエスト</div>
-      <a href="../index.html">← タイトルへ</a>
-    </div>
+  <!-- 上部ナビ -->
+  <div class="top-nav">
+    <a class="back-home" href="../index.html" aria-label="トップへ戻る">
+      ← トップへ戻る
+    </a>
+  </div>
 
-    <section class="card">
-      <div class="card-inner">
-        <div class="grid-2">
-          <a class="btn" href="01hokkaido-tohoku-1.html">知識の泉</a>
-          <a class="btn" href="01hokkaido-tohoku-2.html">その県どこ？</a>
-          <a class="btn" href="01hokkaido-tohoku-3.html">その県名は？</a>
-          <a class="btn" href="01hokkaido-tohoku-4.html">県庁所在地マッチング</a>
+  <main class="frame">
+    <section class="screen">
+
+      <div class="hero">
+        <div class="logo">
+          <div class="logo-line">北海道・東北</div>
         </div>
+        <div class="mode-title">北海道・東北クエスト</div>
+        <p class="mode-sub">モードを選んでね</p>
+      </div>
 
-        <div style="height:12px;"></div>
-        <div class="note">
-          クエストを選んでください
+      <div class="menu">
+        <div class="mode-grid" aria-label="北海道・東北 モード選択">
+
+          <a class="btn mode primary" href="01hokkaido-tohoku-1.html">
+            知識の泉
+          </a>
+
+          <a class="btn mode" href="01hokkaido-tohoku-2.html">
+            <span>その県どこ</span>
+            <span class="difficulty">⚡️</span>
+          </a>
+
+          <a class="btn mode" href="01hokkaido-tohoku-3.html">
+            <span>その県名は</span>
+            <span class="difficulty">⚡️⚡️</span>
+          </a>
+
+          <a class="btn mode" href="01hokkaido-tohoku-4.html">
+            <span>県庁所在地マッチング</span>
+            <span class="difficulty">⚡️⚡️⚡️</span>
+          </a>
+
         </div>
       </div>
-    </section>
 
-  </div>
+    </section>
+  </main>
+
 </body>
 </html>

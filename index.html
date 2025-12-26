@@ -8,14 +8,14 @@
   <!-- トップ専用CSS -->
   <link rel="stylesheet" href="index.css" />
 
-  <!-- PWA / ホーム画面アイコン（ここが無いと“S”になりがち） -->
+  <!-- PWA -->
   <link rel="manifest" href="site.webmanifest" />
-  <meta name="theme-color" content="#1f3c7a" />
+  <meta name="theme-color" content="#1f4ea6" />
 
   <!-- iOSホーム画面アイコン -->
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 
-  <!-- 通常favicon（任意だけど推奨） -->
+  <!-- 通常favicon -->
   <link rel="icon" href="icons/icon-192.png" sizes="192x192" />
 </head>
 
@@ -37,9 +37,9 @@
         <div class="logo" aria-label="SHOW GEO QUEST">
           <div class="logo-line">SHOW GEO</div>
           <div class="logo-line logo-boltline">
-            <span class="bolt">⚡</span>
+            <span class="bolt" aria-hidden="true">⚡</span>
             <span class="quest">QUEST</span>
-            <span class="bolt">⚡</span>
+            <span class="bolt" aria-hidden="true">⚡</span>
           </div>
         </div>
 
@@ -71,7 +71,7 @@
           <div class="conquest-grid">
             <!-- 左 -->
             <a class="btn conquest crackle conquest-west" href="07japan/08west-japan.html">
-              <span class="twoline">
+              <span class="twoline" aria-hidden="true">
                 <span class="l1">西日本</span>
                 <span class="l2">制覇</span>
               </span>
@@ -85,7 +85,7 @@
 
             <!-- 右 -->
             <a class="btn conquest crackle conquest-east" href="07japan/07east-japan.html">
-              <span class="twoline">
+              <span class="twoline" aria-hidden="true">
                 <span class="l1">東日本</span>
                 <span class="l2">縦断</span>
               </span>
@@ -96,15 +96,10 @@
       </div>
     </section>
 
-    <!-- ===== ゲーム画面 ===== -->
+    <!-- ===== ゲーム画面（将来用） ===== -->
     <section id="screen-game" class="screen" hidden></section>
 
   </main>
-
-  <!-- フッター（右下・少し下げる） -->
-  <footer class="site-footer" aria-label="フッター">
-    <a class="footer-link" href="about.html" aria-label="利用規約・製作者について">利用規約・製作者</a>
-  </footer>
 
   <script src="script.js"></script>
 </body>
