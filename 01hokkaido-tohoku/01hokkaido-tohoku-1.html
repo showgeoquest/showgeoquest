@@ -10,7 +10,7 @@
     --bg1:#e7f3f7;
     --bg2:#f2fbff;
 
-    --panel: rgba(255,255,255,.86);
+    --panel: rgba(255,255,255,.88);
     --border: rgba(140,180,200,.45);
 
     --text:#0f1f26;
@@ -22,7 +22,6 @@
     --stroke:#6f8f6f;
 
     --prefBlue:#1466ff;      /* 県名（青） */
-    --capRed:#d60000;        /* 県庁所在地（赤） */
   }
 
   *{ box-sizing:border-box; }
@@ -48,7 +47,6 @@
 
   main{ padding:12px; }
 
-  /* === MAP ONLY（枠で閉じ込めない） === */
   .stage{
     position: relative;
     width: 100%;
@@ -79,14 +77,13 @@
     display:block;
   }
 
-  /* ===== 地図スタイル（共通） ===== */
+  /* 地図 */
   .geolonia-svg-map .prefecture{
     fill: var(--land) !important;
     stroke: var(--stroke) !important;
     stroke-width: 1 !important;
   }
 
-  /* 対象県（JSが付ける is-target） */
   .geolonia-svg-map .prefecture.is-target{
     fill: var(--landTarget) !important;
   }
@@ -95,13 +92,12 @@
     cursor: pointer;
   }
 
-  /* 対象外は触れない（誤タップ防止） */
   .geolonia-svg-map .prefecture.not-target{
     pointer-events: none !important;
     opacity: .55;
   }
 
-  /* ===== 県名だけ “触った場所にドン” ===== */
+  /* 触った場所に県名だけ “ドン” */
   #tapLabel{
     position:absolute;
     z-index: 5;
@@ -124,57 +120,48 @@
     #tapLabel{ font-size: 20px; }
   }
 
-  /* ===== 情報パネル：右下固定（東北は右下が空く想定） ===== */
+  /* 右下固定の情報パネル（小さめ＋地図操作を邪魔しない） */
   .infoPanel{
     position:absolute;
-    right: 14px;
-    bottom: 14px;
+    right: 12px;
+    bottom: 12px;
     z-index: 6;
-    width: min(360px, 86vw);
+    width: min(300px, 80vw);
     background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 12px 12px 10px;
+    padding: 10px 12px;
     backdrop-filter: blur(8px);
     box-shadow: 0 16px 40px rgba(0,0,0,.10);
-  }
 
-  .line1{
-    display:flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 10px;
+    /* ★重要：パネルが地図のクリックを奪わない */
+    pointer-events: none;
   }
 
   .pref{
     font-size: 16px;
     font-weight: 900;
     letter-spacing: .02em;
+    color: var(--prefBlue); /* 都道府県名は青 */
   }
   .pref ruby{ ruby-position: over; }
   .pref rt{
     font-size: 11px;
     font-weight: 800;
-    color: var(--muted);
+    color: rgba(20,102,255,.65);
   }
 
   .cap{
     margin-top: 6px;
     font-size: 14px;
     font-weight: 900;
-    color: var(--capRed);
+    color: var(--text); /* 県庁所在地は黒 */
   }
   .cap ruby{ ruby-position: over; }
   .cap rt{
     font-size: 11px;
     font-weight: 800;
-    color: rgba(214,0,0,.55);
-  }
-
-  .hint{
-    margin-top: 8px;
-    font-size: 12px;
-    color: var(--muted);
+    color: rgba(15,31,38,.55);
   }
 </style>
 </head>
@@ -186,34 +173,25 @@
   <div class="stage" id="stage">
     <div id="svgHost"></div>
 
-    <!-- 触った場所に “県名だけドン” -->
     <div id="tapLabel"></div>
 
-    <!-- 右下固定の情報パネル -->
     <div class="infoPanel" aria-live="polite">
-      <div class="line1">
-        <div class="pref" id="prefLine">県をタップ</div>
-      </div>
+      <div class="pref" id="prefLine">県をタップ</div>
       <div class="cap" id="capLine">—</div>
-      <div class="hint">※ 県名（青）は触った場所に表示します</div>
     </div>
   </div>
 </main>
 
 <script>
 /* ===== 知識の泉（北海道・東北）確定版 =====
-  - 北海道道バグ修正（都道府県の接尾辞を二重付与しない）
-  - 情報パネル：右下固定
-  - 県名＋県庁所在地：ふりがな付き
-  - hoverツールチップ（title）全殺し
-  - 対象7県だけクリック可能（他は誤タップ防止）
-  - viewBox：福島が見切れないように少し広げる
-  - 地図は ../maps/japan.svg を参照
+  - 右下パネルが邪魔で福島が触れない → pointer-events:none + 小さく
+  - 札幌が出ない → 北海道の「道」を消していたのが原因なので修正
+  - hoverツールチップ全殺し（title/desc削除）
+  - 対象7県だけ濃く＆クリック可能（他は誤タップ防止）
 */
 
 const MAP_PATH = "../maps/japan.svg";
 
-/** 対象7県（クラス名） */
 const TARGET_CLASSES = [
   "hokkaido",
   "aomori",
@@ -224,7 +202,6 @@ const TARGET_CLASSES = [
   "fukushima",
 ];
 
-/** ふりがな（都道府県名・県庁所在地名） */
 const FURI = {
   "北海道": { pref:"ほっかいどう", cap:"さっぽろし", capName:"札幌市" },
   "青森県": { pref:"あおもりけん", cap:"あおもりし", capName:"青森市" },
@@ -235,28 +212,26 @@ const FURI = {
   "福島県": { pref:"ふくしまけん", cap:"ふくしまし", capName:"福島市" },
 };
 
-/** SVG内 title 例: "宮城 / Miyagi" → "宮城" */
+/* SVG title: "宮城 / Miyagi" → "宮城"
+   ★「北海道」は「道」を消さない（北海になって札幌が出ない原因） */
 function normalizeJP(titleText){
   const jp = (titleText || "").split("/")[0].trim();
-  return jp.replace(/(都|道|府|県)$/g, "");
+  // 都・府・県だけ落とす（道は落とさない）
+  return jp.replace(/(都|府|県)$/g, "");
 }
 
-/** 都道府県として表示する名前を作る（「北海道道」等の二重付与を防ぐ） */
 function toPrefFullName(jpCore){
   if(!jpCore) return "";
   if(jpCore === "北海道") return "北海道";
-  // 県は必ず「県」を付与（青森→青森県）
   return jpCore.endsWith("県") ? jpCore : (jpCore + "県");
 }
 
-/** ふりがな付きHTML（ruby）を作る */
 function rubyHTML(base, kana){
   if(!base) return "—";
   if(!kana) return base;
   return `<ruby>${base}<rt>${kana}</rt></ruby>`;
 }
 
-/** 触った場所に “県名だけドン” */
 function showTapLabel(text, clientX, clientY){
   const label = document.getElementById("tapLabel");
   const stage = document.getElementById("stage");
@@ -270,12 +245,10 @@ function showTapLabel(text, clientX, clientY){
   label.textContent = text;
   label.style.display = "block";
 
-  // ちょいで消える（邪魔になりすぎない）
   clearTimeout(showTapLabel._t);
   showTapLabel._t = setTimeout(()=>{ label.style.display="none"; }, 1200);
 }
 
-/** 右下パネル更新（都道府県名＋県庁所在地：ふりがな付き） */
 function setInfo(prefFull){
   const prefLine = document.getElementById("prefLine");
   const capLine  = document.getElementById("capLine");
@@ -288,17 +261,15 @@ function setInfo(prefFull){
 
   const d = FURI[prefFull];
   if(!d){
-    // 万一データなしでも壊れないように
     prefLine.textContent = prefFull;
     capLine.textContent  = "—";
     return;
   }
 
-  prefLine.innerHTML = rubyHTML(prefFull, d.pref);
-  capLine.innerHTML  = `${rubyHTML(d.capName, d.cap)}（県庁所在地）`;
+  prefLine.innerHTML = rubyHTML(prefFull, d.pref);                  // 青
+  capLine.innerHTML  = rubyHTML(d.capName, d.cap);                  // 黒（説明文なし）
 }
 
-/** SVG読み込み → 埋め込み */
 async function loadSVG(){
   const host = document.getElementById("svgHost");
 
@@ -321,23 +292,18 @@ async function loadSVG(){
   const svg = host.querySelector("svg");
   if(!svg) return null;
 
-  // ★福島が見切れないよう、表示範囲を少し広げる（必要ならさらに微調整可能）
-  // 元: 550 -10 460 610  → 少し余白を追加
+  /* 福島見切れ対策：余白を少し追加（必要ならまた詰める） */
   svg.setAttribute("viewBox", "540 -20 520 670");
   svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
   svg.classList.add("geolonia-svg-map");
 
-  // 余計な hover の英語ツールチップを全殺し（<title> を消す）
-  // 県の識別は「先に読んで保持」してから消すのでOK
   return svg;
 }
 
 function setupInteractivity(svg){
-  // Geolonia構造想定： g.prefecture
   const prefectures = Array.from(svg.querySelectorAll(".prefecture"));
-
-  // 対象だけクリック可能にする＆濃くする
   const targets = [];
+
   prefectures.forEach(g=>{
     const isTarget = TARGET_CLASSES.some(cls => g.classList.contains(cls));
     if(isTarget){
@@ -348,24 +314,21 @@ function setupInteractivity(svg){
     }
   });
 
-  // ここで “海触ったら日本の県…” も消すため、svg直下の title/desc も削除
+  /* svg 直下の title/desc も削除（海を触ったときのツールチップ対策） */
   svg.querySelectorAll(":scope > title, :scope > desc").forEach(n=>n.remove());
 
-  // 県ごとの <title> は、クリック前に内容を読む必要があるので
-  // クリック処理を作ってから最後に全部消す方針でもOKだが、
-  // 今回は click 時に title を読むので “消す前に data-name を埋め込む”
+  /* クリック用に名前だけ先に埋め込む */
   targets.forEach(g=>{
     const t = g.querySelector("title")?.textContent || "";
-    const jpCore = normalizeJP(t);            // "宮城"
-    const prefFull = toPrefFullName(jpCore);  // "宮城県" / "北海道"
+    const jpCore = normalizeJP(t);
+    const prefFull = toPrefFullName(jpCore);
     g.dataset.prefFull = prefFull;
   });
 
-  // 県 <title> 全削除（hoverツールチップ全殺し）
+  /* hoverツールチップ全殺し */
   svg.querySelectorAll("title").forEach(n=>n.remove());
   svg.querySelectorAll("desc").forEach(n=>n.remove());
 
-  // クリック（タップ）で表示
   targets.forEach(g=>{
     g.style.cursor = "pointer";
 
@@ -373,22 +336,16 @@ function setupInteractivity(svg){
       const prefFull = g.dataset.prefFull || "";
       if(!prefFull) return;
 
-      // 触った場所に県名だけ（青で大）
-      // pointer/touch両対応
       const cx = ev.clientX ?? (ev.touches && ev.touches[0]?.clientX) ?? 0;
       const cy = ev.clientY ?? (ev.touches && ev.touches[0]?.clientY) ?? 0;
 
-      // 県名表示は “都道府県名” として（北海道/青森県…）
       showTapLabel(prefFull, cx, cy);
-
-      // 右下固定パネル：県名＋県庁所在地（ふりがな付き）
       setInfo(prefFull);
     };
 
     g.addEventListener("pointerdown", handler, { passive:true });
   });
 
-  // 初期表示
   setInfo("");
 }
 
