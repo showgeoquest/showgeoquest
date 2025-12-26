@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>知識の泉｜北海道・東北</title>
+
+<style>
+/* =====================
+   共通スタイル（学習1）
+   ===================== */
+:root{
+  --sea1:#e7f3f7;
+  --sea2:#f2fbff;
+  --panel:#ffffffcc;
+  --border:#cfe3ea;
+
+  --land:#e6f2e6;
+  --landHover:#d2e8f0;
+  --stroke:#6f8f6f;
+
+  --nameBlue:#1c6fe8;
+  --infoRed:#e02828;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  font-family: system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  background: linear-gradient(180deg,var(--sea1),var(--sea2));
+}
+
+header{
+  padding:12px 16px;
+  font-weight:800;
+  background:var(--panel);
+  border-bottom:1px solid var(--border);
+}
+
+main{ padding:10px; }
+
+.map-stage{
+  position:relative;
+  height:82vh;
+  min-height:520px;
+  border-radius:16px;
+  overflow:hidden;
+  background:#fff;
+  border:1px solid var(--border);
+}
+
+/* SVG */
+#mapObject{
+  width:100%;
+  height:100%;
+}
+
+/* 都道府県表示 */
+.geolonia-svg-map .prefecture{
+  fill:var(--land) !important;
+  stroke:var(--stroke) !important;
+  stroke-width:1 !important;
+}
+
+/* 対象県のみ有効 */
+.geolonia-svg-map .prefecture.active{
+  fill:var(--landHover) !important;
+  cursor:pointer;
+}
+
+/* 左上固定（県名＋県庁所在地） */
+#fixedInfo{
+  position:absolute;
+  left:12px;
+  top:12px;
+  padding:8px 12px;
+  background:rgba(255,255,255,.9);
+  border-radius:12px;
+  border:1px solid var(--border);
+  font-weight:900;
+  color:var(--infoRed);
+  pointer-events:none;
+}
+
+/* タップ位置（県名だけ・青） */
+#tapName{
+  position:absolute;
+  display:none;
+  transform:translate(-50%,-110%);
+  font-size:30px;
+  font-weight:900;
+  color:var(--nameBlue);
+  background:rgba(255,255,255,.85);
+  padding:6px 12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  pointer-events:none;
+  white-space:nowrap;
+}
+</style>
+</head>
+
+<body>
+<header>知識の泉｜北海道・東北</header>
+
+<main>
+  <div class="map-stage" id="stage">
+    <div id="fixedInfo">県をタップ</div>
+    <div id="tapName"></div>
+
+    <!-- 全国SVGをそのまま使う -->
+    <object
+      id="mapObject"
+      type="image/svg+xml"
+      data="maps/japan.svg">
+    </object>
+  </div>
+</main>
+
+<script>
+/* =====================
+   学習1：北海道・東北
+   ===================== */
+
+/* 表示範囲（確定値。必要なら±調整） */
+const VIEWBOX = "550 -10 480 640";
+
+/* 対象県 */
+const ACTIVE_PREFS = [
+  "北海道","青森","岩手","宮城","秋田","山形","福島"
+];
+
+/* 県庁所在地 */
+const CAPITALS = {
+  "北海道":"札幌市",
+  "青森":"青森市",
+  "岩手":"盛岡市",
+  "宮城":"仙台市",
+  "秋田":"秋田市",
+  "山形":"山形市",
+  "福島":"福島市"
+};
+
+/* 正規化 */
+function normalize(name){
+  return name.replace(/(都|道|府|県)/g,"");
+}
+
+/* 表示名 */
+function fullName(name){
+  return name==="北海道" ? "北海道" : name+"県";
+}
+
+const obj = document.getElementById("mapObject");
+const fixedInfo = document.getElementById("fixedInfo");
+const tapName = document.getElementById("tapName");
+const stage = document.getElementById("stage");
+
+obj.addEventListener("load", ()=>{
+  const svg = obj.contentDocument.querySelector("svg");
+  svg.setAttribute("viewBox", VIEWBOX);
+  svg.setAttribute("preserveAspectRatio","xMidYMid meet");
+
+  /* 余計な title/desc を消す（ホバー英語対策） */
+  svg.querySelectorAll("title, desc").forEach(n=>n.remove());
+
+  const prefs = svg.querySelectorAll(".prefecture");
+
+  prefs.forEach(g=>{
+    const t = g.querySelector("title")?.textContent || "";
+    const name = normalize(t.split("/")[0].trim());
+    g.dataset.pref = name;
+
+    /* 県ごとの title も削除 */
+    g.querySelectorAll("title").forEach(n=>n.remove());
+
+    if(ACTIVE_PREFS.includes(name)){
+      g.classList.add("active");
+      g.style.pointerEvents="auto";
+    }else{
+      g.style.pointerEvents="none";
+      g.style.opacity="0.35";
+    }
+  });
+
+  /* クリック処理 */
+  prefs.forEach(g=>{
+    if(!g.classList.contains("active")) return;
+
+    g.addEventListener("click",(e)=>{
+      const name = g.dataset.pref;
+      const rect = stage.getBoundingClientRect();
+
+      tapName.textContent = fullName(name);
+      tapName.style.left = (e.clientX-rect.left)+"px";
+      tapName.style.top  = (e.clientY-rect.top)+"px";
+      tapName.style.display="block";
+
+      fixedInfo.textContent =
+        fullName(name)+"（"+CAPITALS[name]+"）";
+    });
+  });
+});
+
+/* 海を触ったら県名ポップだけ消す */
+stage.addEventListener("click",(e)=>{
+  if(!e.target.closest(".prefecture")){
+    tapName.style.display="none";
+  }
+});
+</script>
+</body>
+</html>
