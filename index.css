@@ -1,238 +1,208 @@
 :root{
   color-scheme: dark;
-  --bg: #070a10;
-  --panel: rgba(18, 24, 40, .72);
-  --border: rgba(120, 160, 255, .22);
-  --text: #f2f6ff;
-  --muted: rgba(242,246,255,.74);
 
-  --btn: rgba(20, 45, 105, .78);
-  --btn2: rgba(35, 95, 210, .28);
-  --btnPrimary: rgba(35, 120, 255, .52);
-  --btnPrimary2: rgba(55, 165, 255, .24);
+  /* === Dodgers Blue 系 === */
+  --bg:#f6f9ff;                 /* 背景は明るく */
+  --blue:#005A9C;               /* Dodgers Blue */
+  --blueSoft:#2f80c9;
+  --blueGlow:rgba(0,90,156,.35);
+
+  --text:#0b1a2b;
+  --muted:#3a5f7f;
+  --border:rgba(0,90,156,.25);
+
+  --btn1:#005A9C;
+  --btn2:#6fb6e8;
+  --btnP1:#005A9C;
+  --btnP2:#9ad0f5;
 }
 
-*{ box-sizing: border-box; }
+*{ box-sizing:border-box; }
 
 body{
   margin:0;
   min-height:100vh;
   display:grid;
   place-items:center;
+  font-family: system-ui,-apple-system,"Segoe UI",sans-serif;
+  color:var(--text);
+
   background:
-    radial-gradient(1200px 600px at 50% 10%, rgba(70,120,255,.22), transparent 60%),
-    radial-gradient(900px 500px at 50% 40%, rgba(20,90,255,.18), transparent 62%),
-    radial-gradient(900px 500px at 50% 80%, rgba(20,90,255,.10), transparent 70%),
-    var(--bg);
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  color: var(--text);
+    radial-gradient(1200px 700px at 50% 8%, rgba(0,90,156,.18), transparent 60%),
+    radial-gradient(900px 520px at 50% 55%, rgba(111,182,232,.22), transparent 65%),
+    linear-gradient(180deg, #f6f9ff 0%, #eef5ff 60%, #ffffff 100%);
 }
 
-/* もともとの「リッチ感」寄せ */
-.frame{
-  width: min(860px, 94vw);
-  padding: 26px 22px;
-  border-radius: 26px;
-  background: rgba(0,0,0,.25);
-  border: 1px solid rgba(255,255,255,.06);
-  box-shadow: 0 22px 70px rgba(0,0,0,.55);
+/* ===== 画面全体 ===== */
+.screen{
+  width:min(980px, 94vw);
+  padding:28px 22px 24px;
+  position:relative;
+  overflow:hidden;
+  border-radius:26px;
+  background:rgba(255,255,255,.75);
+  border:1px solid rgba(0,90,156,.18);
+  box-shadow:0 24px 60px rgba(0,60,120,.25);
   backdrop-filter: blur(6px);
-  position: relative;
-  overflow: hidden;
 }
 
-.screen{ width:100%; position: relative; }
-
-/* ===== 日本列島SVG 背景 ===== */
+/* ===== 背景地図 ===== */
 .title-map{
   position:absolute;
-  inset: 0;
+  inset:0;
   pointer-events:none;
-  opacity: .16;              /* ここで濃さ調整 */
-  filter: drop-shadow(0 0 10px rgba(120,180,255,.25));
+  opacity:.35;   /* ← 地図が“はっきり見える” */
 }
-
-.title-map img{
-  width: 120%;
-  height: 120%;
-  object-fit: contain;
+.title-map .map-svg{
+  width:120%;
+  height:120%;
   position:absolute;
-  left: 50%;
-  top: 54%;
-  transform: translate(-50%, -50%);
+  left:50%;
+  top:54%;
+  transform:translate(-50%,-50%);
+  filter:
+    drop-shadow(0 0 12px rgba(0,90,156,.25));
 }
 
-/* うっすら斜線/光も足す（元の雰囲気） */
+/* うっすら光 */
 .screen::before{
   content:"";
   position:absolute;
   inset:0;
   pointer-events:none;
   background:
-    radial-gradient(600px 300px at 50% 18%, rgba(255,255,255,.06), transparent 60%),
-    linear-gradient(135deg, rgba(255,255,255,.06), transparent 35%, rgba(255,255,255,.04));
+    radial-gradient(700px 360px at 50% 18%, rgba(255,255,255,.9), transparent 60%),
+    linear-gradient(135deg, rgba(255,255,255,.55), transparent 35%, rgba(255,255,255,.35));
   mix-blend-mode: screen;
-  opacity:.35;
+  opacity:.5;
 }
 
+/* ===== タイトル ===== */
 .hero{
   text-align:center;
-  padding: 14px 6px 12px;
-  position: relative;
-  z-index: 1;
+  position:relative;
+  z-index:1;
+  padding:14px 6px 10px;
 }
 
 .logo{
   display:inline-block;
-  line-height: 1.05;
-  font-weight: 900;
-  letter-spacing: .8px;
-  text-transform: uppercase;
-  filter: drop-shadow(0 0 16px rgba(120,180,255,.38));
-  margin-bottom: 10px;
+  line-height:1.05;
+  font-weight:900;
+  letter-spacing:.8px;
+  text-transform:uppercase;
+  margin-bottom:10px;
 }
 
 .logo-line{
-  font-size: 56px;
+  font-size:56px;
+  color:var(--blue);
   text-shadow:
-    0 0 7px rgba(255,255,255,.35),
-    0 0 22px rgba(90,170,255,.38);
+    0 0 6px rgba(255,255,255,.9),
+    0 0 18px var(--blueGlow);
 }
 
-@media (max-width: 700px){
-  .frame{ width: min(560px, 92vw); }
-  .logo-line{ font-size: 36px; }
+@media (max-width:700px){
+  .logo-line{ font-size:36px; }
 }
 
 .bolt{
-  font-size: .9em;
-  margin: 0 .18em;
-  text-shadow:
-    0 0 8px rgba(255,230,120,.45),
-    0 0 22px rgba(120,180,255,.35);
+  font-size:.9em;
+  margin:0 .18em;
+  color:#d62828; /* Dodgers 赤 */
+  text-shadow:0 0 10px rgba(214,40,40,.45);
 }
 
 .jp-title{
-  font-size: 18px;
-  color: var(--muted);
-  margin-top: 2px;
+  font-size:18px;
+  color:var(--muted);
+  margin-top:2px;
 }
 
 .tagline{
-  font-size: 16px;
-  color: rgba(242,246,255,.62);
-  margin-top: 8px;
+  font-size:16px;
+  color:#355e85;
+  margin-top:8px;
 }
 
-.menu{ margin-top: 18px; position: relative; z-index: 1; }
+/* ===== メニュー ===== */
+.menu{ margin-top:18px; position:relative; z-index:1; }
 
 .grid-2{
   display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px 18px;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+@media (max-width:700px){
+  .grid-2{ grid-template-columns:1fr; }
 }
 
 .grid-3{
   display:grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 14px;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:14px;
+}
+@media (max-width:700px){
+  .grid-3{ grid-template-columns:1fr; }
 }
 
-.divider{ height: 18px; }
+.divider{ height:18px; }
 
 .btn{
-  border: 1px solid var(--border);
-  color: var(--text);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  text-decoration:none;
+  color:#ffffff;
+
+  border:1px solid rgba(0,90,156,.35);
+  border-radius:18px;
+  padding:18px 16px;
+
+  font-weight:900;
+  letter-spacing:.3px;
+
   background:
-    linear-gradient(180deg, var(--btnPrimary2), transparent 40%),
-    linear-gradient(135deg, var(--btn), var(--btn2));
-  border-radius: 18px;
-  padding: 18px 16px;
-  font-weight: 900;
-  letter-spacing: .3px;
-  cursor: pointer;
+    linear-gradient(180deg, rgba(255,255,255,.25), transparent 45%),
+    linear-gradient(135deg, var(--btn1), var(--btn2));
+
   box-shadow:
-    0 10px 22px rgba(0,0,0,.38),
-    inset 0 1px 0 rgba(255,255,255,.08);
+    0 10px 22px rgba(0,60,120,.28),
+    inset 0 1px 0 rgba(255,255,255,.35);
+
   transition: transform .08s ease, filter .12s ease;
 }
 
-.btn:hover{ filter: brightness(1.08); }
-.btn:active{ transform: translateY(2px); } /* 押した時だけ沈む */
+.btn:hover{ filter:brightness(1.12); }
+.btn:active{ transform:translateY(2px); }
 
 .btn.primary{
   background:
-    linear-gradient(180deg, rgba(120,210,255,.25), transparent 45%),
-    linear-gradient(135deg, rgba(30,95,230,.95), rgba(70,190,255,.28));
-  border-color: rgba(160,220,255,.35);
-  box-shadow:
-    0 12px 26px rgba(0,0,0,.40),
-    inset 0 1px 0 rgba(255,255,255,.10);
+    linear-gradient(180deg, rgba(255,255,255,.35), transparent 45%),
+    linear-gradient(135deg, var(--btnP1), var(--btnP2));
 }
 
-.btn.small{
-  padding: 10px 12px;
-  border-radius: 12px;
-  font-weight: 800;
-}
-
-.btn.ghost{
-  background: transparent;
-  box-shadow: none;
-}
-
-/* 視認性UP（ボタン文字を大きく） */
+/* 文字サイズ */
 .region{
-  min-height: 86px;
-  font-size: 22px;
-  text-shadow: 0 0 10px rgba(0,0,0,.35);
+  min-height:86px;
+  font-size:22px;
 }
-
 .conquest{
-  min-height: 70px;
-  font-size: 18px;
-  text-shadow: 0 0 10px rgba(0,0,0,.35);
+  min-height:70px;
+  font-size:18px;
 }
 
-/* ===== ゲーム画面（そのまま） ===== */
-.card{
-  margin-top: 10px;
-  padding: 16px;
-  border-radius: 18px;
-  background: var(--panel);
-  border: 1px solid rgba(255,255,255,.06);
+/* ===== フッター ===== */
+.site-footer{
+  position: fixed;
+  right: 14px;
+  bottom: 12px;
+  font-size:12px;
+  opacity:.75;
 }
-
-.hint{ margin: 0 0 12px; color: rgba(242,246,255,.90); }
-#question{ font-weight: 900; }
-
-form{ display:flex; gap: 8px; }
-input{
-  flex:1;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,.10);
-  background: rgba(0,0,0,.35);
-  color: var(--text);
-  outline: none;
+.site-footer a{
+  text-decoration:none;
+  color:#1e4f7a;
 }
-input:focus{
-  border-color: rgba(160,220,255,.35);
-  box-shadow: 0 0 0 3px rgba(80,160,255,.18);
-}
-
-.result{ margin: 12px 0 0; min-height: 1.5em; }
-.row{ display:flex; gap: 10px; margin-top: 12px; }
-
-.log{ margin-top: 12px; opacity: .92; }
-ul{ margin: 8px 0 0; padding-left: 18px; }
-
-.game-top{
-  display:flex;
-  align-items:center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-.game-title{ flex:1; text-align:center; }
-.game-name{ font-weight: 900; letter-spacing: .6px; }
-.mode-label{ font-size: 12px; color: rgba(242,246,255,.65); margin-top: 2px; }
+.site-footer a:hover{ opacity:1; }

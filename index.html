@@ -4,65 +4,63 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>SHOW GEO QUEST</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="index.css" />
 </head>
 
 <body>
+  <main class="screen" aria-label="タイトル画面">
 
-  <!-- ===== 背景：日本列島 ===== -->
-  <div class="title-map" aria-hidden="true">
-    <object class="map-svg"
-            data="maps/japan.svg"
-            type="image/svg+xml"
-            tabindex="-1"></object>
-  </div>
+    <!-- 日本列島（背景SVG） -->
+    <div class="title-map" aria-hidden="true">
+      <object class="map-svg"
+              data="maps/japan.svg"
+              type="image/svg+xml"
+              tabindex="-1">
+      </object>
+    </div>
 
-  <!-- ===== UIフレーム ===== -->
-  <main class="frame">
-
-    <section id="screen-title" class="screen">
-
-      <div class="hero">
-        <div class="logo">
-          <div class="logo-line">SHOW GEO</div>
-          <div class="logo-line logo-boltline">
-            <span class="bolt">⚡</span>
-            <span class="quest">QUEST</span>
-            <span class="bolt">⚡</span>
-          </div>
+    <div class="hero">
+      <div class="logo">
+        <div class="logo-line">SHOW GEO</div>
+        <div class="logo-line logo-boltline">
+          <span class="bolt">⚡</span>
+          <span class="quest">QUEST</span>
+          <span class="bolt">⚡</span>
         </div>
-
-        <div class="jp-title">ショウジオクエスト</div>
-        <div class="tagline">― 地図に挑め、47のクエスト ―</div>
       </div>
 
-      <div class="menu">
-        <div class="grid-2">
-          <a class="btn region" href="01hokkaido-tohoku/index.html">北海道・東北</a>
-          <a class="btn region" href="02kanto/index.html">関東</a>
+      <div class="jp-title">ショウジオクエスト</div>
+      <div class="tagline">― 地図に挑め、47のクエスト ―</div>
+    </div>
 
-          <a class="btn region" href="03chubu/index.html">中部</a>
-          <a class="btn region" href="04kinki/index.html">近畿</a>
+    <nav class="menu" aria-label="メニュー">
+      <div class="grid-2">
+        <a class="btn region" href="04kinki/04kinki.html">近畿</a>
+        <a class="btn region" href="01hokkaido-tohoku/01hokkaido-tohoku.html">北海道・東北</a>
 
-          <a class="btn region" href="05chugoku-shikoku/index.html">中国・四国</a>
-          <a class="btn region" href="06kyushu-okinawa/index.html">九州・沖縄</a>
-        </div>
+        <a class="btn region" href="05chugoku-shikoku/05chugoku-shikoku.html">中国・四国</a>
+        <a class="btn region" href="02kanto/02kanto.html">関東</a>
 
-        <div class="divider"></div>
+        <a class="btn region" href="06kyushu-okinawa/06kyushu-okinawa.html">九州・沖縄</a>
+        <a class="btn region" href="03chubu/03chubu.html">中部</a>
+      </div>
 
+      <div class="divider"></div>
+
+      <section class="conquest-wrap" aria-label="制覇モード">
+        <div class="conquest-title">制覇モード</div>
         <div class="grid-3">
-          <a class="btn conquest" href="07japan/07east-japan.html">東日本縦断</a>
-          <a class="btn conquest primary" href="07japan/09all-japan.html">日本列島制覇</a>
           <a class="btn conquest" href="07japan/08west-japan.html">西日本制覇</a>
+          <a class="btn conquest primary" href="07japan/09all-japan.html">日本列島制覇</a>
+          <a class="btn conquest" href="07japan/07east-japan.html">東日本縦断</a>
         </div>
-      </div>
+      </section>
+    </nav>
 
-    </section>
   </main>
 
-  <footer class="site-footer">
+  <footer class="site-footer" aria-label="フッター">
     <a class="footer-link" href="about.html">利用規約・製作者</a>
   </footer>
-
 </body>
 </html>
