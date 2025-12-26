@@ -7,22 +7,22 @@
 
 <style>
   :root{
-    /* タイトル（トップ）寄せ：明るめブルー基調 */
-    --bg1:#eef7ff;
+    /* 暗すぎない（indexの青系に寄せる） */
+    --bg1:#eaf3ff;
     --bg2:#f7fbff;
 
-    --panel: rgba(255,255,255,.94);
-    --border: rgba(120,170,210,.45);
+    --panel: rgba(255,255,255,.88);
+    --border: rgba(70,120,210,.28);
 
-    --text:#0b1a24;
-    --muted: rgba(11,26,36,.6);
+    --text:#0b1220;
+    --muted: rgba(11,18,32,.62);
 
-    --land:#e6f4ea;        /* 地図ベース（薄緑） */
-    --landTarget:#d6eef0;  /* 対象7県（少し青寄り） */
-    --landHover:#cfe6ff;   /* hover：爽やかブルー */
-    --stroke:#7fa3a0;
+    --land:#dff0df;          /* 地図ベース（薄緑） */
+    --landTarget:#cfe8cf;    /* 対象7県（少し濃い） */
+    --landHover:#bfe2ff;     /* 触れたとき */
+    --stroke:#6f8f6f;
 
-    --prefBlue:#1e63ff;    /* 県名（青） */
+    --prefBlue:#1466ff;      /* 都道府県名（青） */
   }
 
   *{ box-sizing:border-box; }
@@ -31,19 +31,49 @@
     margin:0;
     font-family: system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
     color:var(--text);
-    background: linear-gradient(180deg,var(--bg1) 0%, var(--bg2) 60%, #fff 100%);
+    background:
+      radial-gradient(900px 520px at 50% 0%, rgba(60,120,255,.18), transparent 60%),
+      linear-gradient(180deg,var(--bg1) 0%, var(--bg2) 65%, #fff 100%);
   }
 
   header{
-    padding:12px 14px;
-    font-weight:900;
-    letter-spacing:.02em;
+    padding:10px 12px;
     border-bottom:1px solid var(--border);
-    background: rgba(255,255,255,.78);
-    backdrop-filter: blur(6px);
+    background: rgba(255,255,255,.72);
+    backdrop-filter: blur(8px);
     position: sticky;
     top: 0;
     z-index: 10;
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+
+  .back{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.72);
+    text-decoration:none;
+    color: rgba(12,42,107,1);
+    font-weight: 900;
+    letter-spacing:.02em;
+    box-shadow: 0 10px 24px rgba(18,55,120,.10);
+    white-space: nowrap;
+  }
+  .back:active{ transform: translateY(1px); }
+
+  .hdrTitle{
+    font-weight: 1000;
+    letter-spacing:.02em;
+    color: rgba(12,42,107,1);
+    overflow:hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   main{ padding:12px; }
@@ -56,7 +86,7 @@
     border-radius: 18px;
     overflow: hidden;
     border: 1px solid var(--border);
-    background: rgba(255,255,255,.45);
+    background: rgba(255,255,255,.35);
     backdrop-filter: blur(4px);
   }
 
@@ -68,83 +98,36 @@
     }
   }
 
-  #svgHost{
-    position:absolute;
-    inset:0;
-  }
-  #svgHost svg{
-    width:100%;
-    height:100%;
-    display:block;
-  }
+  #svgHost{ position:absolute; inset:0; }
+  #svgHost svg{ width:100%; height:100%; display:block; }
 
-  /* ===== 地図 ===== */
+  /* 地図 */
   .geolonia-svg-map .prefecture{
     fill: var(--land) !important;
     stroke: var(--stroke) !important;
     stroke-width: 1 !important;
   }
-
-  .geolonia-svg-map .prefecture.is-target{
-    fill: var(--landTarget) !important;
-  }
+  .geolonia-svg-map .prefecture.is-target{ fill: var(--landTarget) !important; }
   .geolonia-svg-map .prefecture.is-target:hover{
     fill: var(--landHover) !important;
     cursor: pointer;
   }
-
   .geolonia-svg-map .prefecture.not-target{
     pointer-events: none !important;
     opacity: .55;
   }
 
-  /* ===== ふわっと明るく（タップ演出） ===== */
-  #flashLayer{
-    position:absolute;
-    inset:0;
-    z-index:4;
-    pointer-events:none;
-    opacity:0;
-    background:
-      radial-gradient(520px 260px at 50% 55%, rgba(255,255,255,.62), transparent 60%),
-      radial-gradient(820px 420px at 50% 60%, rgba(90,170,255,.18), transparent 70%);
-  }
-  .flash-on{
-    animation: stageFlash .28s ease-out;
-  }
-  @keyframes stageFlash{
-    0%{ opacity:0; }
-    35%{ opacity:.95; }
-    100%{ opacity:0; }
-  }
-
-  /* ===== タップした県を一瞬だけ“キラッ” ===== */
-  .geolonia-svg-map .prefecture.is-target.pulse{
-    animation: prefecturePulse .45s ease-out;
-  }
-  @keyframes prefecturePulse{
-    0%{
-      filter: drop-shadow(0 0 0 rgba(30,99,255,0));
-    }
-    45%{
-      filter: drop-shadow(0 0 14px rgba(30,99,255,.35));
-    }
-    100%{
-      filter: drop-shadow(0 0 0 rgba(30,99,255,0));
-    }
-  }
-
-  /* ===== 触った場所に県名だけ “ドン” + 発光 ===== */
+  /* 触った場所に県名だけ “ドン” + 一瞬発光 */
   #tapLabel{
     position:absolute;
-    z-index: 6;
+    z-index: 5;
     transform: translate(-50%, -120%);
-    padding: 7px 12px;
-    border-radius: 14px;
-    background: rgba(255,255,255,.96);
+    padding: 6px 10px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.92);
     border: 1px solid var(--border);
     font-weight: 1000;
-    letter-spacing: .02em;
+    letter-spacing:.02em;
     color: var(--prefBlue);
     font-size: 22px;
     line-height: 1.1;
@@ -153,136 +136,118 @@
     white-space: nowrap;
     box-shadow: 0 10px 22px rgba(0,0,0,.10);
   }
-  @media (max-width: 900px){
-    #tapLabel{ font-size: 20px; }
+  #tapLabel.flash{
+    animation: labelFlash .55s ease-out;
   }
-  /* ★発光 */
-  #tapLabel.glow{
-    animation: labelGlow .7s ease-out;
-  }
-  @keyframes labelGlow{
+  @keyframes labelFlash{
     0%{
-      box-shadow: 0 10px 22px rgba(0,0,0,.10);
-      text-shadow: 0 0 0 rgba(30,99,255,0);
+      filter: drop-shadow(0 0 0 rgba(20,102,255,0));
       transform: translate(-50%, -120%) scale(1);
     }
     35%{
-      box-shadow: 0 16px 38px rgba(30,99,255,.22);
-      text-shadow: 0 0 14px rgba(30,99,255,.35);
+      filter: drop-shadow(0 0 10px rgba(20,102,255,.45));
       transform: translate(-50%, -120%) scale(1.03);
     }
     100%{
-      box-shadow: 0 10px 22px rgba(0,0,0,.10);
-      text-shadow: 0 0 0 rgba(30,99,255,0);
+      filter: drop-shadow(0 0 0 rgba(20,102,255,0));
       transform: translate(-50%, -120%) scale(1);
     }
   }
 
-  /* ===== 右下固定の情報パネル（邪魔しない） ===== */
+  /* 右下固定の情報パネル（小さめ／地図操作を邪魔しない） */
   .infoPanel{
     position:absolute;
-    right: 12px;
-    bottom: 12px;
-    z-index: 7;
-    width: min(280px, 78vw);
+    right: 10px;
+    bottom: 10px;
+    z-index: 6;
+    width: min(270px, 74vw);
     background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 10px 12px;
     backdrop-filter: blur(10px);
-    box-shadow: 0 16px 40px rgba(0,0,0,.10);
+    box-shadow: 0 16px 40px rgba(18,55,120,.12);
 
-    /* ★重要：パネルが地図のクリックを奪わない */
+    /* ★地図操作を奪わない */
     pointer-events: none;
   }
 
   .pref{
     font-size: 16px;
     font-weight: 1000;
-    letter-spacing: .02em;
-    color: var(--prefBlue); /* 都道府県名は青 */
+    letter-spacing:.02em;
+    color: var(--prefBlue);
   }
   .pref ruby{ ruby-position: over; }
   .pref rt{
     font-size: 11px;
     font-weight: 900;
-    color: rgba(30,99,255,.68);
+    color: rgba(20,102,255,.65);
   }
 
-  /* ≠ の気づき演出 */
-  .neq{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    margin: 6px 0 2px;
-    width: 34px;
-    height: 22px;
-    border-radius: 999px;
-    border: 1px solid rgba(30,99,255,.26);
-    background: rgba(30,99,255,.08);
-    color: rgba(30,99,255,.92);
+  /* ≠ は “行として” 独立させて違和感なく */
+  .neqRow{
+    margin-top: 4px;
+    display:none;
+    text-align:center;
     font-weight: 1000;
-    font-size: 14px;
-    letter-spacing: .02em;
-    opacity:0;
-    transform: translateY(-2px);
+    color: rgba(11,18,32,.55);
+    letter-spacing:.12em;
   }
-  .neq.on{
-    animation: neqPop .9s ease-out;
+  .neqRow.show{
+    display:block;
+    animation: neqPop .55s ease-out;
   }
   @keyframes neqPop{
-    0%{ opacity:0; transform: translateY(-4px) scale(.96); }
-    28%{ opacity:1; transform: translateY(0) scale(1.06); }
-    55%{ opacity:1; transform: translateY(0) scale(1); }
-    100%{ opacity:1; transform: translateY(0) scale(1); }
+    0%{ transform: translateY(-2px) scale(.96); opacity:.0; }
+    60%{ transform: translateY(0) scale(1.02); opacity:1; }
+    100%{ transform: translateY(0) scale(1); opacity:1; }
   }
 
   .cap{
     margin-top: 6px;
     font-size: 14px;
-    font-weight: 900; /* 黒・少し太字 */
+    font-weight: 950; /* 黒・少し太字 */
     color: var(--text);
   }
   .cap ruby{ ruby-position: over; }
   .cap rt{
     font-size: 11px;
     font-weight: 900;
-    color: rgba(11,26,36,.55);
-  }
-
-  /* モバイルでパネルが大きく感じたら少しだけ縮める */
-  @media (max-width: 520px){
-    .infoPanel{ width: min(250px, 76vw); padding: 9px 10px; }
+    color: rgba(11,18,32,.55);
   }
 </style>
 </head>
 
 <body>
-<header>知識の泉｜北海道・東北</header>
+<header>
+  <a class="back" href="01hokkaido-tohoku.html" aria-label="北海道・東北へ戻る">← 北海道・東北へ</a>
+  <div class="hdrTitle">知識の泉</div>
+</header>
 
 <main>
   <div class="stage" id="stage">
     <div id="svgHost"></div>
 
-    <div id="flashLayer" aria-hidden="true"></div>
-    <div id="tapLabel" aria-hidden="true"></div>
+    <div id="tapLabel"></div>
 
     <div class="infoPanel" aria-live="polite">
       <div class="pref" id="prefLine">県をタップ</div>
-      <div class="neq" id="neqBadge">≠</div>
+      <div class="neqRow" id="neqRow">≠</div>
       <div class="cap" id="capLine">—</div>
     </div>
   </div>
 </main>
 
 <script>
-/* ===== 知識の泉（北海道・東北）確定版（演出入り） =====
-  - タップ県名 “ドン” → 一瞬発光（labelGlow）
-  - 県名 ≠ 県庁所在地 → ≠ バッジがポン（neqPop）
-  - タップ時 → 地図全体がふわっと明るく（stageFlash）
+/* ===== 知識の泉（北海道・東北）確定版 =====
+  - 戻るボタン：北海道・東北トップへ
+  - 右下パネル：pointer-events:none（地図操作を邪魔しない）
   - hoverツールチップ全殺し（title/desc削除）
   - 対象7県だけ濃く＆クリック可能（他は誤タップ防止）
-  - 右下パネルは pointer-events:none（福島など邪魔しない）
+  - 福島見切れ対策：viewBox微調整
+  - タップ県名 “ドン”：一瞬発光
+  - 県名（青）≠ 県庁所在地（黒・少し太字）：宮城のみ ≠ 表示
 */
 
 const MAP_PATH = "../maps/japan.svg";
@@ -298,15 +263,17 @@ const TARGET_CLASSES = [
 ];
 
 const FURI = {
-  "北海道": { pref:"ほっかいどう", cap:"さっぽろし", capName:"札幌市" },
-  "青森県": { pref:"あおもりけん", cap:"あおもりし", capName:"青森市" },
-  "岩手県": { pref:"いわてけん", cap:"もりおかし", capName:"盛岡市" },
-  "宮城県": { pref:"みやぎけん", cap:"せんだいし", capName:"仙台市" },
-  "秋田県": { pref:"あきたけん", cap:"あきたし", capName:"秋田市" },
-  "山形県": { pref:"やまがたけん", cap:"やまがたし", capName:"山形市" },
-  "福島県": { pref:"ふくしまけん", cap:"ふくしまし", capName:"福島市" },
+  "北海道": { pref:"ほっかいどう", cap:"さっぽろし", capName:"札幌市", mismatch:false },
+  "青森県": { pref:"あおもりけん", cap:"あおもりし", capName:"青森市", mismatch:false },
+  "岩手県": { pref:"いわてけん", cap:"もりおかし", capName:"盛岡市", mismatch:false },
+  "宮城県": { pref:"みやぎけん", cap:"せんだいし", capName:"仙台市", mismatch:true  },
+  "秋田県": { pref:"あきたけん", cap:"あきたし", capName:"秋田市", mismatch:false },
+  "山形県": { pref:"やまがたけん", cap:"やまがたし", capName:"山形市", mismatch:false },
+  "福島県": { pref:"ふくしまけん", cap:"ふくしまし", capName:"福島市", mismatch:false },
 };
 
+/* SVG title: "宮城 / Miyagi" → "宮城"
+   ★「北海道」は「道」を消さない（北海になって札幌が出ない原因を潰す） */
 function normalizeJP(titleText){
   const jp = (titleText || "").split("/")[0].trim();
   // 都・府・県だけ落とす（道は落とさない）
@@ -325,23 +292,6 @@ function rubyHTML(base, kana){
   return `<ruby>${base}<rt>${kana}</rt></ruby>`;
 }
 
-/* 県名と県庁所在地が“同じ読み取り単語”か（例：青森県⇔青森市 は同じ / 北海道⇔札幌市 は違う） */
-function coreNameForCompare(s){
-  return (s || "").replace(/(都|道|府|県|市|区|町|村)$/g,"");
-}
-function isMismatch(prefFull, capName){
-  const p = coreNameForCompare(prefFull);
-  const c = coreNameForCompare(capName);
-  return !!p && !!c && (p !== c);
-}
-
-function flashStage(){
-  const f = document.getElementById("flashLayer");
-  f.classList.remove("flash-on");
-  void f.offsetWidth;
-  f.classList.add("flash-on");
-}
-
 function showTapLabel(text, clientX, clientY){
   const label = document.getElementById("tapLabel");
   const stage = document.getElementById("stage");
@@ -353,27 +303,26 @@ function showTapLabel(text, clientX, clientY){
   label.style.left = x + "px";
   label.style.top  = y + "px";
   label.textContent = text;
-  label.style.display = "block";
 
-  // glow
-  label.classList.remove("glow");
+  label.style.display = "block";
+  label.classList.remove("flash");
+  // reflowでアニメ確実に
   void label.offsetWidth;
-  label.classList.add("glow");
+  label.classList.add("flash");
 
   clearTimeout(showTapLabel._t);
-  showTapLabel._t = setTimeout(()=>{ label.style.display="none"; }, 1200);
+  showTapLabel._t = setTimeout(()=>{ label.style.display="none"; }, 1100);
 }
 
 function setInfo(prefFull){
   const prefLine = document.getElementById("prefLine");
   const capLine  = document.getElementById("capLine");
-  const neqBadge = document.getElementById("neqBadge");
+  const neqRow   = document.getElementById("neqRow");
 
   if(!prefFull){
     prefLine.textContent = "県をタップ";
     capLine.textContent  = "—";
-    neqBadge.style.opacity = 0;
-    neqBadge.classList.remove("on");
+    neqRow.classList.remove("show");
     return;
   }
 
@@ -381,23 +330,17 @@ function setInfo(prefFull){
   if(!d){
     prefLine.textContent = prefFull;
     capLine.textContent  = "—";
-    neqBadge.style.opacity = 0;
-    neqBadge.classList.remove("on");
+    neqRow.classList.remove("show");
     return;
   }
 
-  prefLine.innerHTML = rubyHTML(prefFull, d.pref);   // 青
-  capLine.innerHTML  = rubyHTML(d.capName, d.cap);   // 黒
+  prefLine.innerHTML = rubyHTML(prefFull, d.pref);      // 青
+  capLine.innerHTML  = rubyHTML(d.capName, d.cap);      // 黒（説明文なし）
 
-  const mismatch = isMismatch(prefFull, d.capName);
-  if(mismatch){
-    neqBadge.style.opacity = 1;
-    neqBadge.classList.remove("on");
-    void neqBadge.offsetWidth;
-    neqBadge.classList.add("on");
+  if(d.mismatch){
+    neqRow.classList.add("show");
   }else{
-    neqBadge.style.opacity = 0;
-    neqBadge.classList.remove("on");
+    neqRow.classList.remove("show");
   }
 }
 
@@ -411,9 +354,9 @@ async function loadSVG(){
     txt = await res.text();
   }catch(e){
     host.innerHTML = `
-      <div style="padding:16px;font-weight:900;color:#b00000">
+      <div style="padding:16px;font-weight:1000;color:#b00000">
         地図が読み込めません<br>
-        <span style="font-weight:700;color:rgba(0,0,0,.6)">「${MAP_PATH}」とパスを確認してね</span>
+        <span style="font-weight:800;color:rgba(0,0,0,.6)">「${MAP_PATH}」とパスを確認してね</span>
       </div>`;
     return null;
   }
@@ -423,8 +366,8 @@ async function loadSVG(){
   const svg = host.querySelector("svg");
   if(!svg) return null;
 
-  /* 福島見切れ対策：余白を少し追加（必要なら微調整） */
-  svg.setAttribute("viewBox", "540 -20 520 670");
+  /* 福島見切れ対策：少し余白 */
+  svg.setAttribute("viewBox", "535 -25 535 690");
   svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
   svg.classList.add("geolonia-svg-map");
 
@@ -448,7 +391,7 @@ function setupInteractivity(svg){
   /* svg 直下の title/desc も削除（海を触ったときのツールチップ対策） */
   svg.querySelectorAll(":scope > title, :scope > desc").forEach(n=>n.remove());
 
-  /* クリック用に名前だけ先に埋め込む */
+  /* クリック用に名前をdatasetに */
   targets.forEach(g=>{
     const t = g.querySelector("title")?.textContent || "";
     const jpCore = normalizeJP(t);
@@ -466,14 +409,6 @@ function setupInteractivity(svg){
     const handler = (ev)=>{
       const prefFull = g.dataset.prefFull || "";
       if(!prefFull) return;
-
-      // ふわっと明るく（地図全体）
-      flashStage();
-
-      // タップした県も一瞬キラッ
-      g.classList.remove("pulse");
-      void g.offsetWidth;
-      g.classList.add("pulse");
 
       const cx = ev.clientX ?? (ev.touches && ev.touches[0]?.clientX) ?? 0;
       const cy = ev.clientY ?? (ev.touches && ev.touches[0]?.clientY) ?? 0;

@@ -4,129 +4,231 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>北海道・東北クエスト｜SHOW GEO QUEST</title>
-  <link rel="stylesheet" href="../style.css" />
 
   <style>
-    /* ===== 上部ナビ（トップへ戻る） ===== */
-    .top-nav{
+    :root{
+      /* トップ（index）に寄せた、暗すぎないドジャース寄りブルー */
+      --bg:#eaf3ff;
+      --bg2:#f7fbff;
+
+      --panel: rgba(255,255,255,.86);
+      --border: rgba(70,120,210,.28);
+
+      --text:#0b1220;
+      --muted: rgba(11,18,32,.65);
+
+      --blue1:#1f58d6;
+      --blue2:#0c2a6b;
+
+      --btnA: rgba(255,255,255,.70);
+      --btnB: rgba(255,255,255,.52);
+
+      --shadow: 0 18px 46px rgba(18,55,120,.18);
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 520px at 50% 0%, rgba(60,120,255,.20), transparent 60%),
+        radial-gradient(900px 520px at 50% 55%, rgba(60,120,255,.12), transparent 62%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg2) 65%, #fff 100%);
+    }
+
+    header{
       position: sticky;
       top: 0;
-      z-index: 20;
-      background: rgba(0,0,0,.25);
-      backdrop-filter: blur(6px);
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      padding: 10px 14px;
+      z-index: 10;
+      padding: 10px 12px;
+      background: rgba(255,255,255,.72);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      display:flex;
+      align-items:center;
+      gap:10px;
     }
-    .back-home{
+
+    .back{
       display:inline-flex;
       align-items:center;
       gap:8px;
-      text-decoration:none;
-      font-weight:900;
-      letter-spacing:.04em;
-      color: var(--text);
-      padding: 8px 14px;
-      border-radius: 14px;
+      padding: 8px 10px;
+      border-radius: 12px;
       border: 1px solid var(--border);
-      background:
-        linear-gradient(135deg, var(--btn), var(--btn2));
-      box-shadow:
-        0 8px 18px rgba(0,0,0,.35),
-        inset 0 1px 0 rgba(255,255,255,.08);
+      background: rgba(255,255,255,.72);
+      text-decoration:none;
+      color: var(--blue2);
+      font-weight: 900;
+      letter-spacing:.02em;
+      box-shadow: 0 10px 24px rgba(18,55,120,.10);
     }
-    .back-home:hover{ filter: brightness(1.08); }
+    .back:active{ transform: translateY(1px); }
 
-    /* ===== モード選択 ===== */
-    .mode-grid{
+    .hdrTitle{
+      font-weight: 1000;
+      letter-spacing:.02em;
+      color: var(--blue2);
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+
+    main{
+      width: min(980px, 94vw);
+      margin: 0 auto;
+      padding: 16px 0 28px;
+    }
+
+    .hero{
+      margin-top: 10px;
+      padding: 16px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .hero h1{
+      margin:0 0 6px 0;
+      font-size: 22px;
+      letter-spacing:.02em;
+      color: var(--blue2);
+    }
+    .hero p{
+      margin:0;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .grid{
+      margin-top: 14px;
       display:grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-top: 18px;
+      gap: 12px;
     }
-    @media (max-width: 700px){
-      .mode-grid{ grid-template-columns: 1fr; }
-    }
-
-    .mode-title{
-      text-align:center;
-      font-weight: 900;
-      letter-spacing: .06em;
-      margin: 12px 0 4px;
-    }
-    .mode-sub{
-      text-align:center;
-      opacity:.8;
-      margin: 0 0 12px;
-      font-size: 14px;
+    @media (max-width: 820px){
+      .grid{ grid-template-columns: 1fr; }
     }
 
-    .btn.mode{
-      min-height: 92px;
+    .cardBtn{
+      display:block;
+      text-decoration:none;
+      color: inherit;
+      padding: 16px 14px 12px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background:
+        linear-gradient(180deg, var(--btnA), var(--btnB));
+      box-shadow: 0 16px 38px rgba(18,55,120,.14);
+      transition: transform .08s ease, filter .12s ease;
+    }
+    .cardBtn:hover{ filter: brightness(1.02); }
+    .cardBtn:active{ transform: translateY(2px); }
+
+    .btnTitle{
       font-size: 20px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap: 10px;
-      flex-wrap: wrap;
-      line-height: 1.15;
+      font-weight: 1000;
+      letter-spacing:.02em;
+      color: var(--blue2);
+      text-shadow: 0 6px 18px rgba(18,55,120,.10);
     }
 
-    .difficulty{
+    /* 難易度⚡：リンクではない（下線なし） */
+    .mode-diff{
+      margin-top: 8px;
+      display:flex;
+      gap:4px;
+      justify-content: center;
+      align-items: center;
+      user-select:none;
+    }
+    .bolt{
+      opacity:.6;
+      filter: drop-shadow(0 0 2px rgba(255,215,80,.35));
+      animation: boltPulse 3.2s infinite;
       font-size: 18px;
-      opacity: .95;
-      white-space: nowrap;
-      filter: drop-shadow(0 0 10px rgba(120,180,255,.28));
+      line-height: 1;
+    }
+    .b1{ animation-delay: 0s; }
+    .b2{ animation-delay: .3s; }
+    .b3{ animation-delay: .6s; }
+
+    @keyframes boltPulse{
+      0%{
+        opacity:.6;
+        filter: drop-shadow(0 0 2px rgba(255,215,80,.35));
+      }
+      12%{
+        opacity:1;
+        filter: drop-shadow(0 0 8px rgba(255,215,80,.9));
+      }
+      25%{
+        opacity:.6;
+        filter: drop-shadow(0 0 2px rgba(255,215,80,.35));
+      }
+      100%{ opacity:.6; }
+    }
+
+    .caption{
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+      text-align:center;
     }
   </style>
 </head>
 
 <body>
+  <header>
+    <a class="back" href="../index.html" aria-label="トップへ戻る">← トップへ</a>
+    <div class="hdrTitle">北海道・東北クエスト</div>
+  </header>
 
-  <!-- 上部ナビ -->
-  <div class="top-nav">
-    <a class="back-home" href="../index.html" aria-label="トップへ戻る">
-      ← トップへ戻る
-    </a>
-  </div>
+  <main>
+    <section class="hero" aria-label="案内">
+      <h1>クエストをえらんでね。</h1>
+      <p>入った直後は即スタートしません。まずはモードを選んでください。</p>
+    </section>
 
-  <main class="frame">
-    <section class="screen">
+    <section class="grid" aria-label="モード選択">
+      <!-- 知識の泉（難易度表示なし） -->
+      <a class="cardBtn" href="01hokkaido-tohoku-1.html" aria-label="知識の泉">
+        <div class="btnTitle">知識の泉</div>
+        <div class="caption">学習用（タップで県名と県庁所在地）</div>
+      </a>
 
-      <div class="hero">
-        <div class="logo">
-          <div class="logo-line">北海道・東北</div>
+      <!-- その県どこ？（⚡1） -->
+      <a class="cardBtn" href="01hokkaido-tohoku-2.html" aria-label="その県どこ？">
+        <div class="btnTitle">その県どこ？</div>
+        <div class="mode-diff" aria-hidden="true">
+          <span class="bolt b1">⚡️</span>
         </div>
-        <div class="mode-title">北海道・東北クエスト</div>
-        <p class="mode-sub">モードを選んでね</p>
-      </div>
+        <div class="caption">位置をえらぶ</div>
+      </a>
 
-      <div class="menu">
-        <div class="mode-grid" aria-label="北海道・東北 モード選択">
-
-          <a class="btn mode primary" href="01hokkaido-tohoku-1.html">
-            知識の泉
-          </a>
-
-          <a class="btn mode" href="01hokkaido-tohoku-2.html">
-            <span>その県どこ</span>
-            <span class="difficulty">⚡️</span>
-          </a>
-
-          <a class="btn mode" href="01hokkaido-tohoku-3.html">
-            <span>その県名は</span>
-            <span class="difficulty">⚡️⚡️</span>
-          </a>
-
-          <a class="btn mode" href="01hokkaido-tohoku-4.html">
-            <span>県庁所在地マッチング</span>
-            <span class="difficulty">⚡️⚡️⚡️</span>
-          </a>
-
+      <!-- その県名は？（⚡2） -->
+      <a class="cardBtn" href="01hokkaido-tohoku-3.html" aria-label="その県名は？">
+        <div class="btnTitle">その県名は？</div>
+        <div class="mode-diff" aria-hidden="true">
+          <span class="bolt b1">⚡️</span><span class="bolt b2">⚡️</span>
         </div>
-      </div>
+        <div class="caption">名前を当てる</div>
+      </a>
 
+      <!-- 県庁所在地マッチング（⚡3） -->
+      <a class="cardBtn" href="01hokkaido-tohoku-4.html" aria-label="県庁所在地マッチング">
+        <div class="btnTitle">県庁所在地マッチング</div>
+        <div class="mode-diff" aria-hidden="true">
+          <span class="bolt b1">⚡️</span><span class="bolt b2">⚡️</span><span class="bolt b3">⚡️</span>
+        </div>
+        <div class="caption">県名 ↔ 県庁所在地</div>
+      </a>
     </section>
   </main>
-
 </body>
 </html>
