@@ -1,34 +1,108 @@
 :root{
-  --navPanel: rgba(255,255,255,.78);
-  --navBorder: rgba(160,200,255,.35);
-  --navText: rgba(10,24,42,.92);
+  /* ★トップと同じ“いちばん外側”の青 */
+  --app-bg-1:#0b1430;
+  --app-bg-2:#0a1a3a;
+
+  --panel: rgba(18, 28, 52, .58);
+  --border: rgba(120,170,255,.22);
+
+  --text:#f2f6ff;
+  --muted: rgba(242,246,255,.74);
+
+  --btn: rgba(20, 65, 155, .74);
+  --btn2: rgba(35, 120, 255, .22);
+  --btnPrimary: rgba(30,110,255,.90);
 }
 
 *{ box-sizing:border-box; }
 
-.top-nav{
+body{
+  margin:0;
+  min-height:100vh;
+  color: var(--text);
+  font-family: system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+
+  background:
+    radial-gradient(1200px 600px at 50% 10%, rgba(70,140,255,.18), transparent 60%),
+    radial-gradient(900px 500px at 50% 45%, rgba(40,120,255,.13), transparent 62%),
+    linear-gradient(180deg,var(--app-bg-1),var(--app-bg-2));
+}
+
+/* 上部：戻るボタン共通（全ページ） */
+.topbar{
   position: sticky;
   top: 0;
   z-index: 50;
-  background: var(--navPanel);
-  border-bottom: 1px solid var(--navBorder);
-  backdrop-filter: blur(8px);
   padding: 10px 12px;
+  background: rgba(0,0,0,.20);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  backdrop-filter: blur(6px);
 }
 
-.back-home{
+.back{
   display:inline-flex;
   align-items:center;
-  gap:8px;
+  gap: 10px;
   text-decoration:none;
+  color: var(--text);
   font-weight: 900;
-  letter-spacing:.04em;
-  color: var(--navText);
-  padding: 8px 12px;
+  letter-spacing:.2px;
+
+  padding: 10px 12px;
   border-radius: 14px;
-  border: 1px solid var(--navBorder);
-  background: rgba(255,255,255,.86);
+  background: rgba(18,28,52,.55);
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 22px rgba(0,0,0,.34);
+}
+.back:active{ transform: translateY(1px); }
+.back .arrow{
+  width: 26px; height: 26px;
+  display:grid; place-items:center;
+  border-radius: 10px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.06);
 }
 
-.back-home:hover{ filter: brightness(1.05); }
-.back-home:active{ transform: translateY(1px); }
+/* 共通カード */
+.card{
+  background: rgba(18,28,52,.45);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 18px;
+  box-shadow: 0 16px 46px rgba(0,0,0,.35);
+  backdrop-filter: blur(8px);
+}
+
+/* 共通ボタン */
+.btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  color: var(--text);
+
+  border: 1px solid var(--border);
+  border-radius: 18px;
+
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.06), transparent 55%),
+    linear-gradient(135deg, var(--btn), var(--btn2));
+
+  padding: 16px 14px;
+  font-weight: 900;
+  letter-spacing:.2px;
+  box-shadow:
+    0 10px 22px rgba(0,0,0,.34),
+    inset 0 1px 0 rgba(255,255,255,.08);
+
+  transition: transform .08s ease, filter .12s ease, opacity .12s ease;
+  opacity: .92;
+}
+.btn:hover{ filter: brightness(1.08); opacity:.98; }
+.btn:active{ transform: translateY(2px); }
+
+.btn.primary{
+  background:
+    linear-gradient(180deg, rgba(120,210,255,.22), transparent 55%),
+    linear-gradient(135deg, rgba(30,110,255,.92), rgba(70,200,255,.24));
+  border-color: rgba(160,220,255,.35);
+}

@@ -5,17 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>知識の泉｜北海道・東北</title>
 
+<link rel="stylesheet" href="../style.css" />
+
 <style>
   :root{
-    /* 暗すぎない（indexの青系に寄せる） */
-    --bg1:#eaf3ff;
-    --bg2:#f7fbff;
+    /* 中の水色はそのまま（希望） */
+    --bg1:#e7f3f7;
+    --bg2:#f2fbff;
 
-    --panel: rgba(255,255,255,.88);
-    --border: rgba(70,120,210,.28);
+    --panel: rgba(255,255,255,.90);
+    --border: rgba(140,180,200,.45);
 
-    --text:#0b1220;
-    --muted: rgba(11,18,32,.62);
+    --text:#0f1f26;
+    --muted: rgba(15,31,38,.65);
 
     --land:#dff0df;          /* 地図ベース（薄緑） */
     --landTarget:#cfe8cf;    /* 対象7県（少し濃い） */
@@ -25,76 +27,33 @@
     --prefBlue:#1466ff;      /* 都道府県名（青） */
   }
 
-  *{ box-sizing:border-box; }
-
-  body{
-    margin:0;
-    font-family: system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
-    color:var(--text);
-    background:
-      radial-gradient(900px 520px at 50% 0%, rgba(60,120,255,.18), transparent 60%),
-      linear-gradient(180deg,var(--bg1) 0%, var(--bg2) 65%, #fff 100%);
-  }
-
-  header{
-    padding:10px 12px;
-    border-bottom:1px solid var(--border);
-    background: rgba(255,255,255,.72);
-    backdrop-filter: blur(8px);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-
-    display:flex;
-    align-items:center;
-    gap:10px;
-  }
-
-  .back{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    padding: 8px 10px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: rgba(255,255,255,.72);
-    text-decoration:none;
-    color: rgba(12,42,107,1);
-    font-weight: 900;
-    letter-spacing:.02em;
-    box-shadow: 0 10px 24px rgba(18,55,120,.10);
-    white-space: nowrap;
-  }
-  .back:active{ transform: translateY(1px); }
-
-  .hdrTitle{
-    font-weight: 1000;
-    letter-spacing:.02em;
-    color: rgba(12,42,107,1);
-    overflow:hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
+  /* 外側（青）は style.css、内側のステージは水色グラデを重ねる */
   main{ padding:12px; }
 
   .stage{
     position: relative;
-    width: 100%;
-    height: min(72vh, 720px);
+    width: min(900px, 94vw);
+    margin: 12px auto 22px;
+
+    height: min(74vh, 760px);
     min-height: 520px;
-    border-radius: 18px;
+
+    border-radius: 20px;
     overflow: hidden;
-    border: 1px solid var(--border);
-    background: rgba(255,255,255,.35);
-    backdrop-filter: blur(4px);
+
+    border: 1px solid rgba(255,255,255,.06);
+    background:
+      radial-gradient(900px 520px at 50% 20%, rgba(70,140,255,.14), transparent 60%),
+      linear-gradient(180deg, rgba(231,243,247,.22), rgba(242,251,255,.12));
+    box-shadow: 0 18px 60px rgba(0,0,0,.38);
+    backdrop-filter: blur(6px);
   }
 
   @media (max-width: 900px){
     .stage{
-      height: 70vh;
+      height: 72vh;
       min-height: 480px;
-      border-radius: 16px;
+      border-radius: 18px;
     }
   }
 
@@ -117,7 +76,7 @@
     opacity: .55;
   }
 
-  /* 触った場所に県名だけ “ドン” + 一瞬発光 */
+  /* 触った場所に県名だけ “ドン” ＋ 一瞬発光 */
   #tapLabel{
     position:absolute;
     z-index: 5;
@@ -127,7 +86,7 @@
     background: rgba(255,255,255,.92);
     border: 1px solid var(--border);
     font-weight: 1000;
-    letter-spacing:.02em;
+    letter-spacing: .02em;
     color: var(--prefBlue);
     font-size: 22px;
     line-height: 1.1;
@@ -136,118 +95,139 @@
     white-space: nowrap;
     box-shadow: 0 10px 22px rgba(0,0,0,.10);
   }
-  #tapLabel.flash{
-    animation: labelFlash .55s ease-out;
+  #tapLabel.is-glow{
+    animation: tapGlow .55s ease-out;
   }
-  @keyframes labelFlash{
-    0%{
-      filter: drop-shadow(0 0 0 rgba(20,102,255,0));
-      transform: translate(-50%, -120%) scale(1);
-    }
-    35%{
-      filter: drop-shadow(0 0 10px rgba(20,102,255,.45));
-      transform: translate(-50%, -120%) scale(1.03);
-    }
-    100%{
-      filter: drop-shadow(0 0 0 rgba(20,102,255,0));
-      transform: translate(-50%, -120%) scale(1);
-    }
+  @keyframes tapGlow{
+    0%{ text-shadow: 0 0 0 rgba(20,102,255,0); }
+    35%{ text-shadow: 0 0 18px rgba(20,102,255,.55); }
+    100%{ text-shadow: 0 0 0 rgba(20,102,255,0); }
   }
 
-  /* 右下固定の情報パネル（小さめ／地図操作を邪魔しない） */
+  /* 右下固定：正方形寄せ＆少し上へ（福島を邪魔しない） */
   .infoPanel{
     position:absolute;
-    right: 10px;
-    bottom: 10px;
+    right: 14px;
+    bottom: 72px; /* ★下から浮かせる（希望） */
     z-index: 6;
-    width: min(270px, 74vw);
+
+    width: 240px;          /* ★正方形寄せ */
+    max-width: 72vw;
+
     background: var(--panel);
     border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 10px 12px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 16px 40px rgba(18,55,120,.12);
+    border-radius: 18px;
+    padding: 12px 12px;
 
-    /* ★地図操作を奪わない */
+    box-shadow: 0 16px 40px rgba(0,0,0,.10);
+    backdrop-filter: blur(8px);
+
+    /* ★重要：パネルが地図のクリックを奪わない */
     pointer-events: none;
   }
 
   .pref{
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 1000;
     letter-spacing:.02em;
     color: var(--prefBlue);
+    line-height: 1.15;
   }
   .pref ruby{ ruby-position: over; }
   .pref rt{
     font-size: 11px;
     font-weight: 900;
-    color: rgba(20,102,255,.65);
+    color: rgba(20,102,255,.68);
   }
 
-  /* ≠ は “行として” 独立させて違和感なく */
-  .neqRow{
-    margin-top: 4px;
-    display:none;
-    text-align:center;
-    font-weight: 1000;
-    color: rgba(11,18,32,.55);
-    letter-spacing:.12em;
-  }
-  .neqRow.show{
-    display:block;
-    animation: neqPop .55s ease-out;
-  }
-  @keyframes neqPop{
-    0%{ transform: translateY(-2px) scale(.96); opacity:.0; }
-    60%{ transform: translateY(0) scale(1.02); opacity:1; }
-    100%{ transform: translateY(0) scale(1); opacity:1; }
+  .capRow{
+    margin-top: 10px;
+    display:flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
   }
 
   .cap{
-    margin-top: 6px;
-    font-size: 14px;
-    font-weight: 950; /* 黒・少し太字 */
+    font-size: 16px;
+    font-weight: 1000; /* ★少し太字（希望） */
     color: var(--text);
+    line-height: 1.15;
   }
   .cap ruby{ ruby-position: over; }
   .cap rt{
     font-size: 11px;
     font-weight: 900;
-    color: rgba(11,18,32,.55);
+    color: rgba(15,31,38,.55);
   }
+
+  /* “気づき”演出：名前が一致しない時だけ、両側に⚡（常灯） */
+  .boltMark{
+    display:none;
+    font-weight: 1000;
+    color: rgba(20,102,255,.92);
+    text-shadow: 0 0 16px rgba(120,190,255,.42);
+  }
+  .boltMark.on{ display:inline; }
+
+  /* エラー表示 */
+  .err{
+    position:absolute;
+    inset: 0;
+    display:grid;
+    place-items:center;
+    text-align:center;
+    padding: 16px;
+    color: rgba(255,255,255,.92);
+  }
+  .err .box{
+    width: min(520px, 92vw);
+    padding: 16px 14px;
+    border-radius: 16px;
+    background: rgba(0,0,0,.25);
+    border: 1px solid rgba(255,255,255,.10);
+    box-shadow: 0 18px 60px rgba(0,0,0,.35);
+    backdrop-filter: blur(8px);
+  }
+  .err .big{ font-weight:1000; font-size: 18px; }
+  .err .small{ margin-top:6px; font-weight:900; opacity:.8; }
 </style>
 </head>
 
 <body>
-<header>
-  <a class="back" href="01hokkaido-tohoku.html" aria-label="北海道・東北へ戻る">← 北海道・東北へ</a>
-  <div class="hdrTitle">知識の泉</div>
-</header>
-
-<main>
-  <div class="stage" id="stage">
-    <div id="svgHost"></div>
-
-    <div id="tapLabel"></div>
-
-    <div class="infoPanel" aria-live="polite">
-      <div class="pref" id="prefLine">県をタップ</div>
-      <div class="neqRow" id="neqRow">≠</div>
-      <div class="cap" id="capLine">—</div>
-    </div>
+  <div class="topbar">
+    <a class="back" href="./01hokkaido-tohoku.html" aria-label="北海道・東北へ戻る">
+      <span class="arrow">←</span>
+      <span>北海道・東北へ戻る</span>
+    </a>
   </div>
-</main>
+
+  <main>
+    <div class="stage" id="stage">
+      <div id="svgHost"></div>
+
+      <div id="tapLabel"></div>
+
+      <div class="infoPanel" aria-live="polite">
+        <div class="pref" id="prefLine">県をタップ</div>
+
+        <div class="capRow">
+          <span class="boltMark" id="boltLeft">⚡</span>
+          <div class="cap" id="capLine">—</div>
+          <span class="boltMark" id="boltRight">⚡</span>
+        </div>
+      </div>
+    </div>
+  </main>
 
 <script>
 /* ===== 知識の泉（北海道・東北）確定版 =====
-  - 戻るボタン：北海道・東北トップへ
-  - 右下パネル：pointer-events:none（地図操作を邪魔しない）
+  - 戻るボタン：北海道・東北へ戻る（上部）
+  - 右下パネル：正方形寄せ＋少し上へ（福島を邪魔しない）
   - hoverツールチップ全殺し（title/desc削除）
   - 対象7県だけ濃く＆クリック可能（他は誤タップ防止）
-  - 福島見切れ対策：viewBox微調整
-  - タップ県名 “ドン”：一瞬発光
-  - 県名（青）≠ 県庁所在地（黒・少し太字）：宮城のみ ≠ 表示
+  - 県名(青) / 県庁所在地(黒) + ふりがな
+  - “気づき”演出：県名と市名の“核（～県/～市を除いた部分）”が一致しない時だけ ⚡を常灯
 */
 
 const MAP_PATH = "../maps/japan.svg";
@@ -263,21 +243,20 @@ const TARGET_CLASSES = [
 ];
 
 const FURI = {
-  "北海道": { pref:"ほっかいどう", cap:"さっぽろし", capName:"札幌市", mismatch:false },
-  "青森県": { pref:"あおもりけん", cap:"あおもりし", capName:"青森市", mismatch:false },
-  "岩手県": { pref:"いわてけん", cap:"もりおかし", capName:"盛岡市", mismatch:false },
-  "宮城県": { pref:"みやぎけん", cap:"せんだいし", capName:"仙台市", mismatch:true  },
-  "秋田県": { pref:"あきたけん", cap:"あきたし", capName:"秋田市", mismatch:false },
-  "山形県": { pref:"やまがたけん", cap:"やまがたし", capName:"山形市", mismatch:false },
-  "福島県": { pref:"ふくしまけん", cap:"ふくしまし", capName:"福島市", mismatch:false },
+  "北海道":   { pref:"ほっかいどう", cap:"さっぽろし", capName:"札幌市" },
+  "青森県":   { pref:"あおもりけん", cap:"あおもりし", capName:"青森市" },
+  "岩手県":   { pref:"いわてけん",   cap:"もりおかし", capName:"盛岡市" },
+  "宮城県":   { pref:"みやぎけん",   cap:"せんだいし", capName:"仙台市" },
+  "秋田県":   { pref:"あきたけん",   cap:"あきたし",   capName:"秋田市" },
+  "山形県":   { pref:"やまがたけん", cap:"やまがたし", capName:"山形市" },
+  "福島県":   { pref:"ふくしまけん", cap:"ふくしまし", capName:"福島市" },
 };
 
 /* SVG title: "宮城 / Miyagi" → "宮城"
-   ★「北海道」は「道」を消さない（北海になって札幌が出ない原因を潰す） */
+   ★「北海道」は“道”を消さない */
 function normalizeJP(titleText){
   const jp = (titleText || "").split("/")[0].trim();
-  // 都・府・県だけ落とす（道は落とさない）
-  return jp.replace(/(都|府|県)$/g, "");
+  return jp.replace(/(都|府|県)$/g,""); // 道は残す
 }
 
 function toPrefFullName(jpCore){
@@ -292,6 +271,14 @@ function rubyHTML(base, kana){
   return `<ruby>${base}<rt>${kana}</rt></ruby>`;
 }
 
+/* “一致/不一致”判定：県/市の接尾辞を落として“核”を比較 */
+function coreName(name){
+  return (name || "").replace(/(都|道|府|県|市)$/g,"");
+}
+function isSameCore(prefFull, capName){
+  return coreName(prefFull) === coreName(capName);
+}
+
 function showTapLabel(text, clientX, clientY){
   const label = document.getElementById("tapLabel");
   const stage = document.getElementById("stage");
@@ -303,12 +290,12 @@ function showTapLabel(text, clientX, clientY){
   label.style.left = x + "px";
   label.style.top  = y + "px";
   label.textContent = text;
-
   label.style.display = "block";
-  label.classList.remove("flash");
-  // reflowでアニメ確実に
+
+  label.classList.remove("is-glow");
+  // 強制リフロー（連打でも光る）
   void label.offsetWidth;
-  label.classList.add("flash");
+  label.classList.add("is-glow");
 
   clearTimeout(showTapLabel._t);
   showTapLabel._t = setTimeout(()=>{ label.style.display="none"; }, 1100);
@@ -317,12 +304,14 @@ function showTapLabel(text, clientX, clientY){
 function setInfo(prefFull){
   const prefLine = document.getElementById("prefLine");
   const capLine  = document.getElementById("capLine");
-  const neqRow   = document.getElementById("neqRow");
+  const bL = document.getElementById("boltLeft");
+  const bR = document.getElementById("boltRight");
 
   if(!prefFull){
     prefLine.textContent = "県をタップ";
     capLine.textContent  = "—";
-    neqRow.classList.remove("show");
+    bL.classList.remove("on");
+    bR.classList.remove("on");
     return;
   }
 
@@ -330,18 +319,18 @@ function setInfo(prefFull){
   if(!d){
     prefLine.textContent = prefFull;
     capLine.textContent  = "—";
-    neqRow.classList.remove("show");
+    bL.classList.remove("on");
+    bR.classList.remove("on");
     return;
   }
 
-  prefLine.innerHTML = rubyHTML(prefFull, d.pref);      // 青
-  capLine.innerHTML  = rubyHTML(d.capName, d.cap);      // 黒（説明文なし）
+  prefLine.innerHTML = rubyHTML(prefFull, d.pref);     // 青
+  capLine.innerHTML  = rubyHTML(d.capName, d.cap);     // 黒
 
-  if(d.mismatch){
-    neqRow.classList.add("show");
-  }else{
-    neqRow.classList.remove("show");
-  }
+  // ⚡は“不一致”のときだけ常灯
+  const mismatch = !isSameCore(prefFull, d.capName);
+  bL.classList.toggle("on", mismatch);
+  bR.classList.toggle("on", mismatch);
 }
 
 async function loadSVG(){
@@ -354,9 +343,11 @@ async function loadSVG(){
     txt = await res.text();
   }catch(e){
     host.innerHTML = `
-      <div style="padding:16px;font-weight:1000;color:#b00000">
-        地図が読み込めません<br>
-        <span style="font-weight:800;color:rgba(0,0,0,.6)">「${MAP_PATH}」とパスを確認してね</span>
+      <div class="err">
+        <div class="box">
+          <div class="big">地図が読み込めません</div>
+          <div class="small">「${MAP_PATH}」とパスを確認してね</div>
+        </div>
       </div>`;
     return null;
   }
@@ -366,8 +357,8 @@ async function loadSVG(){
   const svg = host.querySelector("svg");
   if(!svg) return null;
 
-  /* 福島見切れ対策：少し余白 */
-  svg.setAttribute("viewBox", "535 -25 535 690");
+  /* ★表示範囲：福島が見切れないように余白を少し確保 */
+  svg.setAttribute("viewBox", "535 -25 535 700");
   svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
   svg.classList.add("geolonia-svg-map");
 
@@ -388,10 +379,10 @@ function setupInteractivity(svg){
     }
   });
 
-  /* svg 直下の title/desc も削除（海を触ったときのツールチップ対策） */
+  /* 海を触ったときのツールチップ対策：svg直下のtitle/descも消す */
   svg.querySelectorAll(":scope > title, :scope > desc").forEach(n=>n.remove());
 
-  /* クリック用に名前をdatasetに */
+  /* クリック用の県名を埋める（titleは後で全消し） */
   targets.forEach(g=>{
     const t = g.querySelector("title")?.textContent || "";
     const jpCore = normalizeJP(t);
