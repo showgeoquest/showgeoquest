@@ -1,67 +1,79 @@
 :root{
-  color-scheme: dark;
+  /* 爽やかブルー寄せ（ドジャースブルー系） */
+  --bg1:#eaf4ff;
+  --bg2:#f8fcff;
 
-  /* === Dodgers Blue 系 === */
-  --bg:#f6f9ff;                 /* 背景は明るく */
-  --blue:#005A9C;               /* Dodgers Blue */
-  --blueSoft:#2f80c9;
-  --blueGlow:rgba(0,90,156,.35);
+  --panel: rgba(255,255,255,.74);
+  --border: rgba(40,90,170,.18);
 
-  --text:#0b1a2b;
-  --muted:#3a5f7f;
-  --border:rgba(0,90,156,.25);
+  --text:#0f1f26;
+  --muted: rgba(15,31,38,.72);
 
-  --btn1:#005A9C;
-  --btn2:#6fb6e8;
-  --btnP1:#005A9C;
-  --btnP2:#9ad0f5;
+  --btnA: rgba(25, 90, 190, .58);
+  --btnB: rgba(70, 165, 255, .26);
+  --btnStroke: rgba(35, 120, 255, .28);
+
+  --shadow: 0 22px 70px rgba(0,0,0,.12);
 }
 
 *{ box-sizing:border-box; }
 
+html,body{ height:100%; }
 body{
   margin:0;
   min-height:100vh;
   display:grid;
   place-items:center;
-  font-family: system-ui,-apple-system,"Segoe UI",sans-serif;
-  color:var(--text);
-
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--text);
   background:
-    radial-gradient(1200px 700px at 50% 8%, rgba(0,90,156,.18), transparent 60%),
-    radial-gradient(900px 520px at 50% 55%, rgba(111,182,232,.22), transparent 65%),
-    linear-gradient(180deg, #f6f9ff 0%, #eef5ff 60%, #ffffff 100%);
+    radial-gradient(1200px 600px at 50% 10%, rgba(70,140,255,.18), transparent 60%),
+    radial-gradient(900px 520px at 60% 52%, rgba(30,120,255,.12), transparent 62%),
+    linear-gradient(180deg,var(--bg1) 0%, var(--bg2) 70%, #fff 100%);
 }
 
-/* ===== 画面全体 ===== */
-.screen{
-  width:min(980px, 94vw);
-  padding:28px 22px 24px;
-  position:relative;
-  overflow:hidden;
-  border-radius:26px;
-  background:rgba(255,255,255,.75);
-  border:1px solid rgba(0,90,156,.18);
-  box-shadow:0 24px 60px rgba(0,60,120,.25);
-  backdrop-filter: blur(6px);
+/* 枠（アプリっぽく） */
+.frame{
+  width: min(980px, 94vw);
+  padding: 22px 18px;
+  border-radius: 30px;
+  background: rgba(255,255,255,.55);
+  border: 1px solid rgba(255,255,255,.55);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
 }
 
-/* ===== 背景地図 ===== */
+/* スマホでは“枠に閉じ込め感”を減らす */
+@media (max-width: 700px){
+  body{ place-items: stretch; }
+  .frame{
+    width: 100vw;
+    min-height: 100vh;
+    border-radius: 0;
+    padding: 18px 14px 56px;
+  }
+}
+
+/* ===== 背景の日本列島SVG ===== */
+.screen{ width:100%; position: relative; }
 .title-map{
   position:absolute;
-  inset:0;
+  inset: 0;
   pointer-events:none;
-  opacity:.35;   /* ← 地図が“はっきり見える” */
+  opacity: .28; /* ← 背景地図を“はっきり”させる */
+  filter: drop-shadow(0 0 10px rgba(50,120,255,.22));
 }
 .title-map .map-svg{
-  width:120%;
-  height:120%;
+  width: 125%;
+  height: 125%;
   position:absolute;
-  left:50%;
-  top:54%;
-  transform:translate(-50%,-50%);
-  filter:
-    drop-shadow(0 0 12px rgba(0,90,156,.25));
+  left: 55%;
+  top: 52%;
+  transform: translate(-50%, -50%);
+  object-fit: contain;
+  pointer-events:none;
 }
 
 /* うっすら光 */
@@ -71,138 +83,194 @@ body{
   inset:0;
   pointer-events:none;
   background:
-    radial-gradient(700px 360px at 50% 18%, rgba(255,255,255,.9), transparent 60%),
-    linear-gradient(135deg, rgba(255,255,255,.55), transparent 35%, rgba(255,255,255,.35));
+    radial-gradient(700px 360px at 50% 14%, rgba(255,255,255,.55), transparent 60%),
+    linear-gradient(135deg, rgba(255,255,255,.35), transparent 36%, rgba(255,255,255,.22));
   mix-blend-mode: screen;
-  opacity:.5;
+  opacity:.35;
 }
 
-/* ===== タイトル ===== */
 .hero{
   text-align:center;
-  position:relative;
-  z-index:1;
-  padding:14px 6px 10px;
+  padding: 18px 6px 10px;
+  position: relative;
+  z-index: 1;
 }
 
 .logo{
   display:inline-block;
-  line-height:1.05;
-  font-weight:900;
-  letter-spacing:.8px;
-  text-transform:uppercase;
-  margin-bottom:10px;
+  line-height: 1.02;
+  font-weight: 900;
+  letter-spacing: .9px;
+  text-transform: uppercase;
+  filter: drop-shadow(0 6px 18px rgba(30,90,160,.22));
+  margin-bottom: 10px;
 }
 
 .logo-line{
-  font-size:56px;
-  color:var(--blue);
+  font-size: 64px;
+  color: rgba(15,70,140,.90);
   text-shadow:
-    0 0 6px rgba(255,255,255,.9),
-    0 0 18px var(--blueGlow);
+    0 2px 0 rgba(255,255,255,.45),
+    0 10px 22px rgba(0,0,0,.10);
 }
 
-@media (max-width:700px){
-  .logo-line{ font-size:36px; }
+/* フォントの“ダサさ”を減らす：間隔と太さを調整 */
+.logo-boltline .quest{
+  letter-spacing: .12em;
+}
+
+@media (max-width: 700px){
+  .logo-line{ font-size: 44px; }
 }
 
 .bolt{
-  font-size:.9em;
-  margin:0 .18em;
-  color:#d62828; /* Dodgers 赤 */
-  text-shadow:0 0 10px rgba(214,40,40,.45);
+  font-size: .9em;
+  margin: 0 .18em;
+  text-shadow:
+    0 0 10px rgba(255,210,80,.55),
+    0 0 22px rgba(60,150,255,.35);
 }
 
 .jp-title{
-  font-size:18px;
-  color:var(--muted);
-  margin-top:2px;
+  font-size: 18px;
+  color: var(--muted);
+  margin-top: 4px;
+  font-weight: 800;
 }
 
 .tagline{
-  font-size:16px;
-  color:#355e85;
-  margin-top:8px;
+  font-size: 16px;
+  color: rgba(15,31,38,.62);
+  margin-top: 8px;
+  font-weight: 700;
 }
 
-/* ===== メニュー ===== */
-.menu{ margin-top:18px; position:relative; z-index:1; }
+.menu{ margin-top: 18px; position: relative; z-index: 1; }
 
 .grid-2{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:18px;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
 }
-@media (max-width:700px){
-  .grid-2{ grid-template-columns:1fr; }
+@media (max-width: 700px){
+  .grid-2{ grid-template-columns: 1fr; gap: 14px; }
 }
 
 .grid-3{
   display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:14px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
 }
-@media (max-width:700px){
-  .grid-3{ grid-template-columns:1fr; }
+@media (max-width: 700px){
+  .grid-3{ grid-template-columns: 1fr; gap: 12px; }
 }
 
-.divider{ height:18px; }
+.divider{ height: 18px; }
 
+.conquest-wrap{
+  margin-top: 6px;
+}
+.conquest-title{
+  font-weight: 900;
+  letter-spacing: .06em;
+  color: rgba(15,31,38,.70);
+  margin: 0 0 10px 2px;
+}
+
+/* ボタン */
 .btn{
+  border: 1px solid var(--btnStroke);
+  color: #fff;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.18), transparent 40%),
+    linear-gradient(135deg, var(--btnA), var(--btnB));
+  border-radius: 22px;
+  padding: 20px 16px;
+  font-weight: 900;
+  letter-spacing: .04em;
+  cursor: pointer;
+  box-shadow:
+    0 12px 26px rgba(0,0,0,.14),
+    inset 0 1px 0 rgba(255,255,255,.22);
+  transition: transform .08s ease, filter .12s ease, opacity .15s ease;
+  opacity: .92; /* ← 透過を少し入れる */
+}
+
+/* a.btn をボタン化 */
+a.btn{
   display:flex;
   align-items:center;
   justify-content:center;
-
   text-decoration:none;
-  color:#ffffff;
-
-  border:1px solid rgba(0,90,156,.35);
-  border-radius:18px;
-  padding:18px 16px;
-
-  font-weight:900;
-  letter-spacing:.3px;
-
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.25), transparent 45%),
-    linear-gradient(135deg, var(--btn1), var(--btn2));
-
-  box-shadow:
-    0 10px 22px rgba(0,60,120,.28),
-    inset 0 1px 0 rgba(255,255,255,.35);
-
-  transition: transform .08s ease, filter .12s ease;
 }
 
-.btn:hover{ filter:brightness(1.12); }
-.btn:active{ transform:translateY(2px); }
+.btn:hover{
+  filter: brightness(1.06);
+  opacity: .98;
+}
+.btn:active{ transform: translateY(2px); } /* 押したら沈む */
 
 .btn.primary{
   background:
-    linear-gradient(180deg, rgba(255,255,255,.35), transparent 45%),
-    linear-gradient(135deg, var(--btnP1), var(--btnP2));
+    linear-gradient(180deg, rgba(255,255,255,.22), transparent 45%),
+    linear-gradient(135deg, rgba(10,90,210,.92), rgba(90,200,255,.30));
+  border-color: rgba(35,120,255,.42);
+  box-shadow:
+    0 14px 32px rgba(0,0,0,.16),
+    inset 0 1px 0 rgba(255,255,255,.26);
 }
 
-/* 文字サイズ */
 .region{
-  min-height:86px;
-  font-size:22px;
+  min-height: 96px;
+  font-size: 26px; /* ← PC側の文字を大きく */
+  text-shadow: 0 0 12px rgba(0,0,0,.18);
 }
-.conquest{
-  min-height:70px;
-  font-size:18px;
+@media (max-width: 700px){
+  .region{ min-height: 72px; font-size: 22px; }
 }
 
-/* ===== フッター ===== */
+.conquest{
+  min-height: 72px;
+  font-size: 18px;
+  text-shadow: 0 0 12px rgba(0,0,0,.18);
+}
+@media (max-width: 700px){
+  .conquest{ min-height: 62px; font-size: 16px; }
+}
+
+/* ===== きらっと演出（JSが .spark を作る） ===== */
+.spark{
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.95);
+  pointer-events:none;
+  filter: drop-shadow(0 0 10px rgba(90,180,255,.55));
+  animation: sparkPop .55s ease-out forwards;
+}
+@keyframes sparkPop{
+  0%{ transform: translate(-50%,-50%) scale(.6); opacity: 1; }
+  80%{ opacity: .95; }
+  100%{ transform: translate(-50%,-50%) scale(3.2); opacity: 0; }
+}
+
+/* フッター：右下に小さく（少し下へ離す） */
 .site-footer{
   position: fixed;
   right: 14px;
-  bottom: 12px;
-  font-size:12px;
-  opacity:.75;
+  bottom: 8px;
+  z-index: 9999;
+  opacity: .72;
+  font-size: 12px;
 }
-.site-footer a{
-  text-decoration:none;
-  color:#1e4f7a;
+@media (max-width: 700px){
+  .site-footer{ bottom: 6px; right: 10px; }
 }
-.site-footer a:hover{ opacity:1; }
+
+.site-footer .footer-link{
+  text-decoration: none;
+  color: rgba(15,31,38,.75);
+  font-weight: 800;
+}
+.site-footer .footer-link:hover{ opacity: 1; }

@@ -8,59 +8,73 @@
 </head>
 
 <body>
-  <main class="screen" aria-label="タイトル画面">
+  <main class="frame">
 
-    <!-- 日本列島（背景SVG） -->
-    <div class="title-map" aria-hidden="true">
-      <object class="map-svg"
-              data="maps/japan.svg"
-              type="image/svg+xml"
-              tabindex="-1">
-      </object>
-    </div>
+    <!-- ===== タイトル画面 ===== -->
+    <section id="screen-title" class="screen">
 
-    <div class="hero">
-      <div class="logo">
-        <div class="logo-line">SHOW GEO</div>
-        <div class="logo-line logo-boltline">
-          <span class="bolt">⚡</span>
-          <span class="quest">QUEST</span>
-          <span class="bolt">⚡</span>
-        </div>
+      <!-- 日本列島（背景SVG） -->
+      <div class="title-map" aria-hidden="true">
+        <!-- maps/japan.svg を使う（ルート直下の maps/） -->
+        <object class="map-svg"
+                data="maps/japan.svg"
+                type="image/svg+xml"
+                tabindex="-1"
+                aria-hidden="true"></object>
       </div>
 
-      <div class="jp-title">ショウジオクエスト</div>
-      <div class="tagline">― 地図に挑め、47のクエスト ―</div>
-    </div>
+      <div class="hero">
+        <div class="logo" aria-label="SHOW GEO QUEST">
+          <div class="logo-line">SHOW GEO</div>
+          <div class="logo-line logo-boltline">
+            <span class="bolt">⚡</span>
+            <span class="quest">QUEST</span>
+            <span class="bolt">⚡</span>
+          </div>
+        </div>
 
-    <nav class="menu" aria-label="メニュー">
-      <div class="grid-2">
-        <a class="btn region" href="04kinki/04kinki.html">近畿</a>
-        <a class="btn region" href="01hokkaido-tohoku/01hokkaido-tohoku.html">北海道・東北</a>
-
-        <a class="btn region" href="05chugoku-shikoku/05chugoku-shikoku.html">中国・四国</a>
-        <a class="btn region" href="02kanto/02kanto.html">関東</a>
-
-        <a class="btn region" href="06kyushu-okinawa/06kyushu-okinawa.html">九州・沖縄</a>
-        <a class="btn region" href="03chubu/03chubu.html">中部</a>
+        <div class="jp-title">ショウジオクエスト</div>
+        <div class="tagline">― 地図に挑め、47のクエスト ―</div>
       </div>
 
-      <div class="divider"></div>
+      <div class="menu">
+        <!-- 上段：地方（※リンク） -->
+        <div class="grid-2">
+          <a class="btn region crackle" href="04kinki/04kinki.html">近畿</a>
+          <a class="btn region crackle" href="01hokkaido-tohoku/01hokkaido-tohoku.html">北海道・東北</a>
 
-      <section class="conquest-wrap" aria-label="制覇モード">
-        <div class="conquest-title">制覇モード</div>
-        <div class="grid-3">
-          <a class="btn conquest" href="07japan/08west-japan.html">西日本制覇</a>
-          <a class="btn conquest primary" href="07japan/09all-japan.html">日本列島制覇</a>
-          <a class="btn conquest" href="07japan/07east-japan.html">東日本縦断</a>
+          <a class="btn region crackle" href="05chugoku-shikoku/05chugoku-shikoku.html">中国・四国</a>
+          <a class="btn region crackle" href="02kanto/02kanto.html">関東</a>
+
+          <a class="btn region crackle" href="06kyushu-okinawa/06kyushu-okinawa.html">九州・沖縄</a>
+          <a class="btn region crackle" href="03chubu/03chubu.html">中部</a>
         </div>
-      </section>
-    </nav>
+
+        <div class="divider"></div>
+
+        <!-- 下段：制覇（※リンク） -->
+        <div class="conquest-wrap">
+          <div class="conquest-title">制覇モード</div>
+
+          <div class="grid-3 conquest-grid">
+            <a class="btn conquest crackle" href="07japan/08west-japan.html">西日本制覇</a>
+            <a class="btn conquest primary crackle" href="07japan/09all-japan.html">日本列島制覇</a>
+            <a class="btn conquest crackle" href="07japan/07east-japan.html">東日本縦断</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ゲーム画面（将来用） ===== -->
+    <section id="screen-game" class="screen" hidden></section>
 
   </main>
 
+  <!-- フッター（右下・小さく・下線なし・少し下に離す） -->
   <footer class="site-footer" aria-label="フッター">
-    <a class="footer-link" href="about.html">利用規約・製作者</a>
+    <a class="footer-link" href="about.html" aria-label="利用規約・製作者について">利用規約・製作者</a>
   </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
