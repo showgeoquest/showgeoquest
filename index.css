@@ -1,276 +1,202 @@
 :root{
-  /* 爽やかブルー寄せ（ドジャースブルー系） */
-  --bg1:#eaf4ff;
-  --bg2:#f8fcff;
+  --bg1:#0b2a6a;          /* ドジャースブルー寄せ */
+  --bg2:#0f3b8f;
+  --panel: rgba(255,255,255,.08);
+  --border: rgba(170,210,255,.28);
+  --text: #f4f8ff;
+  --muted: rgba(244,248,255,.78);
 
-  --panel: rgba(255,255,255,.74);
-  --border: rgba(40,90,170,.18);
-
-  --text:#0f1f26;
-  --muted: rgba(15,31,38,.72);
-
-  --btnA: rgba(25, 90, 190, .58);
-  --btnB: rgba(70, 165, 255, .26);
-  --btnStroke: rgba(35, 120, 255, .28);
-
-  --shadow: 0 22px 70px rgba(0,0,0,.12);
+  --btn: rgba(30, 95, 230, .40);     /* 透過UP */
+  --btn2: rgba(120, 200, 255, .22);  /* 透過UP */
+  --btnPrimary: rgba(80, 180, 255, .55);
+  --btnPrimary2: rgba(200, 245, 255, .18);
 }
 
-*{ box-sizing:border-box; }
-
-html,body{ height:100%; }
-body{
-  margin:0;
-  min-height:100vh;
-  display:grid;
-  place-items:center;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+.screen-title{
+  min-height: 100vh;
+  padding: 22px 16px 54px;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(1200px 680px at 50% 8%, rgba(255,255,255,.10), transparent 60%),
+    radial-gradient(900px 520px at 50% 45%, rgba(170,220,255,.14), transparent 62%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
   color: var(--text);
-  background:
-    radial-gradient(1200px 600px at 50% 10%, rgba(70,140,255,.18), transparent 60%),
-    radial-gradient(900px 520px at 60% 52%, rgba(30,120,255,.12), transparent 62%),
-    linear-gradient(180deg,var(--bg1) 0%, var(--bg2) 70%, #fff 100%);
 }
 
-/* 枠（アプリっぽく） */
-.frame{
-  width: min(980px, 94vw);
-  padding: 22px 18px;
-  border-radius: 30px;
-  background: rgba(255,255,255,.55);
-  border: 1px solid rgba(255,255,255,.55);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(10px);
-  position: relative;
-  overflow: hidden;
-}
-
-/* スマホでは“枠に閉じ込め感”を減らす */
-@media (max-width: 700px){
-  body{ place-items: stretch; }
-  .frame{
-    width: 100vw;
-    min-height: 100vh;
-    border-radius: 0;
-    padding: 18px 14px 56px;
-  }
-}
-
-/* ===== 背景の日本列島SVG ===== */
-.screen{ width:100%; position: relative; }
 .title-map{
-  position:absolute;
+  position: fixed;
   inset: 0;
-  pointer-events:none;
-  opacity: .28; /* ← 背景地図を“はっきり”させる */
-  filter: drop-shadow(0 0 10px rgba(50,120,255,.22));
-}
-.title-map .map-svg{
-  width: 125%;
-  height: 125%;
-  position:absolute;
-  left: 55%;
-  top: 52%;
-  transform: translate(-50%, -50%);
-  object-fit: contain;
-  pointer-events:none;
+  pointer-events: none;
+  opacity: .28; /* ← 日本地図を「はっきり」 */
+  filter: drop-shadow(0 0 18px rgba(170,230,255,.25));
 }
 
-/* うっすら光 */
-.screen::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background:
-    radial-gradient(700px 360px at 50% 14%, rgba(255,255,255,.55), transparent 60%),
-    linear-gradient(135deg, rgba(255,255,255,.35), transparent 36%, rgba(255,255,255,.22));
-  mix-blend-mode: screen;
-  opacity:.35;
+.title-map .map-svg{
+  width: 120%;
+  height: 120%;
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  transform: translate(-50%,-50%);
+  object-fit: contain;
+  pointer-events: none;
 }
 
 .hero{
   text-align:center;
-  padding: 18px 6px 10px;
   position: relative;
   z-index: 1;
+  padding: 10px 6px 12px;
 }
 
 .logo{
   display:inline-block;
-  line-height: 1.02;
+  line-height: 1.03;
   font-weight: 900;
-  letter-spacing: .9px;
+  letter-spacing: .6px;
   text-transform: uppercase;
-  filter: drop-shadow(0 6px 18px rgba(30,90,160,.22));
-  margin-bottom: 10px;
+  filter: drop-shadow(0 0 18px rgba(170,230,255,.35));
 }
 
 .logo-line{
-  font-size: 64px;
-  color: rgba(15,70,140,.90);
+  font-size: 56px;
   text-shadow:
-    0 2px 0 rgba(255,255,255,.45),
-    0 10px 22px rgba(0,0,0,.10);
-}
-
-/* フォントの“ダサさ”を減らす：間隔と太さを調整 */
-.logo-boltline .quest{
-  letter-spacing: .12em;
+    0 0 8px rgba(255,255,255,.38),
+    0 0 24px rgba(120,200,255,.35);
 }
 
 @media (max-width: 700px){
-  .logo-line{ font-size: 44px; }
+  .logo-line{ font-size: 38px; }
 }
 
 .bolt{
-  font-size: .9em;
+  display:inline-block;
   margin: 0 .18em;
   text-shadow:
-    0 0 10px rgba(255,210,80,.55),
-    0 0 22px rgba(60,150,255,.35);
+    0 0 10px rgba(255,255,255,.35),
+    0 0 24px rgba(120,200,255,.45);
+  animation: boltGlow 3.2s ease-in-out infinite;
+}
+@keyframes boltGlow{
+  0%,70%{ filter: brightness(1); }
+  72%{ filter: brightness(1.35); }
+  75%{ filter: brightness(1.05); }
+  100%{ filter: brightness(1); }
 }
 
 .jp-title{
   font-size: 18px;
   color: var(--muted);
-  margin-top: 4px;
-  font-weight: 800;
+  margin-top: 6px;
 }
-
 .tagline{
   font-size: 16px;
-  color: rgba(15,31,38,.62);
+  color: rgba(244,248,255,.72);
   margin-top: 8px;
-  font-weight: 700;
 }
 
-.menu{ margin-top: 18px; position: relative; z-index: 1; }
+.menu{
+  width: min(920px, 94vw);
+  position: relative;
+  z-index: 1;
+  margin-top: 18px;
+}
 
 .grid-2{
   display:grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px;
+  gap: 14px;
 }
-@media (max-width: 700px){
-  .grid-2{ grid-template-columns: 1fr; gap: 14px; }
-}
-
 .grid-3{
   display:grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 14px;
+  gap: 12px;
 }
-@media (max-width: 700px){
-  .grid-3{ grid-template-columns: 1fr; gap: 12px; }
-}
-
-.divider{ height: 18px; }
-
-.conquest-wrap{
-  margin-top: 6px;
-}
-.conquest-title{
-  font-weight: 900;
-  letter-spacing: .06em;
-  color: rgba(15,31,38,.70);
-  margin: 0 0 10px 2px;
+@media (max-width: 720px){
+  .grid-3{ grid-template-columns: 1fr; }
 }
 
-/* ボタン */
+.divider{ height: 16px; }
+
 .btn{
-  border: 1px solid var(--btnStroke);
-  color: #fff;
+  border: 1px solid var(--border);
+  color: var(--text);
   background:
-    linear-gradient(180deg, rgba(255,255,255,.18), transparent 40%),
-    linear-gradient(135deg, var(--btnA), var(--btnB));
-  border-radius: 22px;
-  padding: 20px 16px;
+    linear-gradient(180deg, rgba(255,255,255,.10), transparent 42%),
+    linear-gradient(135deg, var(--btn), var(--btn2));
+  border-radius: 18px;
+  padding: 18px 16px;
   font-weight: 900;
-  letter-spacing: .04em;
+  letter-spacing: .3px;
   cursor: pointer;
   box-shadow:
-    0 12px 26px rgba(0,0,0,.14),
-    inset 0 1px 0 rgba(255,255,255,.22);
-  transition: transform .08s ease, filter .12s ease, opacity .15s ease;
-  opacity: .92; /* ← 透過を少し入れる */
-}
-
-/* a.btn をボタン化 */
-a.btn{
+    0 10px 22px rgba(0,0,0,.25),
+    inset 0 1px 0 rgba(255,255,255,.12);
+  transition: transform .10s ease, filter .12s ease;
+  text-decoration: none;
   display:flex;
   align-items:center;
   justify-content:center;
-  text-decoration:none;
 }
 
-.btn:hover{
-  filter: brightness(1.06);
-  opacity: .98;
-}
-.btn:active{ transform: translateY(2px); } /* 押したら沈む */
-
-.btn.primary{
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.22), transparent 45%),
-    linear-gradient(135deg, rgba(10,90,210,.92), rgba(90,200,255,.30));
-  border-color: rgba(35,120,255,.42);
-  box-shadow:
-    0 14px 32px rgba(0,0,0,.16),
-    inset 0 1px 0 rgba(255,255,255,.26);
-}
+.btn:hover{ filter: brightness(1.08); }
+.btn:active{ transform: translateY(2px); } /* 押すと沈む */
 
 .region{
-  min-height: 96px;
-  font-size: 26px; /* ← PC側の文字を大きく */
-  text-shadow: 0 0 12px rgba(0,0,0,.18);
+  min-height: 88px;
+  font-size: 24px; /* ← PCで文字小さい問題を解決 */
+  text-shadow: 0 0 10px rgba(0,0,0,.30);
 }
-@media (max-width: 700px){
-  .region{ min-height: 72px; font-size: 22px; }
+
+.conquest-wrap{
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  backdrop-filter: blur(6px);
+}
+.conquest-title{
+  font-weight: 900;
+  opacity: .9;
+  margin: 0 0 10px 0;
 }
 
 .conquest{
-  min-height: 72px;
+  min-height: 70px;
   font-size: 18px;
-  text-shadow: 0 0 12px rgba(0,0,0,.18);
-}
-@media (max-width: 700px){
-  .conquest{ min-height: 62px; font-size: 16px; }
 }
 
-/* ===== きらっと演出（JSが .spark を作る） ===== */
-.spark{
-  position: fixed;
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.95);
-  pointer-events:none;
-  filter: drop-shadow(0 0 10px rgba(90,180,255,.55));
-  animation: sparkPop .55s ease-out forwards;
-}
-@keyframes sparkPop{
-  0%{ transform: translate(-50%,-50%) scale(.6); opacity: 1; }
-  80%{ opacity: .95; }
-  100%{ transform: translate(-50%,-50%) scale(3.2); opacity: 0; }
+.btn.primary{
+  background:
+    linear-gradient(180deg, var(--btnPrimary2), transparent 45%),
+    linear-gradient(135deg, var(--btnPrimary), rgba(120,220,255,.22));
+  border-color: rgba(210,245,255,.38);
+  box-shadow:
+    0 12px 26px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.14);
 }
 
-/* フッター：右下に小さく（少し下へ離す） */
-.site-footer{
-  position: fixed;
-  right: 14px;
-  bottom: 8px;
-  z-index: 9999;
-  opacity: .72;
-  font-size: 12px;
+/* たまにキラッ（常時ほんのり＋たまに） */
+.crackle{
+  position: relative;
+  overflow: hidden;
 }
-@media (max-width: 700px){
-  .site-footer{ bottom: 6px; right: 10px; }
+.crackle::after{
+  content:"";
+  position:absolute;
+  top:-40%;
+  left:-60%;
+  width: 40%;
+  height: 180%;
+  transform: rotate(20deg);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.30), transparent);
+  opacity: .0;
+  animation: shine 5.2s ease-in-out infinite;
 }
-
-.site-footer .footer-link{
-  text-decoration: none;
-  color: rgba(15,31,38,.75);
-  font-weight: 800;
+@keyframes shine{
+  0%,68%{ opacity:0; transform: translateX(0) rotate(20deg); }
+  72%{ opacity:.75; }
+  78%{ opacity:0; transform: translateX(520%) rotate(20deg); }
+  100%{ opacity:0; }
 }
-.site-footer .footer-link:hover{ opacity: 1; }

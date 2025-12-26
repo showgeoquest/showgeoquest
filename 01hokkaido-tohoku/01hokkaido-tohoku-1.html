@@ -4,62 +4,52 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>知識の泉｜北海道・東北</title>
+
 <style>
   :root{
-    --sea1:#e7f3f7; --sea2:#f2fbff;
-    --panel: rgba(255,255,255,.78);
-    --border: rgba(35,120,255,.18);
+    --sea1:#cfe9ff;       /* 背景：明るい海（ドジャース寄せ） */
+    --sea2:#eaf6ff;
+    --panel: rgba(255,255,255,.72);
+    --border: rgba(120,170,210,.35);
 
-    --landOther:#eef6ea;
-    --landTarget:#dfeedd;   /* 対象7県：濃く */
-    --stroke:#6f8f6f;
+    --landBase:#e7f1e7;   /* 非対象の陸（薄め） */
+    --landTarget:#cfe8cf; /* 対象の陸（少し濃い薄緑） */
+    --stroke:#5f7f5f;
 
-    --text:#0f1f26;
-    --blue:#1f63d6;
-    --red:#d32020;
+    --muted:#2b5162;
+    --nameBlue:#1e6fff;   /* 県名（青） */
+    --capRed:#e23a3a;     /* 県庁所在地（赤） */
   }
 
-  *{ box-sizing:border-box; }
+  *{ box-sizing: border-box; }
+
   body{
     margin:0;
     font-family: system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
-    color:var(--text);
-    background: linear-gradient(180deg,var(--sea1) 0%,var(--sea2) 70%, #fff 100%);
+    background: linear-gradient(180deg,var(--sea1) 0%,var(--sea2) 60%, #fff 100%);
   }
 
-  /* 上部バー */
   header{
     padding:12px 14px;
-    font-weight:900;
+    font-weight: 900;
+    letter-spacing:.02em;
     background: var(--panel);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border);
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-  }
-  header a{
-    text-decoration:none;
-    font-weight:900;
-    color: rgba(15,31,38,.86);
-    padding:10px 12px;
-    border-radius: 999px;
-    border: 1px solid rgba(35,120,255,.18);
-    background: rgba(255,255,255,.65);
+    backdrop-filter: blur(6px);
+    border-bottom:1px solid var(--border);
   }
 
-  main{ padding:12px; }
+  main{ padding: 12px; }
 
   .stage{
     position: relative;
-    height: 76vh;
-    min-height: 460px;
+    width: 100%;
+    height: min(72vh, 620px);
+    min-height: 440px;
     border-radius: 18px;
-    overflow:hidden;
+    overflow: hidden;
     border: 1px solid var(--border);
-    background: rgba(255,255,255,.55);
-    backdrop-filter: blur(8px);
+    background: rgba(255,255,255,.35);
+    backdrop-filter: blur(6px);
   }
 
   #svgHost{
@@ -72,269 +62,252 @@
     display:block;
   }
 
-  /* 地図：基本（他県） */
+  /* ===== SVG 見た目 ===== */
   .geolonia-svg-map .prefecture{
-    fill: var(--landOther) !important;
+    fill: var(--landBase) !important;
     stroke: var(--stroke) !important;
     stroke-width: 1 !important;
+    pointer-events: none;            /* ← まず全部触れない */
+    opacity: .40;                    /* ← 非対象は薄く */
   }
-
-  /* 対象7県だけ濃く */
   .geolonia-svg-map .prefecture.is-target{
     fill: var(--landTarget) !important;
+    opacity: 1;
+    pointer-events: auto;            /* ← 対象だけ触れる */
   }
-
-  /* 触れるのは対象だけ */
-  .geolonia-svg-map .prefecture.is-other{
-    pointer-events: none !important;
-  }
-
-  /* hover色（対象だけ） */
   .geolonia-svg-map .prefecture.is-target:hover{
     filter: brightness(0.98);
-    cursor:pointer;
+    cursor: pointer;
   }
 
-  /* 左上固定ポップ */
-  .fixed-pop{
+  /* 左上固定パネル（県名＋県庁所在地） */
+  .hud{
     position:absolute;
-    left:12px;
-    top:12px;
-    z-index: 20;
-    background: rgba(255,255,255,.88);
-    border: 1px solid rgba(35,120,255,.22);
+    left: 12px;
+    top: 12px;
+    z-index: 5;
+    background: rgba(255,255,255,.82);
+    border: 1px solid var(--border);
     border-radius: 14px;
     padding: 10px 12px;
     min-width: 210px;
-    box-shadow: 0 14px 26px rgba(0,0,0,.10);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(6px);
   }
-  .pref-big{
-    margin:0;
-    font-size: 22px;
+  .hud .pref{
     font-weight: 1000;
-    color: var(--blue);
-    letter-spacing: .04em;
-    line-height: 1.15;
+    font-size: 20px;
+    color: var(--nameBlue);
+    line-height: 1.1;
   }
-  .cap-red{
-    margin-top:6px;
-    font-size: 16px;
-    font-weight: 950;
-    color: var(--red);
-    letter-spacing: .02em;
+  .hud .cap{
+    margin-top: 6px;
+    font-weight: 1000;
+    font-size: 18px;
+    color: var(--capRed);
+    line-height: 1.1;
+  }
+  .hud .hint{
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--muted);
+    opacity: .85;
   }
 
-  /* 触った場所に“県名だけドン” */
-  .tap-name{
+  /* タップ位置に「県名ドン（青）」 */
+  .tapLabel{
     position:absolute;
-    z-index: 25;
+    z-index: 6;
+    transform: translate(-50%, -120%);
     padding: 6px 10px;
-    border-radius: 12px;
-    background: rgba(255,255,255,.90);
-    border: 1px solid rgba(35,120,255,.20);
-    box-shadow: 0 12px 20px rgba(0,0,0,.10);
-    backdrop-filter: blur(10px);
-    transform: translate(-50%, calc(-100% - 10px));
-    pointer-events:none;
-    opacity: 0;
-    transition: opacity .12s ease;
-  }
-  .tap-name.show{ opacity: 1; }
-  .tap-name .t{
-    font-size: 22px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.92);
+    border: 1px solid var(--border);
+    font-size: 18px;
     font-weight: 1000;
-    color: var(--blue);
-    letter-spacing: .04em;
+    color: var(--nameBlue);
     white-space: nowrap;
+    pointer-events: none;
+    backdrop-filter: blur(6px);
   }
 
-  /* 小さめ端末調整 */
-  @media (max-width: 700px){
-    main{ padding:10px; }
-    .stage{ height: 78vh; min-height: 520px; }
-    .pref-big{ font-size: 20px; }
-    .cap-red{ font-size: 15px; }
-    .tap-name .t{ font-size: 20px; }
+  /* エラーパネル */
+  .errorBox{
+    position:absolute;
+    inset: 0;
+    display:grid;
+    place-items:center;
+    padding: 18px;
+    text-align:center;
+    color:#15313e;
+  }
+  .errorBox .card{
+    background: rgba(255,255,255,.85);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 14px;
+    max-width: 420px;
+  }
+  .errorBox b{ display:block; margin-bottom: 8px; }
+  .errorBox code{
+    background: rgba(0,0,0,.06);
+    padding: 2px 6px;
+    border-radius: 8px;
   }
 </style>
 </head>
 
 <body>
-<header>
-  <div>知識の泉｜北海道・東北</div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
-    <a href="./01hokkaido-tohoku.html">北海道・東北トップ</a>
-    <a href="../index.html">トップ</a>
-  </div>
-</header>
+<header>知識の泉｜北海道・東北</header>
 
 <main>
-  <section class="stage" aria-label="地図">
-    <!-- 左上固定ポップ -->
-    <div class="fixed-pop" role="status" aria-live="polite">
-      <p class="pref-big" id="prefBlue">県をタップ</p>
-      <div class="cap-red" id="capRed">—</div>
-    </div>
-
-    <!-- 触った場所に出る県名 -->
-    <div class="tap-name" id="tapName" aria-hidden="true">
-      <div class="t" id="tapText">—</div>
+  <div class="stage" id="stage">
+    <div class="hud" id="hud">
+      <div class="pref" id="hudPref">県をタップ</div>
+      <div class="cap" id="hudCap">—</div>
+      <div class="hint">※ 対象7県だけ反応します</div>
     </div>
 
     <div id="svgHost"></div>
-  </section>
+  </div>
 </main>
 
 <script>
-/* ===== 知識の泉（北海道・東北） =====
-   - maps/japan.svg を読み込む
-   - viewBox 切り取り（福島見切れ対策）
-   - hoverツールチップ全殺し（title/desc/title削除）
-   - 対象7県のみクリック可＋濃く表示
-   - 左上：県名（青）＋県庁所在地（赤）
-   - 触った場所：県名だけ（青）
-*/
+  // ===== 設定（ここだけで他地方に使い回せる） =====
+  const SVG_PATH = "../maps/japan.svg"; // ★重要：このページは 01hokkaido-tohoku/ 配下なので ../maps/
+  const VIEWBOX = "540 -20 520 680";    // 福島の見切れ対策で少し広め（必要なら後で微調整）
 
-const VIEWBOX = "540 -20 510 700"; // ← 福島が見切れにくいよう拡張（多少他県が写っても触れない）
+  // 対象7県（class名で指定）
+  const TARGET_CLASSES = [
+    "hokkaido","aomori","iwate","miyagi","akita","yamagata","fukushima"
+  ];
 
-const CAPITALS = {
-  "北海道":"札幌市",
-  "青森県":"青森市",
-  "岩手県":"盛岡市",
-  "宮城県":"仙台市",
-  "秋田県":"秋田市",
-  "山形県":"山形市",
-  "福島県":"福島市",
-};
+  // 県庁所在地（今はこれだけ確実に）
+  const CAPITALS = {
+    "北海道":"札幌市",
+    "青森":"青森市",
+    "岩手":"盛岡市",
+    "宮城":"仙台市",
+    "秋田":"秋田市",
+    "山形":"山形市",
+    "福島":"福島市",
+  };
 
-/* 対象7県（Geoloniaの class に合わせる） */
-const TARGET_CLASSES = [
-  "hokkaido",
-  "aomori",
-  "iwate",
-  "miyagi",
-  "akita",
-  "yamagata",
-  "fukushima",
-];
-
-/* class -> 表示名（必ず都道府県を付ける） */
-const CLASS_TO_NAME = {
-  hokkaido: "北海道",
-  aomori: "青森県",
-  iwate: "岩手県",
-  miyagi: "宮城県",
-  akita: "秋田県",
-  yamagata: "山形県",
-  fukushima: "福島県",
-};
-
-function setFixedInfo(pref){
-  const blue = document.getElementById("prefBlue");
-  const red  = document.getElementById("capRed");
-  if(!pref){
-    blue.textContent = "県をタップ";
-    red.textContent = "—";
-    return;
+  function normalizePrefName(titleText){
+    const jp = (titleText || "").split("/")[0].trim();
+    return jp.replace(/(都|道|府|県)$/g,"");
   }
-  blue.textContent = pref;
-  red.textContent = CAPITALS[pref] ? `県庁所在地：${CAPITALS[pref]}` : "—";
-}
 
-function showTapName(pref, clientX, clientY){
-  const box = document.getElementById("tapName");
-  const text = document.getElementById("tapText");
-  text.textContent = pref;
+  function setHud(prefJp){
+    const hudPref = document.getElementById("hudPref");
+    const hudCap  = document.getElementById("hudCap");
 
-  // ステージ内座標に変換
-  const stage = document.querySelector(".stage");
-  const r = stage.getBoundingClientRect();
-  let x = clientX - r.left;
-  let y = clientY - r.top;
-
-  // 端っこ見切れ防止（適当な余白）
-  const pad = 14;
-  x = Math.max(pad, Math.min(r.width - pad, x));
-  y = Math.max(pad, Math.min(r.height - pad, y));
-
-  box.style.left = x + "px";
-  box.style.top = y + "px";
-  box.classList.add("show");
-  clearTimeout(showTapName._t);
-  showTapName._t = setTimeout(()=> box.classList.remove("show"), 900);
-}
-
-function killAllTitles(svgRoot){
-  // “hoverで出る文字”の原因：<title> や <desc>
-  // これを全削除
-  svgRoot.querySelectorAll("title, desc").forEach(n => n.remove());
-}
-
-async function loadJapanSVG(){
-  const res = await fetch("../maps/japan.svg", { cache: "no-store" });
-  if(!res.ok) throw new Error("SVG読み込み失敗");
-  const txt = await res.text();
-
-  const host = document.getElementById("svgHost");
-  host.innerHTML = txt;
-
-  const svg = host.querySelector("svg");
-  if(!svg) throw new Error("SVGが見つからない");
-
-  // 表示範囲（切り取り）
-  svg.setAttribute("viewBox", VIEWBOX);
-  svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-  svg.classList.add("geolonia-svg-map");
-
-  // hoverツールチップ全殺し
-  killAllTitles(svg);
-
-  // 全県の <g.prefecture> を取得
-  const allPref = svg.querySelectorAll(".prefecture");
-
-  // まず全部を other 扱い（触れない）
-  allPref.forEach(g=>{
-    g.classList.add("is-other");
-  });
-
-  // 対象7県だけ target にして触れるように
-  TARGET_CLASSES.forEach(cls=>{
-    const g = svg.querySelector(`.${cls}.prefecture`);
-    if(g){
-      g.classList.remove("is-other");
-      g.classList.add("is-target");
+    if(!prefJp){
+      hudPref.textContent = "県をタップ";
+      hudCap.textContent  = "—";
+      return;
     }
-  });
+    // 表示は「都道府県」を明示（県/道）
+    const suffix = (prefJp === "北海道") ? "道" : "県";
+    hudPref.textContent = prefJp + suffix;
+    hudCap.textContent  = (CAPITALS[prefJp] || "—");
+  }
 
-  // クリックイベント（対象のみ）
-  const targets = svg.querySelectorAll(".prefecture.is-target");
-  targets.forEach(g=>{
-    g.style.cursor = "pointer";
-    g.addEventListener("click", (ev)=>{
-      // class から県名を特定
-      const hit = TARGET_CLASSES.find(c => g.classList.contains(c));
-      const pref = CLASS_TO_NAME[hit] || "—";
-      setFixedInfo(pref);
+  function showTapLabel(stageEl, x, y, prefJp){
+    const old = stageEl.querySelector(".tapLabel");
+    if(old) old.remove();
 
-      // 触った場所に県名だけ“ドン”
-      showTapName(pref, ev.clientX, ev.clientY);
-    }, { passive: true });
-  });
+    const label = document.createElement("div");
+    label.className = "tapLabel";
+    label.textContent = (prefJp === "北海道") ? "北海道" : (prefJp + "県");
 
-  // 初期
-  setFixedInfo("");
-}
+    label.style.left = x + "px";
+    label.style.top  = y + "px";
+    stageEl.appendChild(label);
 
-loadJapanSVG().catch(err=>{
-  // 失敗時：最低限メッセージ
-  setFixedInfo("");
-  const blue = document.getElementById("prefBlue");
-  const red  = document.getElementById("capRed");
-  blue.textContent = "地図が読み込めません";
-  red.textContent = "maps/japan.svg とパスを確認してね";
-  console.error(err);
-});
+    // 1.4秒で消える
+    setTimeout(()=>{ label.remove(); }, 1400);
+  }
+
+  function killAllTitles(svgRoot){
+    // ブラウザの hover ツールチップは <title> が原因なので、全部消す
+    svgRoot.querySelectorAll("title").forEach(t => t.remove());
+    svgRoot.querySelectorAll("desc").forEach(d => d.remove());
+  }
+
+  function markTargets(svgRoot){
+    // 県ごとの <g class="xxx prefecture"> を対象だけ is-target にする
+    const all = svgRoot.querySelectorAll(".prefecture");
+    all.forEach(g=>{
+      const classList = Array.from(g.classList);
+      const hit = TARGET_CLASSES.some(c => classList.includes(c));
+      if(hit) g.classList.add("is-target");
+    });
+  }
+
+  async function loadJapanSvg(){
+    const host = document.getElementById("svgHost");
+    const stage = document.getElementById("stage");
+
+    try{
+      const res = await fetch(SVG_PATH, { cache: "no-cache" });
+      if(!res.ok) throw new Error("HTTP " + res.status);
+
+      const text = await res.text();
+      host.innerHTML = text;
+
+      const svg = host.querySelector("svg");
+      if(!svg) throw new Error("SVG not found");
+
+      // viewBox を北海道・東北に固定
+      svg.setAttribute("viewBox", VIEWBOX);
+      svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+
+      // ツールチップ全殺し
+      killAllTitles(svg);
+
+      // 対象だけクリック可能に
+      markTargets(svg);
+
+      // クリック処理
+      const targets = svg.querySelectorAll(".prefecture.is-target");
+      targets.forEach(g=>{
+        g.addEventListener("click", (ev)=>{
+          // class名から県名を推定（titleを消してるので）
+          // 県名は TARGET_CLASSES と data-code だけじゃ特定できないので、
+          // ここは「元SVGに残ってる情報」を使う：data-code（1..7）
+          const code = g.getAttribute("data-code");
+          const codeMap = {
+            "1":"北海道","2":"青森","3":"岩手","4":"宮城","5":"秋田","6":"山形","7":"福島"
+          };
+          const prefJp = codeMap[code] || "";
+
+          setHud(prefJp);
+
+          const rect = stage.getBoundingClientRect();
+          const x = ev.clientX - rect.left;
+          const y = ev.clientY - rect.top;
+          showTapLabel(stage, x, y, prefJp);
+        }, { passive: true });
+      });
+
+      // 初期表示
+      setHud("");
+
+    }catch(err){
+      host.innerHTML = `
+        <div class="errorBox">
+          <div class="card">
+            <b>地図が読み込めません</b>
+            <div>読み込み先：<code>${SVG_PATH}</code></div>
+            <div style="margin-top:8px;opacity:.85;">（エラー：${String(err.message || err)}）</div>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  // 起動
+  loadJapanSvg();
 </script>
 </body>
 </html>

@@ -1,91 +1,23 @@
-:root{
-  --text:#0f1f26;
-  --muted: rgba(15,31,38,.72);
-  --sea1:#e7f3f7;
-  --sea2:#f2fbff;
-  --panel: rgba(255,255,255,.78);
-  --border: rgba(40,90,170,.18);
-}
-
-*{ box-sizing:border-box; }
+*{ box-sizing: border-box; }
 
 html,body{ height:100%; }
+
 body{
   margin:0;
-  font-family: system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
-  color:var(--text);
-  background: linear-gradient(180deg,var(--sea1) 0%,var(--sea2) 70%, #fff 100%);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
-/* 共通ヘッダー（地方トップなどで使う想定） */
-.site-header{
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  padding: 12px 14px;
-  background: var(--panel);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border);
-  font-weight: 900;
-  letter-spacing: .02em;
+/* 共通：フッター右下 */
+.site-footer{
+  position: fixed;
+  right: 14px;
+  bottom: 8px; /* ← 少し下に離した */
+  z-index: 9999;
+  opacity: .85;
+  font-size: 12px;
 }
-
-.container{
-  width: min(980px, 94vw);
-  margin: 0 auto;
-  padding: 16px 0 40px;
+.site-footer .footer-link{
+  text-decoration: none;
+  color: rgba(255,255,255,.85);
 }
-
-.card{
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 14px;
-  backdrop-filter: blur(10px);
-}
-
-.grid-2{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-@media (max-width: 700px){
-  .grid-2{ grid-template-columns:1fr; }
-}
-
-.btn{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-decoration:none;
-  padding: 16px 14px;
-  border-radius: 18px;
-  border: 1px solid rgba(35,120,255,.22);
-  background: linear-gradient(135deg, rgba(35,120,255,.32), rgba(120,200,255,.18));
-  color: rgba(15,31,38,.92);
-  font-weight: 900;
-  letter-spacing: .04em;
-  box-shadow: 0 12px 22px rgba(0,0,0,.08), inset 0 1px 0 rgba(255,255,255,.35);
-  transition: transform .08s ease, filter .12s ease;
-}
-.btn:hover{ filter: brightness(1.03); }
-.btn:active{ transform: translateY(2px); }
-
-.pills{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  justify-content:flex-end;
-}
-.pill{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding: 10px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(35,120,255,.18);
-  background: rgba(255,255,255,.65);
-  text-decoration:none;
-  color: rgba(15,31,38,.86);
-  font-weight: 900;
-}
+.site-footer .footer-link:hover{ opacity: 1; }
