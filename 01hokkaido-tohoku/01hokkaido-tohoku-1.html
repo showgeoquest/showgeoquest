@@ -21,7 +21,7 @@
     --landHover:#bfe2ff;     /* 触れたとき */
     --stroke:#6f8f6f;
 
-    --prefBlue:#1466ff;      /* 県名（青） */
+    --prefBlue:#1466ff;      /* 都道府県名（青） */
   }
 
   *{ box-sizing:border-box; }
@@ -126,7 +126,12 @@
     right: 12px;
     bottom: 12px;
     z-index: 6;
-    width: min(300px, 80vw);
+
+    /* ★小さめ固定：福島付近を覆っても視界/操作を邪魔しにくい */
+    width: min(260px, 46vw);
+    max-height: 28vh;
+    overflow: hidden;
+
     background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 16px;
@@ -136,6 +141,16 @@
 
     /* ★重要：パネルが地図のクリックを奪わない */
     pointer-events: none;
+  }
+
+  @media (max-width: 900px){
+    .infoPanel{
+      width: min(240px, 72vw);
+      max-height: 26vh;
+      right: 10px;
+      bottom: 10px;
+      padding: 9px 11px;
+    }
   }
 
   .pref{
@@ -184,8 +199,8 @@
 
 <script>
 /* ===== 知識の泉（北海道・東北）確定版 =====
-  - 右下パネルが邪魔で福島が触れない → pointer-events:none + 小さく
-  - 札幌が出ない → 北海道の「道」を消していたのが原因なので修正
+  - 右下パネルが邪魔 → pointer-events:none + 小さめ
+  - 北海道が「北海道道」などにならないように安全化
   - hoverツールチップ全殺し（title/desc削除）
   - 対象7県だけ濃く＆クリック可能（他は誤タップ防止）
 */
@@ -213,7 +228,7 @@ const FURI = {
 };
 
 /* SVG title: "宮城 / Miyagi" → "宮城"
-   ★「北海道」は「道」を消さない（北海になって札幌が出ない原因） */
+   ★「北海道」は“道”を消さない＆追加もしない（事故防止） */
 function normalizeJP(titleText){
   const jp = (titleText || "").split("/")[0].trim();
   // 都・府・県だけ落とす（道は落とさない）
@@ -222,7 +237,8 @@ function normalizeJP(titleText){
 
 function toPrefFullName(jpCore){
   if(!jpCore) return "";
-  if(jpCore === "北海道") return "北海道";
+  // 北海道は特別扱い（「北海道道」にならないよう完全固定）
+  if(jpCore.includes("北海道")) return "北海道";
   return jpCore.endsWith("県") ? jpCore : (jpCore + "県");
 }
 
@@ -266,8 +282,8 @@ function setInfo(prefFull){
     return;
   }
 
-  prefLine.innerHTML = rubyHTML(prefFull, d.pref);                  // 青
-  capLine.innerHTML  = rubyHTML(d.capName, d.cap);                  // 黒（説明文なし）
+  prefLine.innerHTML = rubyHTML(prefFull, d.pref);   // 青
+  capLine.innerHTML  = rubyHTML(d.capName, d.cap);   // 黒（説明文なし）
 }
 
 async function loadSVG(){
@@ -292,8 +308,8 @@ async function loadSVG(){
   const svg = host.querySelector("svg");
   if(!svg) return null;
 
-  /* 福島見切れ対策：余白を少し追加（必要ならまた詰める） */
-  svg.setAttribute("viewBox", "540 -20 520 670");
+  /* 福島見切れ対策：下方向へ少し余白追加（必要ならまた詰める） */
+  svg.setAttribute("viewBox", "540 -30 520 720");
   svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
   svg.classList.add("geolonia-svg-map");
 
