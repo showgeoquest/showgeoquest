@@ -1,23 +1,106 @@
-*{ box-sizing: border-box; }
+:root{
+  --bg1:#071226;
+  --bg2:#0b1c3a;
+
+  --panel: rgba(18, 28, 52, .62);
+  --border: rgba(140, 190, 255, .22);
+
+  --text:#f2f6ff;
+  --muted: rgba(242,246,255,.74);
+
+  --btnA: rgba(20,55,140,.58);
+  --btnB: rgba(35,110,230,.18);
+}
+
+*{ box-sizing:border-box; }
 
 html,body{ height:100%; }
 
 body{
   margin:0;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  min-height:100vh;
+  background:
+    radial-gradient(1100px 560px at 50% 12%, rgba(60,140,255,.22), transparent 62%),
+    radial-gradient(900px 520px at 50% 75%, rgba(70,190,255,.12), transparent 70%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
+  color: var(--text);
+  font-family: system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 
-/* 共通：フッター右下 */
-.site-footer{
-  position: fixed;
-  right: 14px;
-  bottom: 8px; /* ← 少し下に離した */
-  z-index: 9999;
-  opacity: .85;
-  font-size: 12px;
+.page{
+  width:min(980px, 94vw);
+  margin: 0 auto;
+  padding: 18px 14px 28px;
 }
-.site-footer .footer-link{
-  text-decoration: none;
-  color: rgba(255,255,255,.85);
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap: 12px;
+  margin-bottom: 12px;
 }
-.site-footer .footer-link:hover{ opacity: 1; }
+
+.header .title{
+  font-weight: 900;
+  letter-spacing: .4px;
+  font-size: 18px;
+}
+
+.header a{
+  color: rgba(242,246,255,.86);
+  text-decoration:none;
+  font-weight: 800;
+  opacity:.85;
+}
+.header a:hover{ opacity: 1; }
+
+.card{
+  background: var(--panel);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 18px;
+  box-shadow: 0 16px 44px rgba(0,0,0,.45);
+  overflow:hidden;
+}
+
+.card-inner{ padding: 16px; }
+
+.grid-2{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 520px){
+  .grid-2{ grid-template-columns: 1fr; }
+}
+
+.btn{
+  border: 1px solid var(--border);
+  color: var(--text);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.05), transparent 45%),
+    linear-gradient(135deg, var(--btnA), var(--btnB));
+  border-radius: 16px;
+  padding: 16px 14px;
+  font-weight: 900;
+  letter-spacing: .2px;
+  cursor:pointer;
+  box-shadow:
+    0 10px 22px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.08);
+  transition: transform .08s ease, filter .12s ease;
+  text-decoration:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height: 72px;
+  opacity:.93;
+}
+.btn:hover{ filter: brightness(1.10); opacity: .98; }
+.btn:active{ transform: translateY(2px); }
+
+.note{
+  color: rgba(242,246,255,.70);
+  font-size: 13px;
+  line-height: 1.6;
+}
