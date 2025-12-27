@@ -1,34 +1,32 @@
 :root{
   color-scheme: dark;
 
-  /* ★全体を明るめ（暗すぎ対策） */
-  --bg: #123066;
+  /* ===== 全体：もう一段“明るいネイビー” ===== */
+  --bg: #14356f;
 
-  /* 透明ガラス感を“弱める”ため、枠線はほぼ見えない程度に */
-  --frameEdge: rgba(255,255,255,.08);
-
+  /* 文字 */
   --text: #f6fbff;
-  --muted: rgba(246,251,255,.80);
+  --muted: rgba(246,251,255,.82);
 
-  /* ボタン用 */
-  --btnA: rgba(40, 125, 255, .74);
-  --btnB: rgba(140, 210, 255, .22);
-  --btnEdge: rgba(220, 245, 255, .32);
+  /* ガラス感を弱める（枠を消す方向） */
+  --frameEdge: rgba(0,0,0,0);
 
-  /* きらっと走る光 */
+  /* ボタン（明るめ） */
+  --btnA: rgba(45, 125, 255, .78);
+  --btnB: rgba(170, 225, 255, .22);
+  --btnEdge: rgba(210, 245, 255, .30);
+
+  /* きらり */
   --shine: rgba(235, 252, 255, .34);
 
   /* ロゴ色（アイコン寄せ） */
-  --gold: #f5c84b;      /* SHOW GEO */
-  --questBlue: #49a6ff; /* QUEST */
-
-  /* 影（縁取り/立体感） */
-  --ink: rgba(0,0,0,.55);
+  --gold: #f5c84b;          /* SHOW GEO */
+  --questBlue: #d9f2ff;     /* QUEST：白っぽい青白 */
+  --questBlueCore: #6bbcff; /* 影の芯 */
 }
 
-/* ===== reset ===== */
-*{ box-sizing: border-box; }
-html, body{ height: 100%; }
+*{ box-sizing:border-box; }
+
 body{
   margin:0;
   min-height:100vh;
@@ -37,40 +35,59 @@ body{
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   color: var(--text);
 
-  /* ★“暗い”の主因は背景なので、光源を強める */
+  /* ★暗さを解消：光源を増やして“背景そのもの”を明るく */
   background:
-    radial-gradient(1400px 820px at 50% 6%,  rgba(160,225,255,.42), transparent 58%),
-    radial-gradient(1100px 700px at 50% 42%, rgba(120,200,255,.26), transparent 62%),
-    radial-gradient(1100px 640px at 50% 88%, rgba(120,200,255,.16), transparent 70%),
-    linear-gradient(180deg, rgba(255,255,255,.06), transparent 24%),
+    radial-gradient(1200px 760px at 50% 6%,  rgba(165,230,255,.44), transparent 60%),
+    radial-gradient(1100px 700px at 50% 40%, rgba(120,200,255,.28), transparent 62%),
+    radial-gradient(1100px 680px at 50% 92%, rgba(120,200,255,.18), transparent 70%),
+    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 28%),
     var(--bg);
 }
 
-/* ===== outer frame ===== */
+/* ===== フレーム（外枠の“ガラス板”を消す） ===== */
 .frame{
   width: min(920px, 94vw);
   padding: 26px 22px;
-  border-radius: 26px;
+  border-radius: 28px;
 
-  /* ★枠が見える原因：border + 黒板背景 + 強い影
-     → border極薄 / 背景を“青い透明” / 影を軽く */
-  border: 1px solid var(--frameEdge);
-  background: rgba(255,255,255,.05);
-  box-shadow: 0 18px 52px rgba(0,0,0,.26);
-  backdrop-filter: blur(8px);
+  /* 枠線を消す */
+  border: none;
+
+  /* 黒板感を消す：青い透明に寄せる */
+  background:
+    radial-gradient(900px 520px at 50% 18%, rgba(190,245,255,.18), transparent 62%),
+    linear-gradient(180deg, rgba(40,105,210,.18), rgba(30,70,160,.10));
+
+  /* 影を軽く（重くしない） */
+  box-shadow: 0 18px 60px rgba(0,0,0,.30);
+  backdrop-filter: blur(6px);
+
   position: relative;
   overflow: hidden;
 }
 
-.screen{ width:100%; position: relative; }
+/* うっすら内側の光（“枠っぽさ”を出さずに立体感だけ） */
+.frame::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(760px 360px at 50% 10%, rgba(255,255,255,.16), transparent 60%),
+    linear-gradient(135deg, rgba(255,255,255,.10), transparent 38%, rgba(255,255,255,.06));
+  opacity:.48;
+  mix-blend-mode: screen;
+}
 
-/* 背景地図 */
+.screen{ width:100%; position:relative; }
+
+/* ===== 背景地図 ===== */
 .title-map{
   position:absolute;
-  inset: 0;
+  inset:0;
   pointer-events:none;
-  opacity: .24;
-  filter: drop-shadow(0 0 14px rgba(170,230,255,.28));
+  opacity:.30;
+  filter: drop-shadow(0 0 18px rgba(190,245,255,.28));
 }
 .title-map .map-svg{
   width: 128%;
@@ -83,43 +100,22 @@ body{
   pointer-events:none;
 }
 
-/* うっすらハイライト */
-.screen::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background:
-    radial-gradient(720px 380px at 50% 14%, rgba(255,255,255,.12), transparent 60%),
-    linear-gradient(135deg, rgba(255,255,255,.10), transparent 35%, rgba(255,255,255,.07));
-  mix-blend-mode: screen;
-  opacity:.45;
+/* ===== タイトルの“ふわっ”演出（下→上） ===== */
+@media (prefers-reduced-motion: no-preference){
+  .hero{
+    animation: heroUp .8s cubic-bezier(.2,.9,.2,1) both;
+  }
+  @keyframes heroUp{
+    0%{ opacity:0; transform: translateY(14px); filter: blur(1px); }
+    100%{ opacity:1; transform: translateY(0); filter: blur(0); }
+  }
 }
 
-/* ===== hero / title ===== */
 .hero{
   text-align:center;
   padding: 14px 6px 12px;
   position: relative;
   z-index: 1;
-}
-
-/* ★タイトル「下からボワっ → 少し上に持ち上がる」演出 */
-.logo,
-.jp-title,
-.tagline{
-  opacity: 0;
-  transform: translateY(16px);
-  filter: blur(6px);
-  animation: riseIn .85s cubic-bezier(.2,.85,.2,1) forwards;
-}
-.jp-title{ animation-delay: .10s; }
-.tagline{  animation-delay: .18s; }
-
-@keyframes riseIn{
-  0%   { opacity: 0; transform: translateY(18px); filter: blur(7px); }
-  70%  { opacity: 1; transform: translateY(-2px); filter: blur(0px); }
-  100% { opacity: 1; transform: translateY(0px); filter: blur(0px); }
 }
 
 .logo{
@@ -128,7 +124,7 @@ body{
   font-weight: 900;
   letter-spacing: .8px;
   text-transform: uppercase;
-  filter: drop-shadow(0 0 20px rgba(170,235,255,.42));
+  filter: drop-shadow(0 0 22px rgba(180,240,255,.40));
   margin-bottom: 10px;
 }
 
@@ -136,36 +132,38 @@ body{
   font-size: clamp(34px, 6vw, 58px);
   white-space: nowrap;
   text-shadow:
-    0 2px 0 rgba(0,0,0,.35),
-    0 0 12px rgba(255,255,255,.34),
-    0 0 26px rgba(130,210,255,.34);
+    0 0 12px rgba(255,255,255,.35),
+    0 0 26px rgba(165,230,255,.34);
 }
 
-/* SHOW GEO 金 */
+/* SHOW GEO：金＋縁取り感（アイコン寄せ） */
 .logo-line.showgeo{
   color: var(--gold);
   text-shadow:
-    0 2px 0 rgba(0,0,0,.35),
-    0 0 12px rgba(255, 230, 150, .32),
-    0 0 26px rgba(130,210,255,.22);
+    0 0 10px rgba(255, 235, 170, .32),
+    0 2px 0 rgba(0,0,0,.22),
+    0 0 24px rgba(165,230,255,.20);
 }
 
-/* QUEST 行：折れない＆余白最小（⚡の横の“変な隙間”対策） */
+/* QUEST 行：縮めても⚡が消えにくい */
 .logo-boltline{
   display:flex;
   align-items:baseline;
   justify-content:center;
-  gap: .10em;
+  gap: .10em;              /* ⚡横の余白を最小 */
   flex-wrap: nowrap;
   white-space: nowrap;
 }
+
+/* QUEST：青白く＋縁取り（“見えにくい”を解消） */
 .quest{
   display:inline-block;
   color: var(--questBlue);
   text-shadow:
-    0 2px 0 rgba(0,0,0,.35),
-    0 0 12px rgba(160,230,255,.48),
-    0 0 26px rgba(160,230,255,.26);
+    0 2px 0 rgba(0,0,0,.26),
+    0 0 12px rgba(255,255,255,.38),
+    0 0 18px rgba(120,200,255,.38),
+    0 0 28px rgba(90,170,255,.22);
 }
 
 /* ⚡：常時ほんのり＋たまにキラッ */
@@ -174,9 +172,8 @@ body{
   font-size: .9em;
   margin: 0;
   text-shadow:
-    0 2px 0 rgba(0,0,0,.25),
-    0 0 12px rgba(255,255,255,.28),
-    0 0 22px rgba(170,240,255,.42),
+    0 0 12px rgba(255,255,255,.30),
+    0 0 22px rgba(170,240,255,.44),
     0 0 32px rgba(170,240,255,.22);
   animation: boltShine 4.8s ease-in-out infinite;
 }
@@ -197,7 +194,6 @@ body{
   margin-top: 8px;
 }
 
-/* ===== menu ===== */
 .menu{ margin-top: 18px; position: relative; z-index: 1; }
 
 .grid-2{
@@ -205,6 +201,7 @@ body{
   grid-template-columns: 1fr 1fr;
   gap: 18px;
 }
+
 @media (max-width: 700px){
   .frame{ width: min(620px, 92vw); padding: 22px 16px; }
   .grid-2{ gap: 12px; }
@@ -212,106 +209,81 @@ body{
 
 .divider{ height: 18px; }
 
-/* ボタン */
+/* ===== ボタン共通 ===== */
 .btn{
   border: 1px solid var(--btnEdge);
   color: var(--text);
   background:
-    linear-gradient(180deg, rgba(255,255,255,.10), transparent 40%),
+    linear-gradient(180deg, rgba(255,255,255,.10), transparent 42%),
     linear-gradient(135deg, var(--btnA), var(--btnB));
-  border-radius: 18px;
+  border-radius: 22px;
+
   padding: 18px 16px;
-  font-weight: 900;
+  font-weight: 1000;
   letter-spacing: .3px;
   cursor: pointer;
+
   box-shadow:
-    0 10px 22px rgba(0,0,0,.28),
+    0 14px 30px rgba(0,0,0,.30),
     inset 0 1px 0 rgba(255,255,255,.12);
+
   transition: transform .08s ease, filter .12s ease;
   text-decoration: none;
+
   display:flex;
   align-items:center;
   justify-content:center;
-
-  /* ★文字の縁取り/立体感（もっと見えるように強化） */
-  text-shadow:
-    0 3px 0 rgba(0,0,0,.36),
-    0 0 10px rgba(0,0,0,.18);
 }
-.btn:hover{ filter: brightness(1.09); }
+
+.btn:hover{ filter: brightness(1.08); }
 .btn:active{ transform: translateY(2px); }
 
 .btn.primary{
   background:
-    linear-gradient(180deg, rgba(210,248,255,.22), transparent 45%),
-    linear-gradient(135deg, rgba(65,145,255,.98), rgba(160,235,255,.30));
-  border-color: rgba(220,248,255,.46);
+    linear-gradient(180deg, rgba(230,252,255,.22), transparent 45%),
+    linear-gradient(135deg, rgba(70,150,255,.98), rgba(170,235,255,.30));
+  border-color: rgba(220,250,255,.48);
 }
 
-/* 地方ボタン（PCもモバイルも大きめ） */
+/* ===== 地方ボタン：文字の“重心”を絶対中央に固定 ===== */
 .region{
   min-height: 92px;
   font-size: 24px;
-  opacity: .95;
+  opacity: .96;
+  text-shadow:
+    0 2px 0 rgba(0,0,0,.28),
+    0 0 14px rgba(255,255,255,.18);
+
+  /* ★重要：中身を中央に（1行でも2行でも見た目の重心が崩れない） */
+  display: grid;
+  place-items: center;
+  text-align:center;
+  line-height: 1.06;
 }
 
-/* ===== 地方ボタン：モバイルは2行固定＆縦中央揃え ===== */
-@media (max-width: 700px){
-  /* HTMLはそのまま、文字は擬似要素で2行固定 */
-  .regions-grid .region{
-    position: relative;
-    color: transparent;
-    text-shadow: none;
+/* もしHTML側で 2行設計（labelbox）にしている場合の最終形 */
+.region .labelbox{
+  display: inline-grid;
+  grid-auto-rows: min-content;
+  row-gap: 8px;
+  justify-items: center;
 
-    /* ★縦も横もど真ん中 */
-    display:flex;
-    flex-direction: column;
-    align-items:center;
-    justify-content:center;
-    gap: 6px;
-  }
-
-  .regions-grid .region::before,
-  .regions-grid .region::after{
-    position: static;
-    transform: none;
-    color: var(--text);
-    font-weight: 1000;
-    font-size: 24px;
-    white-space: nowrap;
-    line-height: 1.05;
-    text-shadow:
-      0 3px 0 rgba(0,0,0,.36),
-      0 0 10px rgba(0,0,0,.18);
-  }
-
-  .regions-grid .region::before{ content:""; }
-  .regions-grid .region::after { content:""; }
-
-  /* 左列/右列の順番はHTMLのまま */
-  .regions-grid .region:nth-child(1)::before{ content:"近畿"; }
-
-  .regions-grid .region:nth-child(2)::before{ content:"北海道"; }
-  .regions-grid .region:nth-child(2)::after { content:"東北"; }
-
-  .regions-grid .region:nth-child(3)::before{ content:"中国"; }
-  .regions-grid .region:nth-child(3)::after { content:"四国"; }
-
-  .regions-grid .region:nth-child(4)::before{ content:"関東"; }
-
-  .regions-grid .region:nth-child(5)::before{ content:"九州"; }
-  .regions-grid .region:nth-child(5)::after { content:"沖縄"; }
-
-  .regions-grid .region:nth-child(6)::before{ content:"中部"; }
+  /* ★文字ブロックの“箱”を揃える → 1行/2行でも中央が揃う */
+  min-width: 4.6em;
+}
+.region .labelbox span{
+  display:block;
+  line-height: 1.06;
 }
 
-/* ===== conquest ===== */
-.conquest-wrap{ margin-top: 4px; }
+/* ===== 制覇モード ===== */
+.conquest-wrap{ margin-top: 6px; }
 .conquest-title{
-  font-weight: 900;
+  font-weight: 1000;
   color: rgba(246,251,255,.86);
   text-align:center;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  text-shadow: 0 2px 0 rgba(0,0,0,.22);
 }
 
 .conquest-grid{
@@ -327,10 +299,13 @@ body{
 .conquest{
   min-height: 78px;
   font-size: 18px;
-  opacity: .95;
+  opacity: .96;
+  text-shadow:
+    0 2px 0 rgba(0,0,0,.28),
+    0 0 12px rgba(255,255,255,.16);
 }
 
-/* 2行＆中央揃え固定（PC/モバイル共通） */
+/* 3つとも“2行＆中央揃え”固定 */
 .twoline{
   display:flex;
   flex-direction:column;
@@ -342,7 +317,7 @@ body{
   width: 100%;
 }
 
-/* キラッ */
+/* ===== きらり演出 ===== */
 .crackle{
   position: relative;
   overflow: hidden;
@@ -359,32 +334,23 @@ body{
 }
 @keyframes crackle{
   0%, 70%, 100% { transform: translateX(-40%) rotate(18deg); opacity: 0; }
-  76% { opacity: .28; }
+  76% { opacity: .30; }
   84% { transform: translateX(40%) rotate(18deg); opacity: 0; }
 }
 
-/* ===== footer：fixed廃止 → 制覇モードの“下”に出す ===== */
+/* ===== フッター（fixed廃止：制覇モードの下、さらに3行分下へ） ===== */
 .site-footer{
+  position: static;
   width: min(920px, 94vw);
-  margin: 18px auto 0;
-  padding-top: 18px; /* ★「もうちょっと下に」：3行分相当 */
+  margin: 28px auto 0;   /* まず下げる */
+  padding-top: 22px;     /* さらに“3行分”の余白感 */
   text-align: right;
-  opacity: .40;
+  opacity: .42;
   font-size: 12px;
-}
-@media (max-width: 700px){
-  .site-footer{
-    width: min(620px, 92vw);
-    padding-top: 16px;
-  }
+  letter-spacing: .1px;
 }
 .footer-link{
   text-decoration: none;
-  color: rgba(246,251,255,.78);
+  color: rgba(246,251,255,.72);
 }
-.footer-link:hover{ opacity: 1; }
-
-/* 画像の下に余白がほしい時の保険 */
-@supports (padding: max(0px)){
-  .site-footer{ padding-bottom: max(0px, env(safe-area-inset-bottom)); }
-}
+.footer-link:hover{ opacity: .70; }
