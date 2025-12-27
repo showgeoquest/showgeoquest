@@ -5,65 +5,117 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>北海道・東北クエスト｜SHOW GEO QUEST</title>
 
-  <!-- 共通（地方ページの基本） -->
   <link rel="stylesheet" href="../style.css" />
-  <!-- ★トップ(index)の世界観をそのまま使う -->
-  <link rel="stylesheet" href="../index.css" />
 
   <style>
-    /* ===== このページ固有：レイアウトだけ最小上書き ===== */
+    /* ===== index.html の世界観（色・背景）に寄せる ===== */
+    :root{
+      color-scheme: dark;
 
-    /* index.css の body が中央寄せ系でも、地方ページは通常フローで使う */
+      /* index と同系の基調 */
+      --bg: #14356f;
+      --text: #f6fbff;
+      --muted: rgba(246,251,255,.82);
+
+      /* ボタンの縁：index寄せ */
+      --btnEdge: rgba(210,245,255,.30);
+
+      /* 発光 */
+      --boltGlow: rgba(165,230,255,.38);
+
+      /* タイトル（金×青白） */
+      --titleGold: #f5c84b;
+      --titleBlue: #d9f2ff;
+    }
+
+    *{ box-sizing:border-box; }
+
+    /* 背景は index と同じ “1枚固定” */
+    html{
+      height: 100%;
+      min-height: 100%;
+      background: var(--bg);
+    }
     body{
-      display:block;
-      place-items: unset;
-      padding: 0 0 28px;
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background: transparent;
+      position: relative;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    body::before{
+      content:"";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(1200px 760px at 50% 6%,  rgba(165,230,255,.44), transparent 60%),
+        radial-gradient(1100px 700px at 50% 40%, rgba(120,200,255,.28), transparent 62%),
+        radial-gradient(1100px 680px at 50% 92%, rgba(120,200,255,.18), transparent 70%),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 28%),
+        var(--bg);
     }
 
-    /* 戻る：トップと同じ .back を使う（重なり防止でsticky + 余白だけ） */
-    .topbar{
-      width: min(920px, 94vw);
-      margin: 12px auto 0;
-      position: sticky;
-      top: 12px;
-      z-index: 50;
-      display:flex;
-      align-items:center;
-      justify-content:flex-start;
-      pointer-events: none; /* bar自体はクリックを邪魔しない */
-    }
-    .topbar .back{ pointer-events: auto; }
-
-    /* 本体 */
     .wrap{
       width: min(920px, 94vw);
-      margin: 12px auto 0;
-      padding: 14px 0 0;
+      margin: 12px auto 26px;
+      padding: 14px;
     }
 
-    /* ここは“枠”に見せない：cardのボーダーや板感は消す */
-    .card-inner{
-      border: none;
-      background: transparent;
-      box-shadow: none;
-      backdrop-filter: none;
+    /* 上部：戻る（indexのボタン寄せ） */
+    .topbar{
+      width: min(920px, 94vw);
+      margin: 10px auto 0;
+      display:flex;
+      align-items:center;
+      gap: 10px;
     }
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
 
-    /* 見出しブロック */
+      border: 1px solid var(--btnEdge);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.08), transparent 45%),
+        linear-gradient(135deg, rgba(45,125,255,.72), rgba(170,225,255,.18));
+
+      color: var(--text);
+      text-decoration:none;
+      font-weight: 900;
+      letter-spacing:.2px;
+
+      box-shadow:
+        0 12px 28px rgba(0,0,0,.24),
+        inset 0 1px 0 rgba(255,255,255,.10);
+    }
+    .back .arrow{ font-weight: 1000; opacity:.95; }
+    .back:hover{ filter: brightness(1.08); }
+    .back:active{ transform: translateY(1px); }
+
+    /* ★「板っぽさ」を消す：card系は透明化（色合わせだけ） */
+    .card{ background: transparent !important; border: none !important; box-shadow:none !important; backdrop-filter:none !important; }
+    .card-inner{ background: transparent !important; border: none !important; }
+
     .hero2{
-      padding: 12px 8px 10px;
-      text-align:center;
+      padding: 14px 12px 10px;
+      text-align: center;
       position: relative;
       overflow: hidden;
       border-radius: 18px;
     }
 
+    /* 背景地図：index の青白発光に寄せる */
     .hero2 .bg-map{
       position:absolute;
       inset:0;
       pointer-events:none;
       opacity:.28;
-      filter: drop-shadow(0 0 16px rgba(120,180,255,.22));
+      filter: drop-shadow(0 0 18px rgba(190,245,255,.26));
     }
     .hero2 .bg-map object{
       width: 165%;
@@ -76,7 +128,7 @@
       pointer-events:none;
     }
 
-    /* タイトル：トップのロゴと同じ方向（強すぎず） */
+    /* タイトル（金×青白） */
     .title{
       position: relative;
       z-index: 2;
@@ -84,11 +136,18 @@
       letter-spacing:.3px;
       font-size: 28px;
       margin: 4px 0 10px;
+
+      background: linear-gradient(90deg, var(--titleGold), var(--titleBlue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+
       text-shadow:
-        0 2px 0 rgba(0,0,0,.18),
-        0 0 16px rgba(170,235,255,.18);
+        0 0 18px rgba(165,230,255,.18),
+        0 0 10px rgba(245,200,75,.14);
     }
 
+    /* 「クエストをえらんでね」：index の tagline と同系色 */
     .lead{
       position: relative;
       z-index: 2;
@@ -96,14 +155,14 @@
       color: rgba(246,251,255,.78);
       font-weight: 900;
       letter-spacing:.1px;
-      text-shadow: 0 2px 0 rgba(0,0,0,.14);
+      text-shadow: 0 0 16px rgba(165,230,255,.14);
     }
 
     .grid{
       display:grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-      margin-top: 14px;
+      margin-top: 12px;
     }
     @media (max-width: 720px){
       .grid{ grid-template-columns: 1fr 1fr; }
@@ -112,7 +171,6 @@
       .grid{ grid-template-columns: 1fr; }
     }
 
-    /* ボタン中身（トップと同じ .btn をそのまま使い、並べ方だけ調整） */
     .modebtn{
       padding: 16px 14px;
       align-items: stretch;
@@ -120,17 +178,21 @@
       gap: 8px;
       text-align: left;
     }
+
     .modeTop{
       display:flex;
       align-items:flex-start;
       justify-content: space-between;
       gap: 10px;
     }
+
     .modeName{
       font-size: 20px;
       font-weight: 1000;
       letter-spacing:.2px;
     }
+
+    /* 難易度⚡：indexの青白発光寄せ */
     .difficulty{
       margin-top: 6px;
       display:flex;
@@ -139,17 +201,18 @@
       font-weight: 1000;
       opacity: .95;
       user-select: none;
-      color: rgba(242,246,255,.92);
-      text-shadow: 0 0 18px rgba(120,190,255,.46);
+      color: rgba(246,251,255,.92);
+      text-shadow: 0 0 18px var(--boltGlow);
     }
     .difficulty .bolt{
       display:inline-block;
-      filter: drop-shadow(0 0 10px rgba(120,190,255,.45));
+      filter: drop-shadow(0 0 10px rgba(165,230,255,.34));
       animation: boltSoft 6.2s ease-in-out infinite;
     }
     .difficulty .bolt:nth-child(1){ animation-delay: 0s; }
     .difficulty .bolt:nth-child(2){ animation-delay: .7s; }
     .difficulty .bolt:nth-child(3){ animation-delay: 1.4s; }
+
     @keyframes boltSoft{
       0%, 76%{ opacity:.80; transform: translateY(0); }
       80%{ opacity:1; transform: translateY(-1px); }
@@ -160,7 +223,7 @@
     .desc{
       font-size: 14px;
       font-weight: 900;
-      color: rgba(242,246,255,.84);
+      color: rgba(246,251,255,.84);
       line-height: 1.4;
     }
   </style>

@@ -5,15 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>知識の泉｜北海道・東北</title>
 
-<!-- 共通 -->
 <link rel="stylesheet" href="../style.css" />
-<!-- ★トップ(index)の世界観 -->
-<link rel="stylesheet" href="../index.css" />
 
 <style>
   :root{
-    --panel: rgba(255,255,255,.92);
-    --border: rgba(140,180,200,.45);
+    color-scheme: dark;
+
+    /* ===== index の世界観（背景） ===== */
+    --bg: #14356f;
+
+    /* 文字（戻るボタン等） */
+    --textLite: rgba(246,251,255,.96);
+
+    /* パネル（白すぎを少し抑えて index の青白に寄せる） */
+    --panel: rgba(245, 252, 255, .94);
+    --border: rgba(190, 235, 255, .36);
     --text:#0f1f26;
 
     --land:#dff0df;
@@ -23,32 +29,74 @@
 
     --prefBlue:#1466ff;
 
+    /* ⚡ */
     --boltColor: rgba(20,102,255,.95);
-    --boltGlow: rgba(120,190,255,.55);
+    --boltGlow: rgba(165,230,255,.55);
   }
 
-  /* index.css の body が中央寄せ系でも、ゲームは通常フローで使う */
+  *{ box-sizing:border-box; }
+
+  /* index と同じ「背景 1枚」 */
+  html{
+    height: 100%;
+    min-height: 100%;
+    background: var(--bg);
+  }
   body{
-    display:block;
-    place-items: unset;
-    padding: 0 0 24px;
+    margin:0;
+    min-height:100vh;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    position: relative;
+    background: transparent;
+  }
+  body::before{
+    content:"";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(1200px 760px at 50% 6%,  rgba(165,230,255,.44), transparent 60%),
+      radial-gradient(1100px 700px at 50% 40%, rgba(120,200,255,.28), transparent 62%),
+      radial-gradient(1100px 680px at 50% 92%, rgba(120,200,255,.18), transparent 70%),
+      linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 28%),
+      var(--bg);
   }
 
   main{ padding:12px; }
 
-  /* 戻る：トップと同じ .back を使う（重なり防止でsticky） */
+  /* 戻る（indexのボタン寄せ） */
   .topbar{
     width: min(900px, 94vw);
-    margin: 12px auto 0;
-    position: sticky;
-    top: 12px;
-    z-index: 60;
+    margin: 10px auto 0;
     display:flex;
     align-items:center;
     gap: 10px;
-    pointer-events: none;
   }
-  .topbar .back{ pointer-events:auto; }
+  .back{
+    display:inline-flex;
+    align-items:center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 14px;
+
+    border: 1px solid rgba(210,245,255,.30);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.08), transparent 45%),
+      linear-gradient(135deg, rgba(45,125,255,.72), rgba(170,225,255,.18));
+
+    color: var(--textLite);
+    text-decoration:none;
+    font-weight: 900;
+    letter-spacing:.2px;
+
+    box-shadow:
+      0 12px 28px rgba(0,0,0,.24),
+      inset 0 1px 0 rgba(255,255,255,.10);
+  }
+  .back:hover{ filter: brightness(1.08); }
+  .back:active{ transform: translateY(1px); }
+  .arrow{ font-weight: 1000; }
 
   .stage{
     position: relative;
@@ -61,13 +109,13 @@
     border-radius: 20px;
     overflow: hidden;
 
-    /* “板感”を軽く（でも読みやすさは維持） */
-    border: 1px solid rgba(255,255,255,.10);
+    /* ★色合わせ：黒板をやめて“薄い光だけ” */
+    border: none;
     background:
-      radial-gradient(900px 520px at 50% 18%, rgba(120,190,255,.18), transparent 62%),
-      linear-gradient(180deg, rgba(231,243,247,.34), rgba(242,251,255,.22));
-    box-shadow: 0 14px 44px rgba(0,0,0,.22);
-    backdrop-filter: blur(6px);
+      radial-gradient(900px 520px at 50% 18%, rgba(190,245,255,.14), transparent 62%),
+      linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+
+    box-shadow: 0 14px 44px rgba(0,0,0,.18);
   }
 
   @media (max-width: 900px){
@@ -102,7 +150,7 @@
     transform: translate(-50%, -120%);
     padding: 6px 10px;
     border-radius: 12px;
-    background: rgba(255,255,255,.94);
+    background: rgba(245,252,255,.96);
     border: 1px solid var(--border);
     font-weight: 1000;
     letter-spacing: .02em;
@@ -114,7 +162,9 @@
     white-space: nowrap;
     box-shadow: 0 10px 22px rgba(0,0,0,.10);
   }
-  #tapLabel.is-glow{ animation: tapGlow .55s ease-out; }
+  #tapLabel.is-glow{
+    animation: tapGlow .55s ease-out;
+  }
   @keyframes tapGlow{
     0%{ text-shadow: 0 0 0 rgba(20,102,255,0); }
     35%{ text-shadow: 0 0 18px rgba(20,102,255,.55); }
@@ -136,7 +186,6 @@
     padding: 12px 12px;
 
     box-shadow: 0 16px 40px rgba(0,0,0,.10);
-    backdrop-filter: blur(8px);
 
     pointer-events: none;
   }
@@ -256,7 +305,7 @@ const FURI = {
 
 function normalizeJP(titleText){
   const jp = (titleText || "").split("/")[0].trim();
-  return jp.replace(/(都|府|県)$/g,"");
+  return jp.replace(/(都|府|県)$/g,""); // 道は残す
 }
 function toPrefFullName(jpCore){
   if(!jpCore) return "";
