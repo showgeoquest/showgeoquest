@@ -97,7 +97,12 @@ body::before{
   content: none;
 }
 
-.screen{ width:100%; position:relative; }
+/* ★ここだけ修正：中身は中央寄せ＆最大幅（ボタンが横いっぱいに広がるのを止める） */
+.screen{
+  width: min(920px, 94vw);
+  margin: 0 auto;
+  position: relative;
+}
 
 /* ===== 背景地図 ===== */
 .title-map{
@@ -360,14 +365,12 @@ body::before{
   padding-top: 22px;
   text-align: right;
 
-  opacity: 1;               /* ★薄すぎをやめる */
+  opacity: 1;
   font-size: 12px;
   letter-spacing: .1px;
 }
 .footer-link{
   text-decoration: none;
-
-  /* ★「― 地図に挑め、47のクエスト ―」と同系色 */
   color: rgba(246,251,255,.78);
 }
 .footer-link:hover{ opacity: .70; }
