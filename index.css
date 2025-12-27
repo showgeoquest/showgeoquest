@@ -360,6 +360,6 @@ body::before{
 }
 .footer-link{
   text-decoration: none;
-  color: rgba(246,251,255,.72);
+  color: rgba(246,251,255,.78);
 }
 .footer-link:hover{ opacity: .70; }
