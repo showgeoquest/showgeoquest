@@ -14,6 +14,36 @@
       margin: 0;
       line-height: 1.8;
     }
+
+    /* ===== 戻るボタン ===== */
+    .topbar{
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 1000;
+    }
+    .topbar .back{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+
+      padding: 8px 12px;
+      border-radius: 12px;
+
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+
+      color: rgba(246,251,255,.78);
+      background: rgba(45,125,255,.22);
+      border: 1px solid rgba(210,245,255,.30);
+
+      backdrop-filter: blur(4px);
+    }
+    .topbar .back:hover{
+      opacity: .7;
+    }
+
     .wrap {
       max-width: 960px;
       margin: 0 auto;
@@ -42,6 +72,15 @@
 </head>
 
 <body>
+
+  <!-- 戻るボタン -->
+  <div class="topbar">
+    <a class="back" href="index.html" aria-label="トップへ戻る">
+      <span class="arrow">←</span>
+      <span>トップへ戻る</span>
+    </a>
+  </div>
+
   <div class="wrap">
 
     <h1>SHOW GEO QUESTについて</h1>
@@ -103,9 +142,9 @@
       </p>
     </section>
 
-<footer>
-  © SHOW GEO QUEST
-</footer>
+    <footer>
+      © SHOW GEO QUEST
+    </footer>
 
   </div>
 </body>
