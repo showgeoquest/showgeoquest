@@ -256,7 +256,7 @@
 
 <script>
   const MAP_PATH = "../maps/japan.svg";
-  const VIEWBOX  = "535 -25 535 700"; // ← 元に戻したい値
+  const VIEWBOX  = "535 -25 535 700"; // ← 元の値（これが正解）
 
   const TARGET_CLASSES = ["hokkaido","aomori","iwate","miyagi","akita","yamagata","fukushima"];
 
@@ -282,18 +282,14 @@
     return `<ruby>${base}<rt>${kana}</rt></ruby>`;
   }
 
-  /* SVGから「県名」を取る：titleが無くても拾えるようにフォールバック */
+  // SVGから「県名」を取る（titleが無くても拾えるようにフォールバック）
   function pickPrefName(el){
-    // 1) <title>
     const t = el.querySelector("title")?.textContent;
     if(t){
-      const jp = t.split("/")[0].trim();
-      return jp;
+      return t.split("/")[0].trim();
     }
-    // 2) aria-label
     const aria = el.getAttribute("aria-label");
     if(aria) return aria.trim();
-    // 3) data-name
     const dn = el.dataset && (el.dataset.name || el.dataset.pref || el.dataset.prefName);
     if(dn) return String(dn).trim();
     return "";
@@ -381,25 +377,32 @@
       }
     });
 
+    // ★ここが重要：title削除の前に、県名を dataset に確定保存する
+    targets.forEach(g=>{
+      const raw = pickPrefName(g);
+      let prefFull = raw;
+
+      // もし「青森」みたいに末尾が無い場合だけ補正（北海道は例外）
+      if(prefFull && prefFull !== "北海道" && !/(都|道|府|県)$/.test(prefFull)){
+        prefFull = prefFull + "県";
+      }
+      g.dataset.prefFull = prefFull;
+    });
+
     // tooltipsは消す（見た目と操作の邪魔になる）
     svg.querySelectorAll("title,desc").forEach(n=>n.remove());
 
     targets.forEach(g=>{
-      const raw = pickPrefName(g);
-      // titleが「青森県」形式で入ってる前提。もし「青森」なら県に補正
-      let prefFull = raw;
-      if(prefFull && prefFull !== "北海道" && !/(都|道|府|県)$/.test(prefFull)){
-        prefFull = prefFull + "県";
-      }
-
       g.addEventListener("pointerdown", (ev)=>{
+        const prefFull = g.dataset.prefFull || "";
+        if(!prefFull) return;
+
         const cx = ev.clientX ?? 0;
         const cy = ev.clientY ?? 0;
 
         const d = DATA[prefFull];
         const mismatch = d ? isMismatch(prefFull, d.capName) : false;
 
-        // 吹き出し：県名＋ふりがな
         const labelHtml = d
           ? rubyHTML(prefFull, d.pref)
           : prefFull;
