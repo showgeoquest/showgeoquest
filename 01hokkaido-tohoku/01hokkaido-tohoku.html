@@ -5,229 +5,321 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>北海道・東北クエスト｜SHOW GEO QUEST</title>
 
-  <!-- index の世界観をそのまま使う -->
+  <!-- index の世界観をそのまま流用 -->
   <link rel="stylesheet" href="../index.css" />
 
   <style>
-    /* ===== このページ固有のレイアウトだけ（色は index.css のまま） ===== */
+    :root{
+      color-scheme: dark;
 
-    /* 上の戻るバー（indexに無いのでここで用意） */
-    .topbar{
-      width: min(980px, 94vw);
-      margin: 12px auto 0;
-      display:flex;
-      align-items:center;
-      justify-content:flex-start;
-      gap: 12px;
-      position: relative;
-      z-index: 2;
+      /* index と揃える */
+      --bg: #14356f;
+
+      /* タイトル色 */
+      --titleGold: #f3cf6a;
+      --titleBlue: #66b3ff;
+
+      /* 読みやすさ */
+      --desc: rgba(246,251,255,.86);
+      --descShadow: rgba(0,0,0,.10);
+
+      /* ⚡（見えやすく） */
+      --boltA: rgba(165,230,255,.70);
+      --boltB: rgba(120,200,255,.45);
+
+      /* bg-map の濃さ */
+      --mapOpacity: .26;
+      --mapShadow: rgba(190,245,255,.22);
     }
 
-    /* index.css の .back が無い場合に備えて最低限 */
-    .topbar .back{
+    *{ box-sizing:border-box; }
+
+    /* ====== 変な上余白を出さない（センタリングの癖を回避） ====== */
+    body{
+      display:block;         /* index.css の display:grid を打ち消す */
+      place-items: unset;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ====== ページ幅（indexのフレーム感を踏襲） ====== */
+    .frame{
+      width: min(920px, 94vw);
+      margin: 0 auto;
+      padding: 18px 18px 22px;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      border-radius: 0;
+    }
+
+    /* ====== 戻る（indexボタンの雰囲気） ====== */
+    .topbar{
+      position: sticky; /* “固定したい”に近い挙動：上に張り付く */
+      top: 12px;
+      z-index: 20;
+      padding: 12px 0 6px;
+      display:flex;
+      justify-content:flex-start;
+    }
+    .back{
       display:inline-flex;
       align-items:center;
-      justify-content:center;
-      gap: 8px;
+      gap: 10px;
       padding: 10px 12px;
       border-radius: 14px;
-      border: 1px solid var(--btnEdge);
+      border: 1px solid rgba(210,245,255,.30);
       background:
-        linear-gradient(180deg, rgba(255,255,255,.10), transparent 42%),
-        linear-gradient(135deg, var(--btnA), var(--btnB));
-      color: var(--text);
+        linear-gradient(180deg, rgba(255,255,255,.08), transparent 45%),
+        linear-gradient(135deg, rgba(45,125,255,.72), rgba(170,225,255,.18));
+      color: rgba(246,251,255,.96);
       text-decoration:none;
       font-weight: 900;
-      letter-spacing: .2px;
+      letter-spacing:.2px;
       box-shadow:
-        0 10px 22px rgba(0,0,0,.35),
-        inset 0 1px 0 rgba(255,255,255,.08);
-      transition: transform .08s ease, filter .12s ease;
-      white-space: nowrap;
+        0 12px 28px rgba(0,0,0,.24),
+        inset 0 1px 0 rgba(255,255,255,.10);
     }
-    .topbar .back:hover{ filter: brightness(1.08); }
-    .topbar .back:active{ transform: translateY(2px); }
+    .back:hover{ filter: brightness(1.08); }
+    .back:active{ transform: translateY(1px); }
 
-    /* index の frame をそのまま使い、幅だけ読みやすく */
-    .frame{
-      width: min(980px, 94vw);
-      margin: 12px auto 26px;
+    /* ====== タイトルエリア ====== */
+    .hero{
+      position: relative;
+      padding: 10px 6px 10px;
+      text-align:center;
+      overflow: hidden;
+      border-radius: 18px;
     }
 
-    /* 背景地図（地方拡大表示） */
+    /* 背景地図（北海道・東北に寄せる：読み込み後viewBox適用） */
     .title-map{
       position:absolute;
       inset:0;
       pointer-events:none;
-      opacity:.26; /* indexより少しだけ見える */
-      filter: drop-shadow(0 0 18px rgba(190,245,255,.28));
+      opacity: var(--mapOpacity);
+      filter: drop-shadow(0 0 18px var(--mapShadow));
     }
-    .title-map .map-svg{
-      width: 140%;
-      height: 140%;
+    .title-map object{
+      width: 150%;
+      height: 150%;
       position:absolute;
-      left: 58%;
-      top: 46%;
-      transform: translate(-50%, -50%);
+      left: 55%;
+      top: 50%;
+      transform: translate(-50%,-50%);
       object-fit: contain;
       pointer-events:none;
     }
 
-    /* 地方ヒーロー */
-    .region-hero{
-      text-align:center;
-      padding: 16px 10px 10px;
+    /* タイトル：地域名(金) + ⚡QUEST⚡(青) */
+    .titleRow{
       position: relative;
-      z-index: 1;
+      z-index: 2;
+      display:flex;
+      align-items:baseline;
+      justify-content:center;
+      gap: .22em;
+      flex-wrap: wrap;
+      margin: 4px 0 6px;
+      line-height: 1.1;
     }
-    .region-hero .h1{
-      margin: 6px 0 6px;
-      font-size: 26px;
+    .titleRegion{
       font-weight: 1000;
-      letter-spacing: .3px;
+      letter-spacing:.3px;
+      font-size: clamp(22px, 3.2vw, 30px);
+      color: var(--titleGold);
       text-shadow:
-        0 2px 0 rgba(0,0,0,.26),
-        0 0 18px rgba(120,200,255,.20);
-    }
-    .region-hero .sub{
-      margin: 0;
-      color: rgba(246,251,255,.78);
-      font-weight: 900;
-      letter-spacing: .1px;
-      text-shadow: 0 0 16px rgba(120,200,255,.16);
+        0 0 16px rgba(243,207,106,.18),
+        0 2px 0 rgba(0,0,0,.20);
+      white-space: nowrap;
     }
 
-    /* 4つのコンテンツ */
-    .menu{
-      margin-top: 16px;
-      position: relative;
-      z-index: 1;
+    .titleQuest{
+      font-weight: 1000;
+      letter-spacing:.3px;
+      font-size: clamp(22px, 3.2vw, 30px);
+      color: var(--titleBlue);
+      text-shadow:
+        0 0 18px rgba(120,200,255,.20),
+        0 2px 0 rgba(0,0,0,.20);
+      display:inline-flex;
+      align-items:baseline;
+      gap: .14em;
+      white-space: nowrap;
     }
-    .grid-2{
+    .titleQuest .bolt{
+      display:inline-block;
+      filter: drop-shadow(0 0 10px var(--boltA));
+      text-shadow:
+        0 0 14px var(--boltA),
+        0 0 26px var(--boltB);
+      opacity: .98;
+      transform: translateY(-.02em);
+      animation: boltBlink 5.2s ease-in-out infinite;
+    }
+    @keyframes boltBlink{
+      0%, 78%, 100% { filter: brightness(1); opacity: .92; }
+      82% { filter: brightness(1.35); opacity: 1; }
+      86% { filter: brightness(1.05); opacity: .95; }
+    }
+
+    .lead{
+      position: relative;
+      z-index: 2;
+      margin: 0 0 4px;
+      color: rgba(246,251,255,.86);
+      font-weight: 800;
+      letter-spacing:.1px;
+      text-shadow: 0 0 14px rgba(120,190,255,.14);
+    }
+
+    /* ====== 4つのカード ====== */
+    .grid{
       display:grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    @media (max-width: 700px){
-      .grid-2{ gap: 12px; }
-    }
-    @media (max-width: 380px){
-      .grid-2{ grid-template-columns: 1fr; }
+      gap: 14px;
+      margin-top: 14px;
     }
 
-    /* ボタンの中身（タイトル＋説明） */
+    /* ボタン（indexのbtnを利用しつつ中身をカード化） */
     .modebtn{
-      display:flex;
-      flex-direction:column;
-      align-items:stretch;
-      justify-content:center;
+      padding: 18px 16px;
+      align-items: stretch;
+      flex-direction: column;
       gap: 10px;
-      text-align:left;
-      padding: 16px 14px;
-      min-height: 92px;
+      text-align: left;
+      min-height: 108px;
     }
+
     .modeName{
       font-size: 20px;
       font-weight: 1000;
-      letter-spacing: .2px;
-      text-shadow:
-        0 2px 0 rgba(0,0,0,.22),
-        0 0 12px rgba(255,255,255,.14);
+      letter-spacing:.2px;
+      line-height: 1.1;
+      white-space: nowrap;         /* 変な改行を防ぐ */
     }
+    /* 長い見出しだけ小さくして1行維持 */
+    .modeName.long{ font-size: 19px; }
+
+    /* 説明文：太すぎ→読みやすく */
     .desc{
       font-size: 14px;
-      font-weight: 900;
-      color: rgba(246,251,255,.82);
-      line-height: 1.35;
+      font-weight: 600;            /* ★ 900 → 600 */
+      color: var(--desc);
+      line-height: 1.45;
+      text-shadow: none;           /* ★ “太ゴシック感”を抑える */
     }
+
+    /* 難易度（⚡見えやすく） */
     .difficulty{
-      margin-top: 2px;
+      display:flex;
+      align-items:center;
+      gap: 4px;
       font-weight: 1000;
-      letter-spacing: .05em;
-      color: rgba(246,251,255,.90);
-      text-shadow: 0 0 18px rgba(165,230,255,.45);
-      user-select:none;
+      user-select: none;
+      color: rgba(246,251,255,.92);
+    }
+    .difficulty .bolt{
+      display:inline-block;
+      filter: drop-shadow(0 0 10px var(--boltA));
+      text-shadow:
+        0 0 14px var(--boltA),
+        0 0 26px var(--boltB);
+      opacity: .98;
+    }
+
+    /* ====== レスポンシブ ====== */
+    @media (max-width: 720px){
+      .frame{ width: min(920px, 94vw); padding: 14px 14px 18px; }
+      .grid{ gap: 12px; }
+      .modebtn{ min-height: 104px; }
+    }
+    @media (max-width: 420px){
+      .grid{ grid-template-columns: 1fr; } /* スマホは1列で美しく */
+      .modeName{ font-size: 19px; }
+      .modeName.long{ font-size: 18px; }   /* “マッチング”が崩れない */
     }
   </style>
 </head>
 
 <body>
-  <!-- 上部：トップへ戻る -->
-  <div class="topbar">
-    <a class="back" href="../index.html" aria-label="トップへ戻る">
-      <span aria-hidden="true">←</span>
-      <span>トップへ戻る</span>
-    </a>
-  </div>
-
-  <!-- index.html を“地方トップ”として再利用 -->
   <main class="frame">
-    <section class="screen" aria-label="北海道・東北トップ">
+    <div class="topbar">
+      <a class="back" href="../index.html" aria-label="トップへ戻る">
+        <span class="arrow">←</span>
+        <span>トップへ戻る</span>
+      </a>
+    </div>
 
-      <!-- 背景地図（後で viewBox を当てて地方拡大にする） -->
+    <section class="hero" aria-label="北海道・東北クエスト">
       <div class="title-map" aria-hidden="true">
-        <object class="map-svg"
-                data="../maps/japan.svg"
-                type="image/svg+xml"
-                tabindex="-1"></object>
+        <object id="bgMapObj" data="../maps/japan.svg" type="image/svg+xml" tabindex="-1"></object>
       </div>
 
-      <div class="region-hero">
-        <h1 class="h1">北海道・東北クエスト</h1>
-        <p class="sub">クエストをえらんでね。</p>
-      </div>
+      <h1 class="titleRow">
+        <span class="titleRegion">北海道・東北</span>
+        <span class="titleQuest">
+          <span class="bolt" aria-hidden="true">⚡</span>
+          <span>QUEST</span>
+          <span class="bolt" aria-hidden="true">⚡</span>
+        </span>
+      </h1>
 
-      <div class="menu">
-        <div class="grid-2" aria-label="コンテンツ">
-          <a class="btn modebtn" href="./01hokkaido-tohoku-1.html">
-            <div class="modeName">知識の泉</div>
-            <div class="desc">県名と県庁所在地名を手に入れよう</div>
-          </a>
+      <p class="lead">クエストをえらんでね。</p>
+    </section>
 
-          <a class="btn modebtn" href="./01hokkaido-tohoku-2.html">
-            <div class="modeName">その県どこ？</div>
-            <div class="difficulty" aria-hidden="true">⚡</div>
-            <div class="desc">県名 → 地図からえらぶ</div>
-          </a>
+    <section class="grid" aria-label="モード選択">
+      <a class="btn modebtn" href="./01hokkaido-tohoku-1.html">
+        <div class="modeName">知識の泉</div>
+        <div class="desc">県名と県庁所在地名を手に入れよう</div>
+      </a>
 
-          <a class="btn modebtn" href="./01hokkaido-tohoku-3.html">
-            <div class="modeName">その県名は？</div>
-            <div class="difficulty" aria-hidden="true">⚡⚡</div>
-            <div class="desc">地図 → 県名をえらぶ</div>
-          </a>
+      <a class="btn modebtn" href="./01hokkaido-tohoku-2.html">
+        <div class="modeName">その県どこ？</div>
+        <div class="difficulty" aria-hidden="true"><span class="bolt">⚡</span></div>
+        <div class="desc">県名→地図をえらぶ</div>
+      </a>
 
-          <a class="btn modebtn" href="./01hokkaido-tohoku-4.html">
-            <div class="modeName">県庁所在地マッチング</div>
-            <div class="difficulty" aria-hidden="true">⚡⚡⚡</div>
-            <div class="desc">県名 ↔︎ 県庁所在地</div>
-          </a>
-        </div>
-      </div>
+      <a class="btn modebtn" href="./01hokkaido-tohoku-3.html">
+        <div class="modeName">その県名は？</div>
+        <div class="difficulty" aria-hidden="true"><span class="bolt">⚡</span><span class="bolt">⚡</span></div>
+        <div class="desc">地図→県名をえらぶ</div>
+      </a>
 
+      <a class="btn modebtn" href="./01hokkaido-tohoku-4.html">
+        <div class="modeName long">県庁所在地マッチング</div>
+        <div class="difficulty" aria-hidden="true"><span class="bolt">⚡</span><span class="bolt">⚡</span><span class="bolt">⚡</span></div>
+        <div class="desc">県名←→県庁所在地</div>
+      </a>
     </section>
   </main>
 
   <script>
-    /*
-      背景の全国地図を「北海道・東北の拡大図」にする。
-      object 読み込み後に svg の viewBox を差し替える。
-      （数値は 1側で決める範囲に合わせて後で調整OK）
-    */
-    const BG_VIEWBOX = "535 -25 535 700"; // ←いまは北海道・東北(仮)。必要に応じて調整。
+    // 背景地図を「北海道・東北寄り」にする：object読み込み後にviewBoxを当てる
+    // ※ viewBox は svg の実寸次第で微調整が必要な場合があります（まずは北寄りになる値）
+    (function(){
+      const obj = document.getElementById("bgMapObj");
+      if(!obj) return;
 
-    const obj = document.querySelector(".title-map .map-svg");
-    if (obj) {
       obj.addEventListener("load", () => {
-        const svg = obj.contentDocument && obj.contentDocument.querySelector("svg");
-        if (!svg) return;
+        try{
+          const svgDoc = obj.contentDocument;
+          const svg = svgDoc && svgDoc.querySelector("svg");
+          if(!svg) return;
 
-        svg.setAttribute("viewBox", BG_VIEWBOX);
-        svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+          // ★北海道・東北寄り（北日本を大きめに）
+          // 目安：上側を多め、中心を少し右寄せ
+          svg.setAttribute("viewBox", "560 -40 500 420");
+          svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
 
-        // 背景なのでクリック等は無効化（念のため）
-        svg.style.pointerEvents = "none";
+          // 背景っぽく線を馴染ませる（元svgのstyleを邪魔しない範囲）
+          svg.style.opacity = "1";
+        }catch(e){
+          // 触れなくても表示はされるので黙って無視
+        }
       });
-    }
+    })();
   </script>
 </body>
 </html>
