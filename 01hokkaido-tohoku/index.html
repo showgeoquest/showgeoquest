@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>北海道・東北クエスト｜SHOW GEO QUEST</title>
+
+  <link rel="stylesheet" href="../index.css" />
+
+  <style>
+    :root{
+      color-scheme: dark;
+
+      /* ===== index の世界観（背景） ===== */
+      --bg: #14356f;
+      --text: #f6fbff;
+      --muted: rgba(246,251,255,.78);
+
+      /* 地域名（金） */
+      --regionGold: #f5c84b;
+
+      /* QUEST（indexと同じ青白） */
+      --questBlue: #d9f2ff;
+
+      /* ⚡（見えづらい対策で少し強め） */
+      --boltGlow: rgba(165,230,255,.55);
+
+      /* card内 */
+      --innerBorder: rgba(190,235,255,.22);
+      --innerFillA: rgba(231,243,247,.10);
+      --innerFillB: rgba(242,251,255,.08);
+
+      /* 成績カード */
+      --scoreBg: rgba(255,255,255,.06);
+      --scoreBorder: rgba(210,245,255,.18);
+
+      /* 12階カラー（お好みで後で調整OK） */
+      --k1:#7aa8ff;
+      --k2:#6fc7ff;
+      --k3:#64e1ff;
+      --k4:#62ffd9;
+      --k5:#7dff9c;
+      --k6:#b6ff6a;
+      --k7:#fff06a;
+      --k8:#ffd36a;
+      --k9:#ffb06a;
+      --k10:#ff8a7a;
+      --k11:#ff7ad6;
+      --k12:#b47aff;
+    }
+
+    *{ box-sizing:border-box; }
+
+    /* 背景 1枚（継ぎ目防止） */
+    html{
+      height:100%;
+      min-height:100%;
+      background: var(--bg);
+    }
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: transparent;
+      position: relative;
+      display:grid;
+      place-items:start center;
+      padding: 14px 0 26px;
+    }
+    body::before{
+      content:"";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events:none;
+      background:
+        radial-gradient(1200px 760px at 50% 6%,  rgba(165,230,255,.44), transparent 60%),
+        radial-gradient(1100px 700px at 50% 40%, rgba(120,200,255,.28), transparent 62%),
+        radial-gradient(1100px 680px at 50% 92%, rgba(120,200,255,.18), transparent 70%),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 28%),
+        var(--bg);
+    }
+
+    /* 画面本体（index.html の “frame” に寄せた箱） */
+    .frame{
+      width: min(920px, 94vw);
+      padding: 18px 16px 16px;
+      border-radius: 22px;
+      background:
+        radial-gradient(900px 520px at 50% 18%, rgba(190,245,255,.12), transparent 62%),
+        linear-gradient(180deg, rgba(231,243,247,.12), rgba(242,251,255,.06));
+      border: 1px solid var(--innerBorder);
+      box-shadow: 0 18px 60px rgba(0,0,0,.20);
+      position: relative;
+      overflow:hidden;
+    }
+
+    /* ヘッダー行：戻る と タイトル同列（スマホもOK） */
+    .headerRow{
+      display:grid;
+      grid-template-columns: auto 1fr auto;
+      align-items:center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      text-decoration:none;
+      font-weight: 900;
+      letter-spacing:.2px;
+      color: rgba(246,251,255,.96);
+      border: 1px solid rgba(210,245,255,.30);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.08), transparent 45%),
+        linear-gradient(135deg, rgba(45,125,255,.72), rgba(170,225,255,.18));
+      box-shadow:
+        0 12px 28px rgba(0,0,0,.18),
+        inset 0 1px 0 rgba(255,255,255,.10);
+      white-space: nowrap;
+    }
+    .back:hover{ filter: brightness(1.08); }
+    .back:active{ transform: translateY(1px); }
+    .headerTitle{
+      text-align:center;
+      font-weight: 1000;
+      letter-spacing:.2px;
+      font-size: 16px;
+      color: rgba(246,251,255,.86);
+      text-shadow: 0 0 16px rgba(165,230,255,.18);
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .headerSpacer{ width: 1px; height: 1px; } /* 右側ダミー */
+
+    /* 背景地図（object読み込み後に viewBox を当てる） */
+    .bg-map{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.30;
+      filter: drop-shadow(0 0 18px rgba(190,245,255,.28));
+    }
+    .bg-map object{
+      width: 140%;
+      height: 140%;
+      position:absolute;
+      left: 50%;
+      top: 54%;
+      transform: translate(-50%,-50%);
+      object-fit: contain;
+      pointer-events:none;
+    }
+
+    /* ヒーロー */
+    .hero{
+      position: relative;
+      z-index: 2;
+      text-align:center;
+      padding: 10px 8px 12px;
+    }
+
+    /* 地名（金） + ⚡QUEST⚡（青） */
+    .regionLine{
+      font-weight: 1000;
+      letter-spacing:.3px;
+      font-size: clamp(22px, 4.6vw, 34px);
+      color: var(--regionGold);
+      text-shadow:
+        0 0 16px rgba(255,235,170,.18),
+        0 0 26px rgba(165,230,255,.10);
+      margin: 4px 0 2px;
+    }
+    .questLine{
+      display:inline-flex;
+      align-items:baseline;
+      justify-content:center;
+      gap: .12em;
+      font-weight: 1000;
+      letter-spacing:.3px;
+      font-size: clamp(18px, 4vw, 30px);
+      color: var(--questBlue);
+      text-shadow:
+        0 2px 0 rgba(0,0,0,.26),
+        0 0 12px rgba(255,255,255,.34),
+        0 0 18px rgba(120,200,255,.30);
+      margin: 0 0 8px;
+      white-space: nowrap;
+    }
+    .bolt{
+      display:inline-block;
+      font-size: .95em;
+      text-shadow:
+        0 0 12px rgba(255,255,255,.24),
+        0 0 22px rgba(170,240,255,.42),
+        0 0 34px rgba(170,240,255,.22);
+      animation: boltShine 4.8s ease-in-out infinite;
+    }
+    @keyframes boltShine{
+      0%, 78%, 100% { filter: brightness(1); opacity: .92; }
+      82% { filter: brightness(1.35); opacity: 1; }
+      86% { filter: brightness(1.05); opacity: .95; }
+    }
+
+    /* メニュー（ボタン幅が画面いっぱいに伸びないよう、箱の中で制御） */
+    .menu{
+      position: relative;
+      z-index: 2;
+      margin-top: 12px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 380px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    /* 既存の index.css の .btn を流用しつつ、説明の太さだけ調整 */
+    .modebtn{
+      padding: 16px 14px;
+      align-items: stretch;
+      flex-direction: column;
+      gap: 8px;
+      text-align: left;
+    }
+    .modeName{
+      font-size: 20px;
+      font-weight: 1000;
+      letter-spacing:.2px;
+      line-height: 1.1;
+      word-break: keep-all;
+    }
+    /* 長いタイトル（スマホの変な改行対策） */
+    .modeName.long{
+      font-size: 18px;
+      letter-spacing: .1px;
+    }
+
+    .difficulty{
+      margin-top: 6px;
+      display:flex;
+      align-items:center;
+      gap: 4px;
+      font-weight: 1000;
+      opacity: .95;
+      user-select:none;
+      color: rgba(242,246,255,.92);
+      text-shadow: 0 0 18px var(--boltGlow);
+    }
+    .difficulty .bolt{
+      animation: boltSoft 6.2s ease-in-out infinite;
+      filter: drop-shadow(0 0 10px rgba(120,190,255,.45));
+    }
+    .difficulty .bolt:nth-child(1){ animation-delay: 0s; }
+    .difficulty .bolt:nth-child(2){ animation-delay: .7s; }
+    .difficulty .bolt:nth-child(3){ animation-delay: 1.4s; }
+    @keyframes boltSoft{
+      0%, 76%{ opacity:.82; transform: translateY(0); }
+      80%{ opacity:1; transform: translateY(-1px); }
+      86%{ opacity:.88; transform: translateY(0); }
+      100%{ opacity:.82; }
+    }
+
+    /* 説明文：太すぎ問題を解消（“太ゴシック”をやめる） */
+    .desc{
+      font-size: 14px;
+      font-weight: 700;     /* ★ここを太すぎ→読みやすく */
+      color: rgba(242,246,255,.86);
+      line-height: 1.45;
+    }
+
+    /* ===== 成績ログ枠（表示だけ。後でlocalStorage連携する前提） ===== */
+    .scoreWrap{
+      margin-top: 14px;
+      padding: 12px 12px 14px;
+      border-radius: 18px;
+      background: var(--scoreBg);
+      border: 1px solid var(--scoreBorder);
+    }
+    .scoreTitle{
+      font-weight: 1000;
+      letter-spacing:.2px;
+      color: rgba(246,251,255,.92);
+      text-shadow: 0 0 16px rgba(165,230,255,.12);
+      margin-bottom: 10px;
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    .scoreTitle .bolt{
+      animation: boltShine 4.8s ease-in-out infinite;
+    }
+
+    .scoreGrid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .scoreRow{
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: baseline;
+      padding: 10px 10px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(210,245,255,.12);
+    }
+    .scoreLabel{
+      font-weight: 900;
+      color: rgba(246,251,255,.86);
+      letter-spacing:.1px;
+    }
+    .scoreValue{
+      font-weight: 1000;
+      color: rgba(246,251,255,.92);
+      white-space: nowrap;
+    }
+
+    /* 12階カラー⬜︎ */
+    .rank12{
+      margin-top: 10px;
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 6px;
+      align-items: center;
+    }
+    .rankBox{
+      height: 16px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: 0 8px 22px rgba(0,0,0,.12);
+    }
+    .k1{ background: var(--k1); }
+    .k2{ background: var(--k2); }
+    .k3{ background: var(--k3); }
+    .k4{ background: var(--k4); }
+    .k5{ background: var(--k5); }
+    .k6{ background: var(--k6); }
+    .k7{ background: var(--k7); }
+    .k8{ background: var(--k8); }
+    .k9{ background: var(--k9); }
+    .k10{ background: var(--k10); }
+    .k11{ background: var(--k11); }
+    .k12{ background: var(--k12); }
+
+    .rankNote{
+      margin-top: 8px;
+      font-size: 12px;
+      color: rgba(246,251,255,.72);
+      line-height: 1.35;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="frame" aria-label="地方トップ">
+    <!-- 背景地図（地方viewBoxを適用する） -->
+    <div class="bg-map" aria-hidden="true">
+      <object id="bgMapObj" data="../maps/japan.svg" type="image/svg+xml" tabindex="-1"></object>
+    </div>
+
+    <!-- ヘッダー行：戻る＋タイトル -->
+    <div class="headerRow">
+      <a class="back" href="../index.html" aria-label="トップへ戻る">
+        <span class="arrow">←</span>
+        <span>トップへ戻る</span>
+      </a>
+
+      <div class="headerTitle" id="headerTitle">北海道・東北</div>
+      <div class="headerSpacer" aria-hidden="true"></div>
+    </div>
+
+    <!-- ヒーロー -->
+    <div class="hero">
+      <div class="regionLine" id="regionLine">北海道・東北</div>
+      <div class="questLine" aria-label="クエスト">
+        <span class="bolt" aria-hidden="true">⚡</span>
+        <span id="questWord">QUEST</span>
+        <span class="bolt" aria-hidden="true">⚡</span>
+      </div>
+    </div>
+
+    <!-- ステージ -->
+    <div class="menu">
+      <section class="grid" aria-label="ステージ選択">
+        <a class="btn modebtn" href="./1.html">
+          <div class="modeName">知識の泉</div>
+          <div class="desc">県名と県庁所在地名を手に入れよう</div>
+        </a>
+
+        <a class="btn modebtn" href="./2.html">
+          <div class="modeName">その県どこ？</div>
+          <div class="difficulty" aria-hidden="true"><span class="bolt">⚡</span></div>
+          <div class="desc">県名 → 地図からえらぶ</div>
+        </a>
+
+        <a class="btn modebtn" href="./3.html">
+          <div class="modeName">その県名は？</div>
+          <div class="difficulty" aria-hidden="true"><span class="bolt">⚡</span><span class="bolt">⚡</span></div>
+          <div class="desc">地図 → 県名をえらぶ</div>
+        </a>
+
+        <a class="btn modebtn" href="./4.html">
+          <div class="modeName long">県庁所在地マッチ</div>
+          <div class="difficulty" aria-hidden="true"><span class="bolt">⚡</span><span class="bolt">⚡</span><span class="bolt">⚡</span></div>
+          <div class="desc">県名 ←→ 県庁所在地</div>
+        </a>
+      </section>
+
+      <!-- 成績ログ枠（表示だけ） -->
+      <section class="scoreWrap" aria-label="成績">
+        <div class="scoreTitle">
+          <span class="bolt" aria-hidden="true">⚡</span>
+          <span>この地方のステータス</span>
+          <span class="bolt" aria-hidden="true">⚡</span>
+        </div>
+
+        <div class="scoreGrid">
+          <div class="scoreRow">
+            <div class="scoreLabel">総合得点</div>
+            <div class="scoreValue" id="scoreTotal">0</div>
+          </div>
+          <div class="scoreRow">
+            <div class="scoreLabel">進行</div>
+            <div class="scoreValue" id="progressText">0問 / 30問</div>
+          </div>
+          <div class="scoreRow">
+            <div class="scoreLabel">合計タイム</div>
+            <div class="scoreValue" id="timeText">0秒</div>
+          </div>
+        </div>
+
+        <div class="rank12" aria-label="12階カラー">
+          <div class="rankBox k1"></div><div class="rankBox k2"></div><div class="rankBox k3"></div><div class="rankBox k4"></div>
+          <div class="rankBox k5"></div><div class="rankBox k6"></div><div class="rankBox k7"></div><div class="rankBox k8"></div>
+          <div class="rankBox k9"></div><div class="rankBox k10"></div><div class="rankBox k11"></div><div class="rankBox k12"></div>
+        </div>
+
+        <div class="rankNote">
+          ※ここは“表示枠だけ”です。あとで各ステージの記録（得点・問題数・タイム）を保存して、ここに反映します。
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    /* ========= 地方ごとの差し替えはここだけ ========= */
+    const CONFIG = {
+      regionLabel: "北海道・東北",
+      // 背景に使う「地方拡大」viewBox（あとで 1.html 側の設定に合わせて更新する想定）
+      // 例：北海道・東北寄り（仮）
+      bgViewBox: "535 -25 535 700"
+    };
+
+    // 文言反映
+    document.title = `${CONFIG.regionLabel}クエスト｜SHOW GEO QUEST`;
+    document.getElementById("headerTitle").textContent = CONFIG.regionLabel;
+    document.getElementById("regionLine").textContent  = CONFIG.regionLabel;
+
+    // 背景地図：object読み込み後に viewBox を当てる
+    (function applyBgViewBox(){
+      const obj = document.getElementById("bgMapObj");
+      if(!obj) return;
+
+      obj.addEventListener("load", () => {
+        try{
+          const doc = obj.contentDocument;
+          const svg = doc && doc.querySelector("svg");
+          if(!svg) return;
+
+          // ツールチップ殺し（必要なら）
+          doc.querySelectorAll("title,desc").forEach(n => n.remove());
+
+          svg.setAttribute("viewBox", CONFIG.bgViewBox);
+          svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+        }catch(e){
+          // 何もしない（安全）
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

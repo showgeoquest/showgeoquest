@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>制覇シリーズ｜SHOW GEO QUEST</title>
+
+  <link rel="stylesheet" href="../index.css" />
+
+  <style>
+    :root{
+      color-scheme: dark;
+
+      --bg: #14356f;
+      --text: #f6fbff;
+
+      --regionGold: #f5c84b;
+      --questBlue: #d9f2ff;
+      --boltGlow: rgba(165,230,255,.55);
+
+      --innerBorder: rgba(190,235,255,.22);
+      --innerFillA: rgba(231,243,247,.10);
+      --innerFillB: rgba(242,251,255,.08);
+
+      --scoreBg: rgba(255,255,255,.06);
+      --scoreBorder: rgba(210,245,255,.18);
+    }
+
+    *{ box-sizing:border-box; }
+
+    html{ height:100%; min-height:100%; background: var(--bg); }
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: transparent;
+      position: relative;
+      display:grid;
+      place-items:start center;
+
+      /* ★上の変なスペース対策：詰める */
+      padding: 8px 0 22px;
+    }
+    body::before{
+      content:"";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events:none;
+      background:
+        radial-gradient(1200px 760px at 50% 6%,  rgba(165,230,255,.44), transparent 60%),
+        radial-gradient(1100px 700px at 50% 40%, rgba(120,200,255,.28), transparent 62%),
+        radial-gradient(1100px 680px at 50% 92%, rgba(120,200,255,.18), transparent 70%),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 28%),
+        var(--bg);
+    }
+
+    .frame{
+      width: min(920px, 94vw);
+      padding: 16px 16px 16px;
+      border-radius: 22px;
+      background:
+        radial-gradient(900px 520px at 50% 18%, rgba(190,245,255,.12), transparent 62%),
+        linear-gradient(180deg, rgba(231,243,247,.12), rgba(242,251,255,.06));
+      border: 1px solid var(--innerBorder);
+      box-shadow: 0 18px 60px rgba(0,0,0,.20);
+      position: relative;
+      overflow:hidden;
+    }
+
+    .headerRow{
+      display:grid;
+      grid-template-columns: auto 1fr auto;
+      align-items:center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      text-decoration:none;
+      font-weight: 900;
+      letter-spacing:.2px;
+      color: rgba(246,251,255,.96);
+      border: 1px solid rgba(210,245,255,.30);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.08), transparent 45%),
+        linear-gradient(135deg, rgba(45,125,255,.72), rgba(170,225,255,.18));
+      box-shadow:
+        0 12px 28px rgba(0,0,0,.18),
+        inset 0 1px 0 rgba(255,255,255,.10);
+      white-space: nowrap;
+    }
+    .back:hover{ filter: brightness(1.08); }
+    .back:active{ transform: translateY(1px); }
+
+    .headerTitle{
+      text-align:center;
+      font-weight: 1000;
+      letter-spacing:.2px;
+      font-size: 16px;
+      color: rgba(246,251,255,.86);
+      text-shadow: 0 0 16px rgba(165,230,255,.18);
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .headerSpacer{ width:1px; height:1px; }
+
+    .bg-map{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.30;
+      filter: drop-shadow(0 0 18px rgba(190,245,255,.28));
+    }
+    .bg-map object{
+      width: 140%;
+      height: 140%;
+      position:absolute;
+      left: 50%;
+      top: 54%;
+      transform: translate(-50%,-50%);
+      object-fit: contain;
+      pointer-events:none;
+    }
+
+    .hero{
+      position: relative;
+      z-index: 2;
+      text-align:center;
+      padding: 10px 8px 10px;
+    }
+
+    .regionLine{
+      font-weight: 1000;
+      letter-spacing:.3px;
+      font-size: clamp(22px, 4.6vw, 34px);
+      color: var(--regionGold);
+      text-shadow:
+        0 0 16px rgba(255,235,170,.18),
+        0 0 26px rgba(165,230,255,.10);
+      margin: 4px 0 2px;
+    }
+
+    .questLine{
+      display:inline-flex;
+      align-items:baseline;
+      justify-content:center;
+      gap: .12em;
+      font-weight: 1000;
+      letter-spacing:.3px;
+      font-size: clamp(18px, 4vw, 30px);
+      color: var(--questBlue);
+      text-shadow:
+        0 2px 0 rgba(0,0,0,.26),
+        0 0 12px rgba(255,255,255,.34),
+        0 0 18px rgba(120,200,255,.30);
+      margin: 0 0 6px;
+      white-space: nowrap;
+    }
+    .bolt{
+      display:inline-block;
+      font-size: .95em;
+      text-shadow:
+        0 0 12px rgba(255,255,255,.24),
+        0 0 22px rgba(170,240,255,.42),
+        0 0 34px rgba(170,240,255,.22);
+      animation: boltShine 4.8s ease-in-out infinite;
+    }
+    @keyframes boltShine{
+      0%, 78%, 100% { filter: brightness(1); opacity: .92; }
+      82% { filter: brightness(1.35); opacity: 1; }
+      86% { filter: brightness(1.05); opacity: .95; }
+    }
+
+    .menu{ position:relative; z-index:2; margin-top: 10px; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 700px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    .modebtn{
+      padding: 16px 14px;
+      align-items: stretch;
+      flex-direction: column;
+      gap: 8px;
+      text-align: left;
+    }
+    .modeName{
+      font-size: 20px;
+      font-weight: 1000;
+      letter-spacing:.2px;
+      line-height: 1.1;
+      word-break: keep-all;
+    }
+    .desc{
+      font-size: 14px;
+      font-weight: 700;
+      color: rgba(242,246,255,.86);
+      line-height: 1.45;
+    }
+
+    /* （将来の成績枠用：今は空でもOK） */
+    .scoreWrap{
+      margin-top: 14px;
+      padding: 12px 12px 14px;
+      border-radius: 18px;
+      background: var(--scoreBg);
+      border: 1px solid var(--scoreBorder);
+    }
+    .scoreTitle{
+      font-weight: 1000;
+      letter-spacing:.2px;
+      color: rgba(246,251,255,.92);
+      text-shadow: 0 0 16px rgba(165,230,255,.12);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 8px;
+      margin: 0;
+    }
+    .note{
+      margin-top: 8px;
+      font-size: 12px;
+      color: rgba(246,251,255,.72);
+      line-height: 1.35;
+      text-align:center;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="frame" aria-label="制覇の index">
+    <div class="bg-map" aria-hidden="true">
+      <object id="bgMapObj" data="../maps/japan.svg" type="image/svg+xml" tabindex="-1"></object>
+    </div>
+
+    <div class="headerRow">
+      <a class="back" href="../index.html" aria-label="トップへ戻る">
+        <span aria-hidden="true">←</span>
+        <span>トップへ戻る</span>
+      </a>
+      <div class="headerTitle">制覇シリーズ</div>
+      <div class="headerSpacer" aria-hidden="true"></div>
+    </div>
+
+    <div class="hero">
+      <div class="regionLine">制覇シリーズ</div>
+      <div class="questLine" aria-label="クエスト">
+        <span class="bolt" aria-hidden="true">⚡</span>
+        <span>QUEST</span>
+        <span class="bolt" aria-hidden="true">⚡</span>
+      </div>
+    </div>
+
+    <div class="menu">
+      <section class="grid" aria-label="制覇ステージ">
+        <a class="btn modebtn" href="./1.html">
+          <div class="modeName">東日本 制覇</div>
+          <div class="desc">練習なし・本番ステージ</div>
+        </a>
+
+        <a class="btn modebtn" href="./2.html">
+          <div class="modeName">西日本 制覇</div>
+          <div class="desc">練習なし・本番ステージ</div>
+        </a>
+
+        <a class="btn modebtn" href="./3.html">
+          <div class="modeName">日本列島 制覇</div>
+          <div class="desc">練習なし・本番ステージ</div>
+        </a>
+      </section>
+
+      <section class="scoreWrap" aria-label="制覇のステータス（予定）">
+        <p class="scoreTitle">
+          <span class="bolt" aria-hidden="true">⚡</span>
+          <span>ステータス枠（後で実装）</span>
+          <span class="bolt" aria-hidden="true">⚡</span>
+        </p>
+        <div class="note">※ここは将来、全国称号や合計記録を載せる場所にできます。</div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const CONFIG = {
+      bgViewBox: "0 0 1200 1200" // 仮（後で制覇用に決めよう）
+    };
+
+    (function applyBgViewBox(){
+      const obj = document.getElementById("bgMapObj");
+      if(!obj) return;
+
+      obj.addEventListener("load", () => {
+        try{
+          const doc = obj.contentDocument;
+          const svg = doc && doc.querySelector("svg");
+          if(!svg) return;
+
+          doc.querySelectorAll("title,desc").forEach(n => n.remove());
+          svg.setAttribute("viewBox", CONFIG.bgViewBox);
+          svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+        }catch(e){}
+      });
+    })();
+  </script>
+</body>
+</html>
