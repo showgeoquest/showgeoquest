@@ -27,6 +27,17 @@
 
 *{ box-sizing:border-box; }
 
+/* ★修正：背景を html に一本化して「下の境目」を消す */
+html{
+  min-height: 100%;
+  background:
+    radial-gradient(1200px 760px at 50% 6%,  rgba(165,230,255,.44), transparent 60%),
+    radial-gradient(1100px 700px at 50% 40%, rgba(120,200,255,.28), transparent 62%),
+    radial-gradient(1100px 680px at 50% 92%, rgba(120,200,255,.18), transparent 70%),
+    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 28%),
+    var(--bg);
+}
+
 body{
   margin:0;
   min-height:100vh;
@@ -35,13 +46,8 @@ body{
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   color: var(--text);
 
-  /* ★暗さを解消：光源を増やして“背景そのもの”を明るく */
-  background:
-    radial-gradient(1200px 760px at 50% 6%,  rgba(165,230,255,.44), transparent 60%),
-    radial-gradient(1100px 700px at 50% 40%, rgba(120,200,255,.28), transparent 62%),
-    radial-gradient(1100px 680px at 50% 92%, rgba(120,200,255,.18), transparent 70%),
-    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 28%),
-    var(--bg);
+  /* ★修正：body から背景を外す（htmlの背景を見せる） */
+  background: transparent;
 }
 
 /* ===== フレーム（★ガラス板を完全に廃止） ===== */
