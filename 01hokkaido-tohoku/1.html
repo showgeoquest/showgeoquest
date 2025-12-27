@@ -8,235 +8,415 @@
 <link rel="stylesheet" href="../style.css" />
 
 <style>
-:root{
-  color-scheme: dark;
+  :root{
+    color-scheme: dark;
 
-  --bg:#14356f;
+    --bg:#14356f;
 
-  --panel: rgba(245,252,255,.96);
-  --border: rgba(190,235,255,.36);
-  --text:#0f1f26;
+    /* index寄せの背景 */
+    --textLite: rgba(246,251,255,.96);
 
-  --land:#dff0df;
-  --landTarget:#cfe8cf;
-  --landHover:#bfe2ff;
-  --stroke:#6f8f6f;
+    /* パネル */
+    --panel: rgba(245,252,255,.94);
+    --border: rgba(190,235,255,.36);
+    --text:#0f1f26;
 
-  --prefBlue:#1466ff;
-  --alert:#ff3b3b;
-}
+    /* 地図 */
+    --land:#dff0df;
+    --landTarget:#cfe8cf;
+    --landHover:#bfe2ff;
+    --stroke:#6f8f6f;
 
-*{ box-sizing:border-box; }
+    --prefBlue:#1466ff;
+    --alert:#ff3b3b;
 
-html{ background:var(--bg); height:100%; }
-body{
-  margin:0;
-  min-height:100vh;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-}
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:-1;
-  background:
-    radial-gradient(1200px 760px at 50% 6%, rgba(165,230,255,.44), transparent 60%),
-    radial-gradient(1100px 700px at 50% 40%, rgba(120,200,255,.28), transparent 62%),
-    radial-gradient(1100px 680px at 50% 92%, rgba(120,200,255,.18), transparent 70%),
-    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 28%),
-    var(--bg);
-}
+    /* 吹き出しサイズ調整（7〜8文字想定） */
+    --labelMax: 8.5em;
+  }
 
-.topbar{
-  width:min(900px,94vw);
-  margin:12px auto 0;
-}
-.back{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:10px 14px;
-  border-radius:14px;
-  background:linear-gradient(135deg,#5d8cff,#9fd6ff);
-  color:white;
-  text-decoration:none;
-  font-weight:900;
-}
+  *{ box-sizing:border-box; }
 
-.stage{
-  position:relative;
-  width:min(900px,94vw);
-  height:min(74vh,760px);
-  min-height:520px;
-  margin:12px auto 24px;
-  border-radius:20px;
-  overflow:hidden;
-  background:
-    radial-gradient(900px 520px at 50% 18%, rgba(190,245,255,.14), transparent 62%),
-    linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-}
+  /* index と同じ「背景 1枚」 */
+  html{ height:100%; min-height:100%; background: var(--bg); }
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    position: relative;
+    background: transparent;
+    color: var(--textLite);
+    display:grid;
+    place-items:start center;
+    padding: 14px 0 26px;
+  }
+  body::before{
+    content:"";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(1200px 760px at 50% 6%,  rgba(165,230,255,.44), transparent 60%),
+      radial-gradient(1100px 700px at 50% 40%, rgba(120,200,255,.28), transparent 62%),
+      radial-gradient(1100px 680px at 50% 92%, rgba(120,200,255,.18), transparent 70%),
+      linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 28%),
+      var(--bg);
+  }
 
-#svgHost, #svgHost svg{
-  width:100%;
-  height:100%;
-}
+  /* 地方indexと同じ「ヘッダー同列」 */
+  .frame{
+    width: min(900px, 94vw);
+    padding: 18px 16px 16px;
+    border-radius: 22px;
+    background:
+      radial-gradient(900px 520px at 50% 18%, rgba(190,245,255,.12), transparent 62%),
+      linear-gradient(180deg, rgba(231,243,247,.12), rgba(242,251,255,.06));
+    border: 1px solid rgba(190,235,255,.22);
+    box-shadow: 0 18px 60px rgba(0,0,0,.20);
+    position: relative;
+    overflow: hidden;
+  }
 
-/* 地図 */
-.geolonia-svg-map .prefecture{
-  fill:var(--land);
-  stroke:var(--stroke);
-}
-.geolonia-svg-map .prefecture.is-target:hover{
-  fill:var(--landHover);
-  cursor:pointer;
-}
-.geolonia-svg-map .prefecture.not-target{
-  opacity:.45;
-  pointer-events:none;
-}
+  .headerRow{
+    display:grid;
+    grid-template-columns: auto 1fr auto;
+    align-items:center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .back{
+    display:inline-flex;
+    align-items:center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    text-decoration:none;
+    font-weight: 900;
+    letter-spacing:.2px;
+    color: rgba(246,251,255,.96);
+    border: 1px solid rgba(210,245,255,.30);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.08), transparent 45%),
+      linear-gradient(135deg, rgba(45,125,255,.72), rgba(170,225,255,.18));
+    box-shadow:
+      0 12px 28px rgba(0,0,0,.18),
+      inset 0 1px 0 rgba(255,255,255,.10);
+    white-space: nowrap;
+  }
+  .back:hover{ filter: brightness(1.08); }
+  .back:active{ transform: translateY(1px); }
 
-/* ===== 吹き出し ===== */
-#tapLabel{
-  position:absolute;
-  transform:translate(-50%,-120%);
-  max-width:8.5em;
-  padding:8px 12px;
-  border-radius:14px;
-  background:var(--panel);
-  border:1px solid var(--border);
-  text-align:center;
-  font-weight:1000;
-  font-size:20px;
-  line-height:1.15;
-  white-space:nowrap;
-  display:none;
-  box-shadow:0 12px 26px rgba(0,0,0,.18);
-}
-#tapLabel.alert{
-  color:var(--alert);
-  font-size:22px;
-}
+  .headerTitle{
+    text-align:center;
+    font-weight: 1000;
+    letter-spacing:.2px;
+    font-size: 16px;
+    color: rgba(246,251,255,.86);
+    text-shadow: 0 0 16px rgba(165,230,255,.18);
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow: ellipsis;
+  }
+  .headerSpacer{ width: 1px; height: 1px; }
 
-/* 情報パネル */
-.infoPanel{
-  position:absolute;
-  right:14px;
-  bottom:84px;
-  width:220px;
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:12px;
-}
-.pref{
-  font-size:18px;
-  font-weight:1000;
-  color:var(--prefBlue);
-  text-align:center;
-}
-.cap{
-  margin-top:6px;
-  font-size:16px;
-  font-weight:1000;
-  text-align:center;
-}
-.alertText{
-  color:var(--alert);
-  font-size:18px;
-}
+  .stage{
+    position: relative;
+    width: 100%;
+    height: min(74vh, 760px);
+    min-height: 520px;
+    border-radius: 20px;
+    overflow: hidden;
+    background:
+      radial-gradient(900px 520px at 50% 18%, rgba(190,245,255,.14), transparent 62%),
+      linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+    box-shadow: 0 14px 44px rgba(0,0,0,.18);
+  }
+
+  #svgHost{ position:absolute; inset:0; }
+  #svgHost svg{ width:100%; height:100%; display:block; }
+
+  /* ===== 地図の色 ===== */
+  .geolonia-svg-map .prefecture{
+    fill: var(--land) !important;
+    stroke: var(--stroke) !important;
+    stroke-width: 1 !important;
+  }
+  .geolonia-svg-map .prefecture.is-target{ fill: var(--landTarget) !important; }
+  .geolonia-svg-map .prefecture.is-target:hover{
+    fill: var(--landHover) !important;
+    cursor: pointer;
+  }
+  .geolonia-svg-map .prefecture.not-target{
+    pointer-events: none !important;
+    opacity: .55;
+  }
+
+  /* ===== 吹き出し（小さめ・7〜8文字想定） ===== */
+  #tapLabel{
+    position:absolute;
+    z-index: 6;
+    transform: translate(-50%, -118%);
+    max-width: var(--labelMax);
+    padding: 8px 12px;
+    border-radius: 14px;
+    background: rgba(245,252,255,.96);
+    border: 1px solid var(--border);
+    text-align:center;
+    font-weight: 1000;
+    color: var(--prefBlue);
+    font-size: 20px;
+    line-height: 1.12;
+    display:none;
+    pointer-events:none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: 0 12px 26px rgba(0,0,0,.18);
+  }
+  #tapLabel rt{
+    font-size: 11px;
+    font-weight: 900;
+    color: rgba(20,102,255,.68);
+  }
+  #tapLabel.alert{
+    color: var(--alert);
+    font-size: 22px;
+  }
+  #tapLabel.alert rt{ color: rgba(255,59,59,.75); }
+
+  /* ===== 右下パネル ===== */
+  .infoPanel{
+    position:absolute;
+    right: 14px;
+    bottom: 84px;
+    z-index: 6;
+    width: 240px;
+    max-width: 78vw;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 12px 12px;
+    box-shadow: 0 16px 40px rgba(0,0,0,.12);
+    pointer-events: none;
+    color: var(--text);
+  }
+  .pref{
+    font-size: 18px;
+    font-weight: 1000;
+    letter-spacing:.02em;
+    color: var(--prefBlue);
+    line-height: 1.15;
+    text-align:center;
+  }
+  .pref rt{
+    font-size: 11px;
+    font-weight: 900;
+    color: rgba(20,102,255,.68);
+  }
+  .cap{
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: 1000;
+    text-align:center;
+    line-height: 1.15;
+  }
+  .cap rt{
+    font-size: 11px;
+    font-weight: 900;
+    color: rgba(15,31,38,.55);
+  }
+  .cap.alertText{
+    color: var(--alert);
+    font-size: 18px;
+  }
 </style>
 </head>
 
 <body>
+  <main class="frame" aria-label="知識の泉（北海道・東北）">
+    <div class="headerRow">
+      <a class="back" href="./index.html" aria-label="北海道・東北へ戻る">
+        <span class="arrow">←</span>
+        <span>北海道・東北へ戻る</span>
+      </a>
+      <div class="headerTitle">知識の泉</div>
+      <div class="headerSpacer" aria-hidden="true"></div>
+    </div>
 
-<div class="topbar">
-  <a class="back" href="./index.html">← 北海道・東北へ戻る</a>
-</div>
+    <div class="stage" id="stage">
+      <div id="svgHost"></div>
+      <div id="tapLabel"></div>
 
-<div class="stage" id="stage">
-  <div id="svgHost"></div>
-  <div id="tapLabel"></div>
-
-  <div class="infoPanel">
-    <div class="pref" id="prefLine">県をタップ</div>
-    <div class="cap" id="capLine">—</div>
-  </div>
-</div>
+      <div class="infoPanel" aria-live="polite">
+        <div class="pref" id="prefLine">県をタップ</div>
+        <div class="cap" id="capLine">—</div>
+      </div>
+    </div>
+  </main>
 
 <script>
-const MAP_PATH = "../maps/japan.svg";
-const VIEWBOX = "535 -25 535 700";
+  const MAP_PATH = "../maps/japan.svg";
+  const VIEWBOX  = "535 -25 535 700"; // ← 元に戻したい値
 
-const TARGETS = [
-  "hokkaido","aomori","iwate","miyagi",
-  "akita","yamagata","fukushima"
-];
+  const TARGET_CLASSES = ["hokkaido","aomori","iwate","miyagi","akita","yamagata","fukushima"];
 
-const DATA = {
-  "北海道":{ pref:"ほっかいどう", cap:"さっぽろし", capName:"札幌市" },
-  "青森県":{ pref:"あおもりけん", cap:"あおもりし", capName:"青森市" },
-  "岩手県":{ pref:"いわてけん", cap:"もりおかし", capName:"盛岡市" },
-  "宮城県":{ pref:"みやぎけん", cap:"せんだいし", capName:"仙台市" },
-  "秋田県":{ pref:"あきたけん", cap:"あきたし", capName:"秋田市" },
-  "山形県":{ pref:"やまがたけん", cap:"やまがたし", capName:"山形市" },
-  "福島県":{ pref:"ふくしまけん", cap:"ふくしまし", capName:"福島市" }
-};
+  const DATA = {
+    "北海道":   { pref:"ほっかいどう", cap:"さっぽろし", capName:"札幌市" },
+    "青森県":   { pref:"あおもりけん", cap:"あおもりし", capName:"青森市" },
+    "岩手県":   { pref:"いわてけん",   cap:"もりおかし", capName:"盛岡市" },
+    "宮城県":   { pref:"みやぎけん",   cap:"せんだいし", capName:"仙台市" },
+    "秋田県":   { pref:"あきたけん",   cap:"あきたし",   capName:"秋田市" },
+    "山形県":   { pref:"やまがたけん", cap:"やまがたし", capName:"山形市" },
+    "福島県":   { pref:"ふくしまけん", cap:"ふくしまし", capName:"福島市" },
+  };
 
-function ruby(base,kana){
-  return `<ruby>${base}<rt>${kana}</rt></ruby>`;
-}
+  function coreName(name){
+    return (name || "").replace(/(都|道|府|県|市)$/g,"");
+  }
+  function isMismatch(prefFull, capName){
+    return coreName(prefFull) !== coreName(capName);
+  }
+  function rubyHTML(base, kana){
+    if(!base) return "—";
+    if(!kana) return base;
+    return `<ruby>${base}<rt>${kana}</rt></ruby>`;
+  }
 
-function core(s){ return s.replace(/(都|道|府|県|市)$/g,""); }
-
-function showLabel(html,x,y,alert=false){
-  const l=document.getElementById("tapLabel");
-  l.innerHTML=html;
-  l.classList.toggle("alert",alert);
-  l.style.left=x+"px";
-  l.style.top=y+"px";
-  l.style.display="block";
-  clearTimeout(l._t);
-  l._t=setTimeout(()=>l.style.display="none",1200);
-}
-
-async function init(){
-  const host=document.getElementById("svgHost");
-  const svgText=await fetch(MAP_PATH).then(r=>r.text());
-  host.innerHTML=svgText;
-
-  const svg=host.querySelector("svg");
-  svg.setAttribute("viewBox",VIEWBOX);
-  svg.classList.add("geolonia-svg-map");
-
-  const prefs=[...svg.querySelectorAll(".prefecture")];
-
-  prefs.forEach(p=>{
-    const ok=TARGETS.some(c=>p.classList.contains(c));
-    p.classList.add(ok?"is-target":"not-target");
-
-    if(ok){
-      const name=p.querySelector("title")?.textContent.split("/")[0];
-      p.dataset.name=name;
-      p.addEventListener("pointerdown",e=>{
-        const d=DATA[name];
-        const alert=core(name)!==core(d.capName);
-        showLabel(
-          ruby(name,d.pref),
-          e.clientX,e.clientY,
-          alert
-        );
-        document.getElementById("prefLine").innerHTML=ruby(name,d.pref);
-        document.getElementById("capLine").innerHTML=
-          alert
-          ? `<span class="alertText">⚡ ${ruby(d.capName,d.cap)} ⚡</span>`
-          : ruby(d.capName,d.cap);
-      });
+  /* SVGから「県名」を取る：titleが無くても拾えるようにフォールバック */
+  function pickPrefName(el){
+    // 1) <title>
+    const t = el.querySelector("title")?.textContent;
+    if(t){
+      const jp = t.split("/")[0].trim();
+      return jp;
     }
-  });
+    // 2) aria-label
+    const aria = el.getAttribute("aria-label");
+    if(aria) return aria.trim();
+    // 3) data-name
+    const dn = el.dataset && (el.dataset.name || el.dataset.pref || el.dataset.prefName);
+    if(dn) return String(dn).trim();
+    return "";
+  }
 
-  svg.querySelectorAll("title,desc").forEach(n=>n.remove());
-}
-init();
+  function showTapLabel(html, clientX, clientY, alert){
+    const label = document.getElementById("tapLabel");
+    const stage = document.getElementById("stage");
+    const rect = stage.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+    label.style.left = x + "px";
+    label.style.top  = y + "px";
+    label.innerHTML  = html;
+    label.classList.toggle("alert", !!alert);
+    label.style.display = "block";
+
+    clearTimeout(showTapLabel._t);
+    showTapLabel._t = setTimeout(()=>{ label.style.display="none"; }, 1100);
+  }
+
+  function setInfo(prefFull){
+    const prefLine = document.getElementById("prefLine");
+    const capLine  = document.getElementById("capLine");
+
+    if(!prefFull){
+      prefLine.textContent = "県をタップ";
+      capLine.textContent  = "—";
+      capLine.classList.remove("alertText");
+      return;
+    }
+
+    const d = DATA[prefFull];
+    if(!d){
+      prefLine.textContent = prefFull;
+      capLine.textContent  = "—";
+      capLine.classList.remove("alertText");
+      return;
+    }
+
+    prefLine.innerHTML = rubyHTML(prefFull, d.pref);
+
+    const mismatch = isMismatch(prefFull, d.capName);
+    capLine.innerHTML = mismatch
+      ? `⚡ ${rubyHTML(d.capName, d.cap)} ⚡`
+      : rubyHTML(d.capName, d.cap);
+
+    capLine.classList.toggle("alertText", mismatch);
+  }
+
+  async function loadSVG(){
+    const host = document.getElementById("svgHost");
+    let txt = "";
+    try{
+      const res = await fetch(MAP_PATH, { cache: "no-store" });
+      if(!res.ok) throw new Error("fetch failed");
+      txt = await res.text();
+    }catch(e){
+      host.innerHTML = `<div style="padding:18px;color:#fff;font-weight:900">地図が読み込めません：${MAP_PATH}</div>`;
+      return null;
+    }
+
+    host.innerHTML = txt;
+    const svg = host.querySelector("svg");
+    if(!svg) return null;
+
+    svg.setAttribute("viewBox", VIEWBOX);
+    svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+    svg.classList.add("geolonia-svg-map");
+    return svg;
+  }
+
+  function setup(svg){
+    const prefectures = Array.from(svg.querySelectorAll(".prefecture"));
+    const targets = [];
+
+    prefectures.forEach(g=>{
+      const ok = TARGET_CLASSES.some(cls => g.classList.contains(cls));
+      if(ok){
+        g.classList.add("is-target");
+        targets.push(g);
+      }else{
+        g.classList.add("not-target");
+      }
+    });
+
+    // tooltipsは消す（見た目と操作の邪魔になる）
+    svg.querySelectorAll("title,desc").forEach(n=>n.remove());
+
+    targets.forEach(g=>{
+      const raw = pickPrefName(g);
+      // titleが「青森県」形式で入ってる前提。もし「青森」なら県に補正
+      let prefFull = raw;
+      if(prefFull && prefFull !== "北海道" && !/(都|道|府|県)$/.test(prefFull)){
+        prefFull = prefFull + "県";
+      }
+
+      g.addEventListener("pointerdown", (ev)=>{
+        const cx = ev.clientX ?? 0;
+        const cy = ev.clientY ?? 0;
+
+        const d = DATA[prefFull];
+        const mismatch = d ? isMismatch(prefFull, d.capName) : false;
+
+        // 吹き出し：県名＋ふりがな
+        const labelHtml = d
+          ? rubyHTML(prefFull, d.pref)
+          : prefFull;
+
+        showTapLabel(labelHtml, cx, cy, mismatch);
+        setInfo(prefFull);
+      }, { passive:true });
+    });
+
+    setInfo("");
+  }
+
+  (async ()=>{
+    const svg = await loadSVG();
+    if(!svg) return;
+    setup(svg);
+  })();
 </script>
 
 </body>
