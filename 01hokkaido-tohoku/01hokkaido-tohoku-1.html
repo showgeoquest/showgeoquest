@@ -9,26 +9,50 @@
 
 <style>
   :root{
-    /* 中の水色はそのまま（希望） */
-    --bg1:#e7f3f7;
-    --bg2:#f2fbff;
-
-    --panel: rgba(255,255,255,.90);
+    --panel: rgba(255,255,255,.92);
     --border: rgba(140,180,200,.45);
-
     --text:#0f1f26;
-    --muted: rgba(15,31,38,.65);
 
-    --land:#dff0df;          /* 地図ベース（薄緑） */
-    --landTarget:#cfe8cf;    /* 対象7県（少し濃い） */
-    --landHover:#bfe2ff;     /* 触れたとき */
+    --land:#dff0df;
+    --landTarget:#cfe8cf;
+    --landHover:#bfe2ff;
     --stroke:#6f8f6f;
 
-    --prefBlue:#1466ff;      /* 都道府県名（青） */
+    --prefBlue:#1466ff;
+
+    /* ⚡の見え方（少しだけ強め） */
+    --boltColor: rgba(20,102,255,.95);
+    --boltGlow: rgba(120,190,255,.55);
   }
 
-  /* 外側（青）は style.css、内側のステージは水色グラデを重ねる */
   main{ padding:12px; }
+
+  /* 上部：戻るが見えない問題を潰す（style.css側が暗すぎても見える） */
+  .topbar{
+    width: min(900px, 94vw);
+    margin: 10px auto 0;
+    display:flex;
+    align-items:center;
+    gap: 10px;
+  }
+  .back{
+    display:inline-flex;
+    align-items:center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(120,170,255,.32);
+    background: rgba(18, 26, 50, .52);
+    color: rgba(242,246,255,.96);
+    text-decoration:none;
+    font-weight: 900;
+    letter-spacing:.2px;
+    box-shadow: 0 10px 26px rgba(0,0,0,.22);
+    backdrop-filter: blur(8px);
+  }
+  .back:hover{ filter: brightness(1.08); }
+  .back:active{ transform: translateY(1px); }
+  .arrow{ font-weight: 1000; }
 
   .stage{
     position: relative;
@@ -41,11 +65,12 @@
     border-radius: 20px;
     overflow: hidden;
 
-    border: 1px solid rgba(255,255,255,.06);
+    /* ★暗さを弱める：黒成分を減らし、水色の主張を上げる */
+    border: 1px solid rgba(255,255,255,.10);
     background:
-      radial-gradient(900px 520px at 50% 20%, rgba(70,140,255,.14), transparent 60%),
-      linear-gradient(180deg, rgba(231,243,247,.22), rgba(242,251,255,.12));
-    box-shadow: 0 18px 60px rgba(0,0,0,.38);
+      radial-gradient(900px 520px at 50% 18%, rgba(120,190,255,.18), transparent 62%),
+      linear-gradient(180deg, rgba(231,243,247,.34), rgba(242,251,255,.22));
+    box-shadow: 0 14px 44px rgba(0,0,0,.22);
     backdrop-filter: blur(6px);
   }
 
@@ -60,7 +85,6 @@
   #svgHost{ position:absolute; inset:0; }
   #svgHost svg{ width:100%; height:100%; display:block; }
 
-  /* 地図 */
   .geolonia-svg-map .prefecture{
     fill: var(--land) !important;
     stroke: var(--stroke) !important;
@@ -76,14 +100,13 @@
     opacity: .55;
   }
 
-  /* 触った場所に県名だけ “ドン” ＋ 一瞬発光 */
   #tapLabel{
     position:absolute;
     z-index: 5;
     transform: translate(-50%, -120%);
     padding: 6px 10px;
     border-radius: 12px;
-    background: rgba(255,255,255,.92);
+    background: rgba(255,255,255,.94);
     border: 1px solid var(--border);
     font-weight: 1000;
     letter-spacing: .02em;
@@ -108,10 +131,10 @@
   .infoPanel{
     position:absolute;
     right: 14px;
-    bottom: 72px; /* ★下から浮かせる（希望） */
+    bottom: 84px;   /* ★少し上げる（干渉しにくい） */
     z-index: 6;
 
-    width: 240px;          /* ★正方形寄せ */
+    width: 220px;   /* ★ちょい小さく＝正方形寄せ */
     max-width: 72vw;
 
     background: var(--panel);
@@ -132,6 +155,7 @@
     letter-spacing:.02em;
     color: var(--prefBlue);
     line-height: 1.15;
+    text-align:center;
   }
   .pref ruby{ ruby-position: over; }
   .pref rt{
@@ -140,19 +164,25 @@
     color: rgba(20,102,255,.68);
   }
 
+  /* ★ここが“ガタガタ撲滅”の本体
+     ・⚡は常に左右に「居る」(幅固定) → on/offしても文字位置が動かない
+     ・gapを小さくして“⚡横の余白”も最小化
+  */
   .capRow{
     margin-top: 10px;
     display:flex;
     align-items: baseline;
-    gap: 8px;
-    flex-wrap: wrap;
+    justify-content:center;
+    gap: 2px;              /* ★余計な隙間を減らす */
+    flex-wrap: nowrap;
   }
 
   .cap{
     font-size: 16px;
-    font-weight: 1000; /* ★少し太字（希望） */
+    font-weight: 1000;
     color: var(--text);
     line-height: 1.15;
+    text-align:center;
   }
   .cap ruby{ ruby-position: over; }
   .cap rt{
@@ -161,16 +191,19 @@
     color: rgba(15,31,38,.55);
   }
 
-  /* “気づき”演出：名前が一致しない時だけ、両側に⚡（常灯） */
   .boltMark{
-    display:none;
+    display:inline-block;
+    width: .92em;          /* ★幅固定（ズレない） */
+    text-align:center;
     font-weight: 1000;
-    color: rgba(20,102,255,.92);
-    text-shadow: 0 0 16px rgba(120,190,255,.42);
+    font-size: 1.02em;
+    color: var(--boltColor);
+    text-shadow: 0 0 14px var(--boltGlow);
+    opacity: 0;            /* ★非表示でも“幅は残る”＝ガタガタしない */
+    transform: translateY(-.02em);
   }
-  .boltMark.on{ display:inline; }
+  .boltMark.on{ opacity: .96; }
 
-  /* エラー表示 */
   .err{
     position:absolute;
     inset: 0;
@@ -178,19 +211,19 @@
     place-items:center;
     text-align:center;
     padding: 16px;
-    color: rgba(255,255,255,.92);
+    color: rgba(255,255,255,.94);
   }
   .err .box{
     width: min(520px, 92vw);
     padding: 16px 14px;
     border-radius: 16px;
-    background: rgba(0,0,0,.25);
-    border: 1px solid rgba(255,255,255,.10);
-    box-shadow: 0 18px 60px rgba(0,0,0,.35);
+    background: rgba(0,0,0,.18);
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 18px 60px rgba(0,0,0,.22);
     backdrop-filter: blur(8px);
   }
   .err .big{ font-weight:1000; font-size: 18px; }
-  .err .small{ margin-top:6px; font-weight:900; opacity:.8; }
+  .err .small{ margin-top:6px; font-weight:900; opacity:.86; }
 </style>
 </head>
 
@@ -205,12 +238,10 @@
   <main>
     <div class="stage" id="stage">
       <div id="svgHost"></div>
-
       <div id="tapLabel"></div>
 
       <div class="infoPanel" aria-live="polite">
         <div class="pref" id="prefLine">県をタップ</div>
-
         <div class="capRow">
           <span class="boltMark" id="boltLeft">⚡</span>
           <div class="cap" id="capLine">—</div>
@@ -221,26 +252,9 @@
   </main>
 
 <script>
-/* ===== 知識の泉（北海道・東北）確定版 =====
-  - 戻るボタン：北海道・東北へ戻る（上部）
-  - 右下パネル：正方形寄せ＋少し上へ（福島を邪魔しない）
-  - hoverツールチップ全殺し（title/desc削除）
-  - 対象7県だけ濃く＆クリック可能（他は誤タップ防止）
-  - 県名(青) / 県庁所在地(黒) + ふりがな
-  - “気づき”演出：県名と市名の“核（～県/～市を除いた部分）”が一致しない時だけ ⚡を常灯
-*/
-
 const MAP_PATH = "../maps/japan.svg";
 
-const TARGET_CLASSES = [
-  "hokkaido",
-  "aomori",
-  "iwate",
-  "miyagi",
-  "akita",
-  "yamagata",
-  "fukushima",
-];
+const TARGET_CLASSES = ["hokkaido","aomori","iwate","miyagi","akita","yamagata","fukushima"];
 
 const FURI = {
   "北海道":   { pref:"ほっかいどう", cap:"さっぽろし", capName:"札幌市" },
@@ -252,26 +266,20 @@ const FURI = {
   "福島県":   { pref:"ふくしまけん", cap:"ふくしまし", capName:"福島市" },
 };
 
-/* SVG title: "宮城 / Miyagi" → "宮城"
-   ★「北海道」は“道”を消さない */
 function normalizeJP(titleText){
   const jp = (titleText || "").split("/")[0].trim();
   return jp.replace(/(都|府|県)$/g,""); // 道は残す
 }
-
 function toPrefFullName(jpCore){
   if(!jpCore) return "";
   if(jpCore === "北海道") return "北海道";
   return jpCore.endsWith("県") ? jpCore : (jpCore + "県");
 }
-
 function rubyHTML(base, kana){
   if(!base) return "—";
   if(!kana) return base;
   return `<ruby>${base}<rt>${kana}</rt></ruby>`;
 }
-
-/* “一致/不一致”判定：県/市の接尾辞を落として“核”を比較 */
 function coreName(name){
   return (name || "").replace(/(都|道|府|県|市)$/g,"");
 }
@@ -283,7 +291,6 @@ function showTapLabel(text, clientX, clientY){
   const label = document.getElementById("tapLabel");
   const stage = document.getElementById("stage");
   const rect = stage.getBoundingClientRect();
-
   const x = clientX - rect.left;
   const y = clientY - rect.top;
 
@@ -293,7 +300,6 @@ function showTapLabel(text, clientX, clientY){
   label.style.display = "block";
 
   label.classList.remove("is-glow");
-  // 強制リフロー（連打でも光る）
   void label.offsetWidth;
   label.classList.add("is-glow");
 
@@ -324,10 +330,10 @@ function setInfo(prefFull){
     return;
   }
 
-  prefLine.innerHTML = rubyHTML(prefFull, d.pref);     // 青
-  capLine.innerHTML  = rubyHTML(d.capName, d.cap);     // 黒
+  prefLine.innerHTML = rubyHTML(prefFull, d.pref);
+  capLine.innerHTML  = rubyHTML(d.capName, d.cap);
 
-  // ⚡は“不一致”のときだけ常灯
+  // 不一致（核が違う）だけ⚡点灯。表示/非表示でも幅が一定なのでズレない。
   const mismatch = !isSameCore(prefFull, d.capName);
   bL.classList.toggle("on", mismatch);
   bR.classList.toggle("on", mismatch);
@@ -335,7 +341,6 @@ function setInfo(prefFull){
 
 async function loadSVG(){
   const host = document.getElementById("svgHost");
-
   let txt = "";
   try{
     const res = await fetch(MAP_PATH, { cache: "no-store" });
@@ -353,15 +358,12 @@ async function loadSVG(){
   }
 
   host.innerHTML = txt;
-
   const svg = host.querySelector("svg");
   if(!svg) return null;
 
-  /* ★表示範囲：福島が見切れないように余白を少し確保 */
   svg.setAttribute("viewBox", "535 -25 535 700");
   svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
   svg.classList.add("geolonia-svg-map");
-
   return svg;
 }
 
@@ -379,24 +381,16 @@ function setupInteractivity(svg){
     }
   });
 
-  /* 海を触ったときのツールチップ対策：svg直下のtitle/descも消す */
-  svg.querySelectorAll(":scope > title, :scope > desc").forEach(n=>n.remove());
-
-  /* クリック用の県名を埋める（titleは後で全消し） */
+  // 県名取得 → datasetへ → title/descは全削除（ツールチップ全殺し）
   targets.forEach(g=>{
     const t = g.querySelector("title")?.textContent || "";
     const jpCore = normalizeJP(t);
     const prefFull = toPrefFullName(jpCore);
     g.dataset.prefFull = prefFull;
   });
-
-  /* hoverツールチップ全殺し */
-  svg.querySelectorAll("title").forEach(n=>n.remove());
-  svg.querySelectorAll("desc").forEach(n=>n.remove());
+  svg.querySelectorAll("title,desc").forEach(n=>n.remove());
 
   targets.forEach(g=>{
-    g.style.cursor = "pointer";
-
     const handler = (ev)=>{
       const prefFull = g.dataset.prefFull || "";
       if(!prefFull) return;
@@ -407,7 +401,6 @@ function setupInteractivity(svg){
       showTapLabel(prefFull, cx, cy);
       setInfo(prefFull);
     };
-
     g.addEventListener("pointerdown", handler, { passive:true });
   });
 

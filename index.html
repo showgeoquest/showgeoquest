@@ -5,27 +5,19 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>SHOW GEO QUEST</title>
 
-  <!-- トップ専用CSS -->
   <link rel="stylesheet" href="index.css" />
 
-  <!-- PWA / ホーム画面アイコン -->
   <link rel="manifest" href="site.webmanifest" />
-  <meta name="theme-color" content="#174a9a" />
+  <meta name="theme-color" content="#1f3c7a" />
 
-  <!-- iOSホーム画面アイコン -->
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
-
-  <!-- favicon（任意だけど推奨） -->
   <link rel="icon" href="icons/icon-192.png" sizes="192x192" />
 </head>
 
 <body>
   <main class="frame">
-
-    <!-- ===== タイトル画面 ===== -->
     <section id="screen-title" class="screen">
 
-      <!-- 日本列島（背景SVG） -->
       <div class="title-map" aria-hidden="true">
         <object class="map-svg"
                 data="maps/japan.svg"
@@ -35,11 +27,11 @@
 
       <div class="hero">
         <div class="logo" aria-label="SHOW GEO QUEST">
-          <div class="logo-line">SHOW GEO</div>
+          <div class="logo-line showgeo">SHOW GEO</div>
           <div class="logo-line logo-boltline">
-            <span class="bolt bolt-left">⚡</span>
+            <span class="bolt" aria-hidden="true">⚡</span>
             <span class="quest">QUEST</span>
-            <span class="bolt bolt-right">⚡</span>
+            <span class="bolt" aria-hidden="true">⚡</span>
           </div>
         </div>
 
@@ -51,44 +43,38 @@
 
         <!-- 地方ボタン（PC: 2列 / モバイル: 2列）＋ 東=右列 / 西=左列を固定 -->
         <div class="grid-2 regions-grid" aria-label="地方メニュー">
-          <!-- 左（西日本側） -->
-          <a class="btn region r-kinki" href="04kinki/04kinki.html">近畿</a>
-          <!-- 右（東日本側） -->
-          <a class="btn region r-hk" href="01hokkaido-tohoku/01hokkaido-tohoku.html">北海道・東北</a>
+          <a class="btn region" href="04kinki/04kinki.html">近畿</a>
+          <a class="btn region" href="01hokkaido-tohoku/01hokkaido-tohoku.html">北海道・東北</a>
 
-          <a class="btn region r-chugoku" href="05chugoku-shikoku/05chugoku-shikoku.html">中国・四国</a>
-          <a class="btn region r-kanto" href="02kanto/02kanto.html">関東</a>
+          <a class="btn region" href="05chugoku-shikoku/05chugoku-shikoku.html">中国・四国</a>
+          <a class="btn region" href="02kanto/02kanto.html">関東</a>
 
-          <a class="btn region r-kyushu" href="06kyushu-okinawa/06kyushu-okinawa.html">九州・沖縄</a>
-          <a class="btn region r-chubu" href="03chubu/03chubu.html">中部</a>
+          <a class="btn region" href="06kyushu-okinawa/06kyushu-okinawa.html">九州・沖縄</a>
+          <a class="btn region" href="03chubu/03chubu.html">中部</a>
         </div>
 
         <div class="divider"></div>
 
-        <!-- 制覇モード（モバイル：中央揃え・2行固定） -->
         <div class="conquest-wrap" aria-label="制覇モード">
           <div class="conquest-title">制覇モード</div>
 
           <div class="conquest-grid">
-            <!-- 左 -->
             <a class="btn conquest crackle conquest-west" href="07japan/08west-japan.html">
-              <span class="two">
+              <span class="twoline">
                 <span class="l1">西日本</span>
                 <span class="l2">制覇</span>
               </span>
             </a>
 
-            <!-- 中央（大） -->
             <a class="btn conquest primary crackle conquest-all" href="07japan/09all-japan.html">
-              <span class="two">
+              <span class="twoline">
                 <span class="l1">日本列島</span>
                 <span class="l2">制覇</span>
               </span>
             </a>
 
-            <!-- 右 -->
             <a class="btn conquest crackle conquest-east" href="07japan/07east-japan.html">
-              <span class="two">
+              <span class="twoline">
                 <span class="l1">東日本</span>
                 <span class="l2">縦断</span>
               </span>
@@ -98,7 +84,13 @@
 
       </div>
     </section>
+
+    <section id="screen-game" class="screen" hidden></section>
   </main>
+
+  <footer class="site-footer" aria-label="フッター">
+    <a class="footer-link" href="about.html" aria-label="利用規約・製作者について">利用規約・製作者</a>
+  </footer>
 
   <script src="script.js"></script>
 </body>

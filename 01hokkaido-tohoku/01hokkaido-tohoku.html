@@ -8,66 +8,112 @@
   <link rel="stylesheet" href="../style.css" />
 
   <style>
-    /* 地方トップの“中身（水色は活かす）” */
+    /* 地方トップ：トップ(ドジャース寄せ)に合わせつつ「暗すぎ」を解消 */
     :root{
-      --sea1:#e7f3f7;
-      --sea2:#f2fbff;
-      --inner: rgba(255,255,255,.10);
-      --innerBorder: rgba(140,180,200,.28);
+      --boltGlow: rgba(120,190,255,.46);
+      --innerBorder: rgba(140,180,200,.22);
+      --innerFillA: rgba(231,243,247,.10);
+      --innerFillB: rgba(242,251,255,.08);
 
-      --boltGlow: rgba(120,190,255,.42);
+      /* タイトル（金×青） */
+      --titleGold: #f3cf6a;
+      --titleBlue: #66b3ff;
+      --titleInk: rgba(255,255,255,.92);
     }
 
     .wrap{
-      width: min(900px, 94vw);
-      margin: 12px auto 22px;
+      width: min(920px, 94vw);
+      margin: 12px auto 26px;
       padding: 14px;
     }
 
+    /* 上部：戻るを視覚的に分かりやすく（暗すぎない） */
+    .topbar{
+      width: min(920px, 94vw);
+      margin: 10px auto 0;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--frameEdge);
+      background: rgba(255,255,255,.14);   /* ★明るく */
+      color: var(--text);
+      text-decoration:none;
+      font-weight: 900;
+      letter-spacing:.2px;
+      box-shadow: 0 10px 26px rgba(0,0,0,.18); /* ★軽く */
+      backdrop-filter: blur(10px);
+    }
+    .back .arrow{ font-weight: 1000; opacity:.95; }
+    .back:hover{ filter: brightness(1.08); }
+
+    /* ここは「枠に見えない」ように：cardの内側だけ軽く */
+    .card-inner{
+      background: linear-gradient(180deg, var(--innerFillA), var(--innerFillB));
+      border: 1px solid var(--innerBorder);
+    }
+
     .hero2{
-      padding: 14px 12px 8px;
+      padding: 14px 12px 10px;
       text-align: center;
       position: relative;
       overflow: hidden;
+      border-radius: 18px;
     }
 
-    /* 背景：北海道・東北を“それっぽく”見せる（japan.svg を薄く） */
+    /* 背景：北海道・東北“っぽく”見える位置へ寄せる（少し濃く＝見える化） */
     .hero2 .bg-map{
       position:absolute;
       inset:0;
       pointer-events:none;
-      opacity:.20;
-      filter: drop-shadow(0 0 12px rgba(120,180,255,.22));
+      opacity:.32; /* ★見える化（上げる） */
+      filter: drop-shadow(0 0 16px rgba(120,180,255,.28));
     }
     .hero2 .bg-map object{
-      width: 140%;
-      height: 140%;
+      width: 165%;
+      height: 165%;
       position:absolute;
-      left: 56%;
-      top: 48%;
+      left: 60%;
+      top: 34%;
       transform: translate(-50%,-50%);
       object-fit: contain;
       pointer-events:none;
     }
 
+    /* ★タイトル：金×青グラデ（アイコン寄せ） */
     .title{
       position: relative;
       z-index: 2;
       font-weight: 1000;
-      letter-spacing:.2px;
-      font-size: 26px;
-      margin: 2px 0 8px;
-      text-shadow: 0 0 18px rgba(120,180,255,.25);
+      letter-spacing:.3px;
+      font-size: 28px;
+      margin: 4px 0 10px;
+
+      background: linear-gradient(90deg, var(--titleGold), var(--titleBlue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+
+      text-shadow:
+        0 0 18px rgba(120,190,255,.18),
+        0 0 10px rgba(243,207,106,.12);
     }
 
-    /* 「クエストをえらんでね」→ 枠に入れない（希望どおり） */
+    /* 「クエストをえらんでね」：白だけじゃなく、少し“金寄せ” */
     .lead{
       position: relative;
       z-index: 2;
-      margin: 0 0 10px;
-      color: rgba(242,246,255,.78);
+      margin: 0 0 6px;
+      color: rgba(255,255,255,.88);
       font-weight: 900;
       letter-spacing:.1px;
+      text-shadow: 0 0 16px rgba(120,190,255,.18);
     }
 
     .grid{
@@ -76,7 +122,12 @@
       gap: 12px;
       margin-top: 12px;
     }
+
+    /* ★モバイル：基本2列、狭すぎる時だけ1列 */
     @media (max-width: 720px){
+      .grid{ grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 380px){
       .grid{ grid-template-columns: 1fr; }
     }
 
@@ -90,7 +141,7 @@
 
     .modeTop{
       display:flex;
-      align-items: center;
+      align-items:flex-start;
       justify-content: space-between;
       gap: 10px;
     }
@@ -101,8 +152,9 @@
       letter-spacing:.2px;
     }
 
-    /* 難易度⚡：リンクではない（下線が出ない） */
+    /* 難易度⚡：リンクではない（下線NG）＋下に置く */
     .difficulty{
+      margin-top: 6px;
       display:flex;
       align-items:center;
       gap: 4px;
@@ -122,24 +174,17 @@
     .difficulty .bolt:nth-child(3){ animation-delay: 1.4s; }
 
     @keyframes boltSoft{
-      0%, 76%{ opacity:.78; transform: translateY(0); }
+      0%, 76%{ opacity:.80; transform: translateY(0); }
       80%{ opacity:1; transform: translateY(-1px); }
-      86%{ opacity:.82; transform: translateY(0); }
-      100%{ opacity:.78; }
+      86%{ opacity:.86; transform: translateY(0); }
+      100%{ opacity:.80; }
     }
 
     .desc{
       font-size: 14px;
       font-weight: 900;
-      color: rgba(242,246,255,.78);
+      color: rgba(242,246,255,.84);
       line-height: 1.4;
-    }
-
-    /* 中の“水色”を軽く差し込む（外枠は style.css の青） */
-    .card-inner{
-      background:
-        linear-gradient(180deg, rgba(231,243,247,.08), rgba(242,251,255,.05));
-      border: 1px solid rgba(140,180,200,.14);
     }
   </style>
 </head>
@@ -166,7 +211,6 @@
       <a class="btn modebtn" href="./01hokkaido-tohoku-1.html">
         <div class="modeTop">
           <div class="modeName">知識の泉</div>
-          <div class="difficulty" aria-hidden="true"></div>
         </div>
         <div class="desc">県名と県庁所在地名を手に入れよう</div>
       </a>
@@ -174,24 +218,24 @@
       <a class="btn modebtn" href="./01hokkaido-tohoku-2.html">
         <div class="modeTop">
           <div class="modeName">その県どこ？</div>
-          <div class="difficulty" aria-hidden="true"><span class="bolt">⚡</span></div>
         </div>
+        <div class="difficulty" aria-hidden="true"><span class="bolt">⚡</span></div>
         <div class="desc">県名 → 地図からえらぶ</div>
       </a>
 
       <a class="btn modebtn" href="./01hokkaido-tohoku-3.html">
         <div class="modeTop">
           <div class="modeName">その県名は？</div>
-          <div class="difficulty" aria-hidden="true"><span class="bolt">⚡</span><span class="bolt">⚡</span></div>
         </div>
+        <div class="difficulty" aria-hidden="true"><span class="bolt">⚡</span><span class="bolt">⚡</span></div>
         <div class="desc">地図 → 県名をえらぶ</div>
       </a>
 
       <a class="btn modebtn" href="./01hokkaido-tohoku-4.html">
         <div class="modeTop">
           <div class="modeName">県庁所在地マッチング</div>
-          <div class="difficulty" aria-hidden="true"><span class="bolt">⚡</span><span class="bolt">⚡</span><span class="bolt">⚡</span></div>
         </div>
+        <div class="difficulty" aria-hidden="true"><span class="bolt">⚡</span><span class="bolt">⚡</span><span class="bolt">⚡</span></div>
         <div class="desc">県名 ↔︎ 県庁所在地</div>
       </a>
     </section>
