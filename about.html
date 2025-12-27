@@ -10,74 +10,108 @@
   <link rel="stylesheet" href="index.css">
 
   <style>
-    body {
-      margin: 0;
-      line-height: 1.8;
+    body{
+      margin:0;
+      line-height:1.8;
+      color: var(--text);
     }
 
-    /* ===== 戻るボタン ===== */
+    /* ===== 戻るボタン（タイトルへ） ===== */
     .topbar{
       position: fixed;
       top: 12px;
       left: 12px;
       z-index: 1000;
     }
-    .topbar .back{
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-
-      padding: 8px 12px;
-      border-radius: 12px;
-
-      font-size: 14px;
-      font-weight: 700;
-      text-decoration: none;
-
-      color: rgba(246,251,255,.78);
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:8px 12px;
+      border-radius:12px;
+      font-size:14px;
+      font-weight:900;
+      text-decoration:none;
+      color: rgba(246,251,255,.85);
       background: rgba(45,125,255,.22);
       border: 1px solid rgba(210,245,255,.30);
-
       backdrop-filter: blur(4px);
     }
-    .topbar .back:hover{
-      opacity: .7;
+    .back:hover{ opacity:.7; }
+
+    .wrap{
+      max-width:960px;
+      margin:0 auto;
+      padding:64px 18px 80px;
     }
 
-    .wrap {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 24px 18px 60px;
+    h1{
+      font-size:1.7rem;
+      margin:0 0 28px;
+      text-align:center;
     }
-    h1 {
-      font-size: 1.6rem;
-      margin: 0 0 20px;
+
+    /* ===== ⚡付き見出し ===== */
+    h2{
+      font-size:1.25rem;
+      margin:42px 0 14px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-weight:1000;
     }
-    h2 {
-      font-size: 1.2rem;
-      margin: 36px 0 12px;
+
+    h2 .bolt{
+      font-size:1.1em;
+      color:#d9f2ff;
+      text-shadow:
+        0 0 10px rgba(160,230,255,.55),
+        0 0 22px rgba(160,230,255,.35);
+      animation: boltGlow 4.8s ease-in-out infinite;
     }
-    p {
-      margin: 0 0 12px;
+    h2 .bolt.right{ animation-delay: .6s; }
+
+    @keyframes boltGlow{
+      0%,78%,100%{ opacity:.75; filter:brightness(1); }
+      82%{ opacity:1; filter:brightness(1.35); }
+      86%{ opacity:.9; }
     }
-    footer {
-      margin-top: 48px;
-      font-size: 0.9rem;
-      opacity: 0.8;
+
+    p{ margin:0 0 14px; }
+
+    /* ===== フォームを目立たせる ===== */
+    .form-box{
+      margin-top:16px;
+      padding:16px 18px;
+      border-radius:16px;
+      background: rgba(45,125,255,.22);
+      border:1px solid rgba(210,245,255,.32);
+      box-shadow: 0 12px 32px rgba(0,0,0,.25);
     }
-    a {
-      text-decoration: none;
+    .form-box a{
+      font-weight:1000;
+      color:#ffffff;
+      text-decoration:none;
+      text-shadow:
+        0 0 10px rgba(160,230,255,.55);
+    }
+    .form-box a:hover{ opacity:.85; }
+
+    footer{
+      margin-top:64px;
+      font-size:0.9rem;
+      opacity:.7;
+      text-align:center;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- 戻るボタン -->
+  <!-- 戻る -->
   <div class="topbar">
     <a class="back" href="index.html" aria-label="トップへ戻る">
-      <span class="arrow">←</span>
-      <span>トップへ戻る</span>
+      ← トップへ戻る
     </a>
   </div>
 
@@ -93,15 +127,23 @@
     </section>
 
     <section>
-      <h2>称号について</h2>
+      <h2>
+        <span class="bolt">⚡</span>
+        称号について
+        <span class="bolt right">⚡</span>
+      </h2>
       <p>
-        SHOW GEO では、プレイの進行やクリアの蓄積によって、
+        SHOW GEO QUESTでは、プレイの進行やクリアの蓄積によって、
         表示される称号が変化します。
       </p>
     </section>
 
     <section>
-      <h2>データの保存について</h2>
+      <h2>
+        <span class="bolt">⚡</span>
+        データの保存について
+        <span class="bolt right">⚡</span>
+      </h2>
       <p>
         称号や進行状況の一部は、ブラウザのキャッシュ（ローカルデータ）を利用して保存されます。
       </p>
@@ -112,7 +154,11 @@
     </section>
 
     <section>
-      <h2>連絡先・利用について</h2>
+      <h2>
+        <span class="bolt">⚡</span>
+        連絡先・利用について
+        <span class="bolt right">⚡</span>
+      </h2>
       <p>
         SHOW GEO QUEST を学校や自治体で使用される場合は、
         以下のフォームからご連絡ください。
@@ -121,16 +167,21 @@
         本フォームは、本コンテンツの普及状況を把握する目的で設けています。
         利用の可否や継続を制限するものではありません。
       </p>
-      <p>
+
+      <div class="form-box">
         <a href="https://docs.google.com/forms/d/1CBQkkc27ffdLSnee8Ygw4vMHMArJicuE3JaK1HXUhtw/viewform"
            target="_blank" rel="noopener">
-          利用連絡フォーム
+          ▶ 利用連絡フォームはこちら
         </a>
-      </p>
+      </div>
     </section>
 
     <section>
-      <h2>Credits</h2>
+      <h2>
+        <span class="bolt">⚡</span>
+        Credits
+        <span class="bolt right">⚡</span>
+      </h2>
       <p>
         Original map data:<br>
         Geolonia（https://geolonia.com/）
