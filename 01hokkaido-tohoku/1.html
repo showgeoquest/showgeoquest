@@ -32,6 +32,10 @@
     /* ⚡ */
     --boltColor: rgba(20,102,255,.95);
     --boltGlow: rgba(165,230,255,.55);
+
+    /* ミスマッチ強調（赤＋大きく） */
+    --warnRed: #ff4b4b;
+    --warnGlow: rgba(255, 120, 120, .55);
   }
 
   *{ box-sizing:border-box; }
@@ -65,48 +69,15 @@
 
   main{ padding:12px; }
 
-  /* 戻る（indexのボタン寄せ） */
-  .topbar{
-    width: min(900px, 94vw);
-    margin: 10px auto 0;
-    display:flex;
-    align-items:center;
-    gap: 10px;
-  }
-  .back{
-    display:inline-flex;
-    align-items:center;
-    gap: 10px;
-    padding: 10px 12px;
-    border-radius: 14px;
-
-    border: 1px solid rgba(210,245,255,.30);
-    background:
-      linear-gradient(180deg, rgba(255,255,255,.08), transparent 45%),
-      linear-gradient(135deg, rgba(45,125,255,.72), rgba(170,225,255,.18));
-
-    color: var(--textLite);
-    text-decoration:none;
-    font-weight: 900;
-    letter-spacing:.2px;
-
-    box-shadow:
-      0 12px 28px rgba(0,0,0,.24),
-      inset 0 1px 0 rgba(255,255,255,.10);
-  }
-  .back:hover{ filter: brightness(1.08); }
-  .back:active{ transform: translateY(1px); }
-  .arrow{ font-weight: 1000; }
-
   .stage{
     position: relative;
-    width: min(900px, 94vw);
-    margin: 12px auto 22px;
+    width: min(980px, 94vw);
+    margin: 10px auto 22px;
 
-    height: min(74vh, 760px);
+    height: min(78vh, 820px);
     min-height: 520px;
 
-    border-radius: 20px;
+    border-radius: 22px;
     overflow: hidden;
 
     /* ★色合わせ：黒板をやめて“薄い光だけ” */
@@ -120,11 +91,44 @@
 
   @media (max-width: 900px){
     .stage{
-      height: 72vh;
-      min-height: 480px;
+      height: 78vh;
+      min-height: 520px;
       border-radius: 18px;
     }
   }
+
+  /* 戻るボタン：ステージ内に重ねる（1行ムダを消す） */
+  .back{
+    position:absolute;
+    z-index: 8;
+    left: 14px;
+    top: 14px;
+
+    display:inline-flex;
+    align-items:center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 16px;
+
+    border: 1px solid rgba(210,245,255,.30);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.08), transparent 45%),
+      linear-gradient(135deg, rgba(45,125,255,.72), rgba(170,225,255,.18));
+
+    color: var(--textLite);
+    text-decoration:none;
+    font-weight: 900;
+    letter-spacing:.2px;
+
+    box-shadow:
+      0 12px 28px rgba(0,0,0,.22),
+      inset 0 1px 0 rgba(255,255,255,.10);
+
+    white-space: nowrap;
+  }
+  .back:hover{ filter: brightness(1.08); }
+  .back:active{ transform: translateY(1px); }
+  .arrow{ font-weight: 1000; }
 
   #svgHost{ position:absolute; inset:0; }
   #svgHost svg{ width:100%; height:100%; display:block; }
@@ -144,54 +148,62 @@
     opacity: .55;
   }
 
+  /* 県の上に出るポップ（大きく＋ふりがな対応） */
   #tapLabel{
     position:absolute;
-    z-index: 5;
-    transform: translate(-50%, -120%);
-    padding: 6px 10px;
-    border-radius: 12px;
-    background: rgba(245,252,255,.96);
+    z-index: 7;
+    transform: translate(-50%, -135%);
+    padding: 10px 14px;
+    border-radius: 16px;
+    background: rgba(245,252,255,.97);
     border: 1px solid var(--border);
+
     font-weight: 1000;
     letter-spacing: .02em;
     color: var(--prefBlue);
-    font-size: 22px;
+    font-size: 26px;
     line-height: 1.1;
+
     display:none;
     pointer-events:none;
     white-space: nowrap;
-    box-shadow: 0 10px 22px rgba(0,0,0,.10);
+
+    box-shadow: 0 14px 30px rgba(0,0,0,.12);
   }
-  #tapLabel.is-glow{
-    animation: tapGlow .55s ease-out;
+  #tapLabel ruby{ ruby-position: over; }
+  #tapLabel rt{
+    font-size: 12px;
+    font-weight: 900;
+    color: rgba(20,102,255,.68);
   }
+  #tapLabel.is-glow{ animation: tapGlow .55s ease-out; }
   @keyframes tapGlow{
-    0%{ text-shadow: 0 0 0 rgba(20,102,255,0); }
-    35%{ text-shadow: 0 0 18px rgba(20,102,255,.55); }
-    100%{ text-shadow: 0 0 0 rgba(20,102,255,0); }
+    0%{ text-shadow: 0 0 0 rgba(20,102,255,0); transform: translate(-50%, -135%) scale(.98); }
+    35%{ text-shadow: 0 0 18px rgba(20,102,255,.55); transform: translate(-50%, -135%) scale(1.02); }
+    100%{ text-shadow: 0 0 0 rgba(20,102,255,0); transform: translate(-50%, -135%) scale(1); }
   }
 
+  /* 右下パネル：もう少し大きく＆文字大きく */
   .infoPanel{
     position:absolute;
-    right: 14px;
-    bottom: 84px;
+    right: 16px;
+    bottom: 18px;
     z-index: 6;
 
-    width: 220px;
-    max-width: 72vw;
+    width: 320px;
+    max-width: 84vw;
 
     background: var(--panel);
     border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 12px 12px;
+    border-radius: 22px;
+    padding: 14px 14px;
 
-    box-shadow: 0 16px 40px rgba(0,0,0,.10);
-
+    box-shadow: 0 18px 46px rgba(0,0,0,.12);
     pointer-events: none;
   }
 
   .pref{
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 1000;
     letter-spacing:.02em;
     color: var(--prefBlue);
@@ -200,7 +212,7 @@
   }
   .pref ruby{ ruby-position: over; }
   .pref rt{
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 900;
     color: rgba(20,102,255,.68);
   }
@@ -210,12 +222,12 @@
     display:flex;
     align-items: baseline;
     justify-content:center;
-    gap: 2px;
+    gap: 6px;
     flex-wrap: nowrap;
   }
 
   .cap{
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 1000;
     color: var(--text);
     line-height: 1.15;
@@ -223,23 +235,38 @@
   }
   .cap ruby{ ruby-position: over; }
   .cap rt{
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 900;
     color: rgba(15,31,38,.55);
   }
 
+  /* ⚡：通常 */
   .boltMark{
     display:inline-block;
-    width: .92em;
+    width: 1.05em;
     text-align:center;
     font-weight: 1000;
-    font-size: 1.02em;
+    font-size: 1.2em;
     color: var(--boltColor);
-    text-shadow: 0 0 14px var(--boltGlow);
+    text-shadow: 0 0 16px var(--boltGlow);
     opacity: 0;
     transform: translateY(-.02em);
   }
   .boltMark.on{ opacity: .96; }
+
+  /* ミスマッチ時：赤＋大きく */
+  .mismatch .pref,
+  .mismatch .cap{
+    color: var(--warnRed);
+    text-shadow: 0 0 16px var(--warnGlow);
+  }
+  .mismatch .boltMark{
+    color: var(--warnRed);
+    text-shadow: 0 0 18px var(--warnGlow);
+    font-size: 1.35em;
+  }
+  .mismatch .pref rt{ color: rgba(255, 120, 120, .78); }
+  .mismatch .cap rt{ color: rgba(255, 120, 120, .68); }
 
   .err{
     position:absolute;
@@ -265,19 +292,17 @@
 </head>
 
 <body>
-  <div class="topbar">
-    <a class="back" href="./01hokkaido-tohoku.html" aria-label="北海道・東北へ戻る">
-      <span class="arrow">←</span>
-      <span>北海道・東北へ戻る</span>
-    </a>
-  </div>
-
   <main>
     <div class="stage" id="stage">
+      <a class="back" href="./index.html" aria-label="北海道・東北へ戻る">
+        <span class="arrow">←</span>
+        <span>北海道・東北へ戻る</span>
+      </a>
+
       <div id="svgHost"></div>
       <div id="tapLabel"></div>
 
-      <div class="infoPanel" aria-live="polite">
+      <div class="infoPanel" id="infoPanel" aria-live="polite">
         <div class="pref" id="prefLine">県をタップ</div>
         <div class="capRow">
           <span class="boltMark" id="boltLeft">⚡</span>
@@ -289,9 +314,18 @@
   </main>
 
 <script>
+/* ========= 設定（ここだけ触ればOK） ========= */
 const MAP_PATH = "../maps/japan.svg";
 
+/* 北海道・東北だけを操作対象に */
 const TARGET_CLASSES = ["hokkaido","aomori","iwate","miyagi","akita","yamagata","fukushima"];
+
+/*
+  ★表示範囲（南側を切る）
+  - ここは「ちょい北に寄せた」仮値です。
+  - もっと南を切りたいなら、最後の “高さ” を小さくする/ “y” を上げる などで調整できます。
+*/
+const REGION_VIEWBOX = "600 -40 470 520";
 
 const FURI = {
   "北海道":   { pref:"ほっかいどう", cap:"さっぽろし", capName:"札幌市" },
@@ -324,16 +358,19 @@ function isSameCore(prefFull, capName){
   return coreName(prefFull) === coreName(capName);
 }
 
-function showTapLabel(text, clientX, clientY){
+/* 県の上に出るラベル（ふりがな付き） */
+function showTapLabel(prefFull, clientX, clientY){
   const label = document.getElementById("tapLabel");
   const stage = document.getElementById("stage");
   const rect = stage.getBoundingClientRect();
   const x = clientX - rect.left;
   const y = clientY - rect.top;
 
+  const d = FURI[prefFull];
+  label.innerHTML = d ? rubyHTML(prefFull, d.pref) : prefFull;
+
   label.style.left = x + "px";
   label.style.top  = y + "px";
-  label.textContent = text;
   label.style.display = "block";
 
   label.classList.remove("is-glow");
@@ -341,14 +378,17 @@ function showTapLabel(text, clientX, clientY){
   label.classList.add("is-glow");
 
   clearTimeout(showTapLabel._t);
-  showTapLabel._t = setTimeout(()=>{ label.style.display="none"; }, 1100);
+  showTapLabel._t = setTimeout(()=>{ label.style.display="none"; }, 1200);
 }
 
 function setInfo(prefFull){
+  const panel = document.getElementById("infoPanel");
   const prefLine = document.getElementById("prefLine");
   const capLine  = document.getElementById("capLine");
   const bL = document.getElementById("boltLeft");
   const bR = document.getElementById("boltRight");
+
+  panel.classList.remove("mismatch");
 
   if(!prefFull){
     prefLine.textContent = "県をタップ";
@@ -371,8 +411,10 @@ function setInfo(prefFull){
   capLine.innerHTML  = rubyHTML(d.capName, d.cap);
 
   const mismatch = !isSameCore(prefFull, d.capName);
+
   bL.classList.toggle("on", mismatch);
   bR.classList.toggle("on", mismatch);
+  panel.classList.toggle("mismatch", mismatch);
 }
 
 async function loadSVG(){
@@ -397,7 +439,7 @@ async function loadSVG(){
   const svg = host.querySelector("svg");
   if(!svg) return null;
 
-  svg.setAttribute("viewBox", "535 -25 535 700");
+  svg.setAttribute("viewBox", REGION_VIEWBOX);
   svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
   svg.classList.add("geolonia-svg-map");
   return svg;
@@ -423,6 +465,8 @@ function setupInteractivity(svg){
     const prefFull = toPrefFullName(jpCore);
     g.dataset.prefFull = prefFull;
   });
+
+  /* 背景の右上に出る余計な文字（svg内のtitle/desc）を消す */
   svg.querySelectorAll("title,desc").forEach(n=>n.remove());
 
   targets.forEach(g=>{
