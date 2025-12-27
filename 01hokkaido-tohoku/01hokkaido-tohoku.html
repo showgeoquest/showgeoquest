@@ -8,54 +8,17 @@
   <link rel="stylesheet" href="../style.css" />
 
   <style>
-    /* ===== index.html の世界観（色・背景）に寄せる ===== */
+    /* 地方トップ：トップ(ドジャース寄せ)に合わせつつ「暗すぎ」を解消 */
     :root{
-      color-scheme: dark;
+      --boltGlow: rgba(120,190,255,.46);
+      --innerBorder: rgba(140,180,200,.22);
+      --innerFillA: rgba(231,243,247,.10);
+      --innerFillB: rgba(242,251,255,.08);
 
-      /* index と同系の基調 */
-      --bg: #14356f;
-      --text: #f6fbff;
-      --muted: rgba(246,251,255,.82);
-
-      /* ボタンの縁：index寄せ */
-      --btnEdge: rgba(210,245,255,.30);
-
-      /* 発光 */
-      --boltGlow: rgba(165,230,255,.38);
-
-      /* タイトル（金×青白） */
-      --titleGold: #f5c84b;
-      --titleBlue: #d9f2ff;
-    }
-
-    *{ box-sizing:border-box; }
-
-    /* 背景は index と同じ “1枚固定” */
-    html{
-      height: 100%;
-      min-height: 100%;
-      background: var(--bg);
-    }
-    body{
-      margin: 0;
-      min-height: 100vh;
-      color: var(--text);
-      background: transparent;
-      position: relative;
-      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-    }
-    body::before{
-      content:"";
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      pointer-events: none;
-      background:
-        radial-gradient(1200px 760px at 50% 6%,  rgba(165,230,255,.44), transparent 60%),
-        radial-gradient(1100px 700px at 50% 40%, rgba(120,200,255,.28), transparent 62%),
-        radial-gradient(1100px 680px at 50% 92%, rgba(120,200,255,.18), transparent 70%),
-        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 28%),
-        var(--bg);
+      /* タイトル（金×青） */
+      --titleGold: #f3cf6a;
+      --titleBlue: #66b3ff;
+      --titleInk: rgba(255,255,255,.92);
     }
 
     .wrap{
@@ -64,7 +27,7 @@
       padding: 14px;
     }
 
-    /* 上部：戻る（indexのボタン寄せ） */
+    /* 上部：戻るを視覚的に分かりやすく（暗すぎない） */
     .topbar{
       width: min(920px, 94vw);
       margin: 10px auto 0;
@@ -78,28 +41,23 @@
       gap: 10px;
       padding: 10px 12px;
       border-radius: 14px;
-
-      border: 1px solid var(--btnEdge);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.08), transparent 45%),
-        linear-gradient(135deg, rgba(45,125,255,.72), rgba(170,225,255,.18));
-
+      border: 1px solid var(--frameEdge);
+      background: rgba(255,255,255,.14);   /* ★明るく */
       color: var(--text);
       text-decoration:none;
       font-weight: 900;
       letter-spacing:.2px;
-
-      box-shadow:
-        0 12px 28px rgba(0,0,0,.24),
-        inset 0 1px 0 rgba(255,255,255,.10);
+      box-shadow: 0 10px 26px rgba(0,0,0,.18); /* ★軽く */
+      backdrop-filter: blur(10px);
     }
     .back .arrow{ font-weight: 1000; opacity:.95; }
     .back:hover{ filter: brightness(1.08); }
-    .back:active{ transform: translateY(1px); }
 
-    /* ★「板っぽさ」を消す：card系は透明化（色合わせだけ） */
-    .card{ background: transparent !important; border: none !important; box-shadow:none !important; backdrop-filter:none !important; }
-    .card-inner{ background: transparent !important; border: none !important; }
+    /* ここは「枠に見えない」ように：cardの内側だけ軽く */
+    .card-inner{
+      background: linear-gradient(180deg, var(--innerFillA), var(--innerFillB));
+      border: 1px solid var(--innerBorder);
+    }
 
     .hero2{
       padding: 14px 12px 10px;
@@ -109,13 +67,13 @@
       border-radius: 18px;
     }
 
-    /* 背景地図：index の青白発光に寄せる */
+    /* 背景：北海道・東北“っぽく”見える位置へ寄せる（少し濃く＝見える化） */
     .hero2 .bg-map{
       position:absolute;
       inset:0;
       pointer-events:none;
-      opacity:.28;
-      filter: drop-shadow(0 0 18px rgba(190,245,255,.26));
+      opacity:.32; /* ★見える化（上げる） */
+      filter: drop-shadow(0 0 16px rgba(120,180,255,.28));
     }
     .hero2 .bg-map object{
       width: 165%;
@@ -128,7 +86,7 @@
       pointer-events:none;
     }
 
-    /* タイトル（金×青白） */
+    /* ★タイトル：金×青グラデ（アイコン寄せ） */
     .title{
       position: relative;
       z-index: 2;
@@ -143,19 +101,19 @@
       color: transparent;
 
       text-shadow:
-        0 0 18px rgba(165,230,255,.18),
-        0 0 10px rgba(245,200,75,.14);
+        0 0 18px rgba(120,190,255,.18),
+        0 0 10px rgba(243,207,106,.12);
     }
 
-    /* 「クエストをえらんでね」：index の tagline と同系色 */
+    /* 「クエストをえらんでね」：白だけじゃなく、少し“金寄せ” */
     .lead{
       position: relative;
       z-index: 2;
       margin: 0 0 6px;
-      color: rgba(246,251,255,.78);
+      color: rgba(255,255,255,.88);
       font-weight: 900;
       letter-spacing:.1px;
-      text-shadow: 0 0 16px rgba(165,230,255,.14);
+      text-shadow: 0 0 16px rgba(120,190,255,.18);
     }
 
     .grid{
@@ -164,6 +122,8 @@
       gap: 12px;
       margin-top: 12px;
     }
+
+    /* ★モバイル：基本2列、狭すぎる時だけ1列 */
     @media (max-width: 720px){
       .grid{ grid-template-columns: 1fr 1fr; }
     }
@@ -192,7 +152,7 @@
       letter-spacing:.2px;
     }
 
-    /* 難易度⚡：indexの青白発光寄せ */
+    /* 難易度⚡：リンクではない（下線NG）＋下に置く */
     .difficulty{
       margin-top: 6px;
       display:flex;
@@ -201,12 +161,12 @@
       font-weight: 1000;
       opacity: .95;
       user-select: none;
-      color: rgba(246,251,255,.92);
+      color: rgba(242,246,255,.92);
       text-shadow: 0 0 18px var(--boltGlow);
     }
     .difficulty .bolt{
       display:inline-block;
-      filter: drop-shadow(0 0 10px rgba(165,230,255,.34));
+      filter: drop-shadow(0 0 10px rgba(120,190,255,.45));
       animation: boltSoft 6.2s ease-in-out infinite;
     }
     .difficulty .bolt:nth-child(1){ animation-delay: 0s; }
@@ -223,7 +183,7 @@
     .desc{
       font-size: 14px;
       font-weight: 900;
-      color: rgba(246,251,255,.84);
+      color: rgba(242,246,255,.84);
       line-height: 1.4;
     }
   </style>
@@ -240,7 +200,13 @@
   <main class="wrap card card-inner">
     <section class="hero2">
       <div class="bg-map" aria-hidden="true">
-        <object data="../maps/japan.svg" type="image/svg+xml" tabindex="-1"></object>
+        <!-- ★差し替えポイント：object読み込み後に viewBox を当てる -->
+        <object
+          id="bgMapObj"
+          data="../maps/japan.svg"
+          type="image/svg+xml"
+          tabindex="-1"
+          aria-hidden="true"></object>
       </div>
 
       <h1 class="title">北海道・東北クエスト</h1>
@@ -280,5 +246,45 @@
       </a>
     </section>
   </main>
+
+  <script>
+  (function(){
+    // ★ここが「各地方の1」から渡してくる値になる想定
+    // いまは北海道・東北（01hokkaido-tohoku-1.html）と同じ値を直書き
+    const REGION_VIEWBOX = "535 -25 535 700";
+    const REGION_PRESERVE = "xMidYMid meet";
+
+    const obj = document.getElementById("bgMapObj");
+    if(!obj) return;
+
+    function applyViewBox(){
+      try{
+        const doc = obj.contentDocument;
+        if(!doc) return;
+
+        const svg = doc.querySelector("svg");
+        if(!svg) return;
+
+        svg.setAttribute("viewBox", REGION_VIEWBOX);
+        svg.setAttribute("preserveAspectRatio", REGION_PRESERVE);
+
+        // 背景用：クリック無効・選択無効・余計なツールチップ抑止
+        svg.style.pointerEvents = "none";
+        svg.style.userSelect = "none";
+
+        // もし title/desc が残っていてもツールチップを出しにくくする（念のため）
+        doc.querySelectorAll("title, desc").forEach(n => n.remove());
+      }catch(e){
+        // ここでは何もしない（読み込めない環境でもそのまま全体地図が表示されればOK）
+      }
+    }
+
+    // object のSVGが読み込まれたタイミングで当てる
+    obj.addEventListener("load", applyViewBox);
+
+    // まれにloadより先に読めているケースの保険
+    if(obj.contentDocument) applyViewBox();
+  })();
+  </script>
 </body>
 </html>
