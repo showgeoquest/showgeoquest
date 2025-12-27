@@ -40,17 +40,41 @@
       </div>
 
       <div class="menu">
-
         <!-- 地方ボタン（PC: 2列 / モバイル: 2列）＋ 東=右列 / 西=左列を固定 -->
         <div class="grid-2 regions-grid" aria-label="地方メニュー">
-          <a class="btn region" href="04kinki/04kinki.html">近畿</a>
-          <a class="btn region" href="01hokkaido-tohoku/01hokkaido-tohoku.html">北海道・東北</a>
 
-          <a class="btn region" href="05chugoku-shikoku/05chugoku-shikoku.html">中国・四国</a>
-          <a class="btn region" href="02kanto/02kanto.html">関東</a>
+          <a class="btn region" href="04kinki/04kinki.html">
+            <span class="region-one">近畿</span>
+          </a>
 
-          <a class="btn region" href="06kyushu-okinawa/06kyushu-okinawa.html">九州・沖縄</a>
-          <a class="btn region" href="03chubu/03chubu.html">中部</a>
+          <a class="btn region region-2line" href="01hokkaido-tohoku/01hokkaido-tohoku.html">
+            <span class="tworegion">
+              <span class="l1">北海道</span>
+              <span class="l2">東北</span>
+            </span>
+          </a>
+
+          <a class="btn region region-2line" href="05chugoku-shikoku/05chugoku-shikoku.html">
+            <span class="tworegion">
+              <span class="l1">中国</span>
+              <span class="l2">四国</span>
+            </span>
+          </a>
+
+          <a class="btn region" href="02kanto/02kanto.html">
+            <span class="region-one">関東</span>
+          </a>
+
+          <a class="btn region region-2line" href="06kyushu-okinawa/06kyushu-okinawa.html">
+            <span class="tworegion">
+              <span class="l1">九州</span>
+              <span class="l2">沖縄</span>
+            </span>
+          </a>
+
+          <a class="btn region" href="03chubu/03chubu.html">
+            <span class="region-one">中部</span>
+          </a>
         </div>
 
         <div class="divider"></div>
@@ -80,17 +104,18 @@
               </span>
             </a>
           </div>
-        </div>
 
+          <!-- ★固定しない：常に「東日本縦断」より下に来て、目立たない -->
+          <footer class="site-footer" aria-label="フッター">
+            <a class="footer-link" href="about.html" aria-label="利用規約・製作者について">利用規約・製作者</a>
+          </footer>
+
+        </div>
       </div>
     </section>
 
     <section id="screen-game" class="screen" hidden></section>
   </main>
-
-  <footer class="site-footer" aria-label="フッター">
-    <a class="footer-link" href="about.html" aria-label="利用規約・製作者について">利用規約・製作者</a>
-  </footer>
 
   <script src="script.js"></script>
 </body>
