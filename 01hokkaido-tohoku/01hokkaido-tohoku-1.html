@@ -5,7 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>知識の泉｜北海道・東北</title>
 
+<!-- 共通 -->
 <link rel="stylesheet" href="../style.css" />
+<!-- ★トップ(index)の世界観 -->
+<link rel="stylesheet" href="../index.css" />
 
 <style>
   :root{
@@ -20,39 +23,32 @@
 
     --prefBlue:#1466ff;
 
-    /* ⚡の見え方（少しだけ強め） */
     --boltColor: rgba(20,102,255,.95);
     --boltGlow: rgba(120,190,255,.55);
   }
 
+  /* index.css の body が中央寄せ系でも、ゲームは通常フローで使う */
+  body{
+    display:block;
+    place-items: unset;
+    padding: 0 0 24px;
+  }
+
   main{ padding:12px; }
 
-  /* 上部：戻るが見えない問題を潰す（style.css側が暗すぎても見える） */
+  /* 戻る：トップと同じ .back を使う（重なり防止でsticky） */
   .topbar{
     width: min(900px, 94vw);
-    margin: 10px auto 0;
+    margin: 12px auto 0;
+    position: sticky;
+    top: 12px;
+    z-index: 60;
     display:flex;
     align-items:center;
     gap: 10px;
+    pointer-events: none;
   }
-  .back{
-    display:inline-flex;
-    align-items:center;
-    gap: 10px;
-    padding: 10px 12px;
-    border-radius: 14px;
-    border: 1px solid rgba(120,170,255,.32);
-    background: rgba(18, 26, 50, .52);
-    color: rgba(242,246,255,.96);
-    text-decoration:none;
-    font-weight: 900;
-    letter-spacing:.2px;
-    box-shadow: 0 10px 26px rgba(0,0,0,.22);
-    backdrop-filter: blur(8px);
-  }
-  .back:hover{ filter: brightness(1.08); }
-  .back:active{ transform: translateY(1px); }
-  .arrow{ font-weight: 1000; }
+  .topbar .back{ pointer-events:auto; }
 
   .stage{
     position: relative;
@@ -65,7 +61,7 @@
     border-radius: 20px;
     overflow: hidden;
 
-    /* ★暗さを弱める：黒成分を減らし、水色の主張を上げる */
+    /* “板感”を軽く（でも読みやすさは維持） */
     border: 1px solid rgba(255,255,255,.10);
     background:
       radial-gradient(900px 520px at 50% 18%, rgba(120,190,255,.18), transparent 62%),
@@ -118,23 +114,20 @@
     white-space: nowrap;
     box-shadow: 0 10px 22px rgba(0,0,0,.10);
   }
-  #tapLabel.is-glow{
-    animation: tapGlow .55s ease-out;
-  }
+  #tapLabel.is-glow{ animation: tapGlow .55s ease-out; }
   @keyframes tapGlow{
     0%{ text-shadow: 0 0 0 rgba(20,102,255,0); }
     35%{ text-shadow: 0 0 18px rgba(20,102,255,.55); }
     100%{ text-shadow: 0 0 0 rgba(20,102,255,0); }
   }
 
-  /* 右下固定：正方形寄せ＆少し上へ（福島を邪魔しない） */
   .infoPanel{
     position:absolute;
     right: 14px;
-    bottom: 84px;   /* ★少し上げる（干渉しにくい） */
+    bottom: 84px;
     z-index: 6;
 
-    width: 220px;   /* ★ちょい小さく＝正方形寄せ */
+    width: 220px;
     max-width: 72vw;
 
     background: var(--panel);
@@ -145,7 +138,6 @@
     box-shadow: 0 16px 40px rgba(0,0,0,.10);
     backdrop-filter: blur(8px);
 
-    /* ★重要：パネルが地図のクリックを奪わない */
     pointer-events: none;
   }
 
@@ -164,16 +156,12 @@
     color: rgba(20,102,255,.68);
   }
 
-  /* ★ここが“ガタガタ撲滅”の本体
-     ・⚡は常に左右に「居る」(幅固定) → on/offしても文字位置が動かない
-     ・gapを小さくして“⚡横の余白”も最小化
-  */
   .capRow{
     margin-top: 10px;
     display:flex;
     align-items: baseline;
     justify-content:center;
-    gap: 2px;              /* ★余計な隙間を減らす */
+    gap: 2px;
     flex-wrap: nowrap;
   }
 
@@ -193,13 +181,13 @@
 
   .boltMark{
     display:inline-block;
-    width: .92em;          /* ★幅固定（ズレない） */
+    width: .92em;
     text-align:center;
     font-weight: 1000;
     font-size: 1.02em;
     color: var(--boltColor);
     text-shadow: 0 0 14px var(--boltGlow);
-    opacity: 0;            /* ★非表示でも“幅は残る”＝ガタガタしない */
+    opacity: 0;
     transform: translateY(-.02em);
   }
   .boltMark.on{ opacity: .96; }
@@ -268,7 +256,7 @@ const FURI = {
 
 function normalizeJP(titleText){
   const jp = (titleText || "").split("/")[0].trim();
-  return jp.replace(/(都|府|県)$/g,""); // 道は残す
+  return jp.replace(/(都|府|県)$/g,"");
 }
 function toPrefFullName(jpCore){
   if(!jpCore) return "";
@@ -333,7 +321,6 @@ function setInfo(prefFull){
   prefLine.innerHTML = rubyHTML(prefFull, d.pref);
   capLine.innerHTML  = rubyHTML(d.capName, d.cap);
 
-  // 不一致（核が違う）だけ⚡点灯。表示/非表示でも幅が一定なのでズレない。
   const mismatch = !isSameCore(prefFull, d.capName);
   bL.classList.toggle("on", mismatch);
   bR.classList.toggle("on", mismatch);
@@ -381,7 +368,6 @@ function setupInteractivity(svg){
     }
   });
 
-  // 県名取得 → datasetへ → title/descは全削除（ツールチップ全殺し）
   targets.forEach(g=>{
     const t = g.querySelector("title")?.textContent || "";
     const jpCore = normalizeJP(t);
