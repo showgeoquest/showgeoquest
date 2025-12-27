@@ -67,9 +67,14 @@ body::before{
 
 /* ===== フレーム（★ガラス板を完全に廃止） ===== */
 .frame{
-  width: min(920px, 94vw);
+  /* ★修正：PCで左右に出る帯を消すためフル幅に */
+  width: 100%;
+  max-width: none;
+
   padding: 26px 22px;
-  border-radius: 28px;
+
+  /* フル画面にするなら角丸は不要（外枠感も消える） */
+  border-radius: 0;
 
   /* 枠線なし */
   border: none;
@@ -216,7 +221,7 @@ body::before{
 }
 
 @media (max-width: 700px){
-  .frame{ width: min(620px, 92vw); padding: 22px 16px; }
+  .frame{ padding: 22px 16px; }
   .grid-2{ gap: 12px; }
 }
 
@@ -347,19 +352,22 @@ body::before{
   84% { transform: translateX(40%) rotate(18deg); opacity: 0; }
 }
 
-/* ===== フッター（fixed廃止：制覇モードの下、さらに3行分下へ） ===== */
+/* ===== フッター（見えなさすぎ → taglineと同系色に） ===== */
 .site-footer{
   position: static;
-  width: min(920px, 94vw);
-  margin: 28px auto 0;
+  width: 100%;
+  margin: 28px 0 0;
   padding-top: 22px;
   text-align: right;
-  opacity: .42;
+
+  opacity: 1;               /* ★薄すぎをやめる */
   font-size: 12px;
   letter-spacing: .1px;
 }
 .footer-link{
   text-decoration: none;
+
+  /* ★「― 地図に挑め、47のクエスト ―」と同系色 */
   color: rgba(246,251,255,.78);
 }
 .footer-link:hover{ opacity: .70; }
