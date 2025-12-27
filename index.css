@@ -1,25 +1,22 @@
 :root{
   color-scheme: dark;
 
-  /* ★もっと明るいネイビーへ */
-  --bg: #16366f;
+  /* ★さらに明るいネイビー */
+  --bg: #1b4386;
 
-  /* ★枠は極薄（ガラス板感を減らす） */
-  --frameEdge: rgba(210, 245, 255, .10);
-
-  --text: #f7fcff;
-  --muted: rgba(247,252,255,.84);
+  --text: #f8fcff;
+  --muted: rgba(248,252,255,.86);
 
   /* ボタン */
-  --btnA: rgba(55, 145, 255, .84);
-  --btnB: rgba(170, 235, 255, .26);
-  --btnEdge: rgba(220, 250, 255, .28);
+  --btnA: rgba(70, 170, 255, .90);
+  --btnB: rgba(220, 250, 255, .26);
+  --btnEdge: rgba(230, 255, 255, .24);
 
-  --shine: rgba(245, 255, 255, .32);
+  --shine: rgba(245, 255, 255, .34);
 
   /* ロゴ色（アイコン寄せ） */
-  --gold: #f5c84b;      /* SHOW GEO */
-  --questBlue: #64b7ff; /* QUEST（少し明るく） */
+  --gold: #f5c84b;
+  --questBlue: #72c0ff;
 }
 
 *{ box-sizing: border-box; }
@@ -32,31 +29,30 @@ body{
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   color: var(--text);
 
-  /* ★周りをさらに明るく（光源UP） */
+  /* ★明るさUP：光源を増やして“夜空だけど暗すぎない” */
   background:
-    radial-gradient(1200px 720px at 50% 7%,  rgba(190,240,255,.44), transparent 60%),
-    radial-gradient(1000px 660px at 50% 42%, rgba(150,215,255,.30), transparent 62%),
-    radial-gradient(1000px 620px at 50% 86%, rgba(150,215,255,.20), transparent 70%),
+    radial-gradient(1400px 820px at 50% 6%,  rgba(230,255,255,.42), transparent 58%),
+    radial-gradient(1200px 760px at 50% 42%, rgba(190,240,255,.26), transparent 62%),
+    radial-gradient(1100px 720px at 50% 88%, rgba(160,220,255,.18), transparent 70%),
     var(--bg);
 }
 
-/* ★ガラス板っぽさの主犯：透明＋ぼかし → 透明を減らして、ぼかしをやめる */
+/* ★縁（枠）を消す：borderを廃止、ガラス感の元(backdrop-filter)も廃止 */
 .frame{
   width: min(920px, 94vw);
   padding: 26px 22px;
   border-radius: 26px;
 
-  border: 1px solid var(--frameEdge);
+  border: none;               /* ←縁の犯人その1：消す */
+  outline: none;
 
-  /* ★透明すぎない青い板（“ガラス”ではなく“パネル”に） */
-  background: rgba(20, 46, 102, .48);
+  /* ★暗さを減らす：透明の黒をやめて“青い薄板”へ */
+  background: rgba(20, 55, 130, .42);
 
-  /* ★影も軽く */
-  box-shadow: 0 16px 44px rgba(0,0,0,.26);
+  /* ★影も軽く（重いと暗く見える） */
+  box-shadow: 0 16px 40px rgba(0,0,0,.20);
 
-  /* ★これがガラス感を出すのでOFF */
-  backdrop-filter: none;
-
+  backdrop-filter: none;      /* ←ガラス板っぽさの元：消す */
   position: relative;
   overflow: hidden;
 }
@@ -67,8 +63,10 @@ body{
   position:absolute;
   inset: 0;
   pointer-events:none;
-  opacity: .34;
-  filter: drop-shadow(0 0 16px rgba(200,245,255,.34));
+
+  /* ★背景地図を少しだけくっきり（明るさに寄与） */
+  opacity: .38;
+  filter: drop-shadow(0 0 18px rgba(220,255,255,.30));
 }
 
 .title-map .map-svg{
@@ -82,17 +80,17 @@ body{
   pointer-events:none;
 }
 
-/* うっすら光の膜（でも暗くしない） */
+/* ★内側の“縁”っぽく見える膜 → かなり弱める（または消す） */
 .screen::before{
   content:"";
   position:absolute;
   inset:0;
   pointer-events:none;
   background:
-    radial-gradient(740px 400px at 50% 14%, rgba(255,255,255,.14), transparent 60%),
-    linear-gradient(135deg, rgba(255,255,255,.10), transparent 35%, rgba(255,255,255,.08));
+    radial-gradient(820px 440px at 50% 14%, rgba(255,255,255,.10), transparent 62%),
+    linear-gradient(135deg, rgba(255,255,255,.06), transparent 36%, rgba(255,255,255,.05));
   mix-blend-mode: screen;
-  opacity:.46;
+  opacity:.22;                 /* ←縁っぽさを出してたので弱める */
 }
 
 .hero{
@@ -108,7 +106,7 @@ body{
   font-weight: 900;
   letter-spacing: .8px;
   text-transform: uppercase;
-  filter: drop-shadow(0 0 18px rgba(210,250,255,.46));
+  filter: drop-shadow(0 0 18px rgba(220,255,255,.40));
   margin-bottom: 10px;
 }
 
@@ -117,26 +115,25 @@ body{
   white-space: nowrap;
 }
 
-/* ★縁取りを“見える”ように（太め） */
+/* SHOW GEO（金）＋縁取り（見える） */
 .logo-line.showgeo{
   color: var(--gold);
-  -webkit-text-stroke: 1.2px rgba(10, 18, 40, .55);
+  -webkit-text-stroke: 1.2px rgba(10, 18, 40, .52);
   text-shadow:
-    /* 擬似アウトライン（太め） */
-    -2px 0 rgba(10,18,40,.45),
-     2px 0 rgba(10,18,40,.45),
-     0 -2px rgba(10,18,40,.45),
-     0  2px rgba(10,18,40,.45),
-    /* 光 */
+    -2px 0 rgba(10,18,40,.42),
+     2px 0 rgba(10,18,40,.42),
+     0 -2px rgba(10,18,40,.42),
+     0  2px rgba(10,18,40,.42),
     0 0 14px rgba(255,220,120,.38),
-    0 0 28px rgba(160,230,255,.24);
+    0 0 30px rgba(200,245,255,.22);
 }
 
+/* QUEST行：⚡の隙間を最小化 */
 .logo-boltline{
   display:flex;
   align-items:baseline;
   justify-content:center;
-  gap: .08em;     /* ★⚡横の空きをさらに削る */
+  gap: .06em;
   flex-wrap: nowrap;
   white-space: nowrap;
 }
@@ -144,14 +141,14 @@ body{
 .quest{
   display:inline-block;
   color: var(--questBlue);
-  -webkit-text-stroke: 1.2px rgba(10, 18, 40, .55);
+  -webkit-text-stroke: 1.2px rgba(10, 18, 40, .52);
   text-shadow:
-    -2px 0 rgba(10,18,40,.45),
-     2px 0 rgba(10,18,40,.45),
-     0 -2px rgba(10,18,40,.45),
-     0  2px rgba(10,18,40,.45),
-    0 0 14px rgba(180,240,255,.52),
-    0 0 30px rgba(180,240,255,.28);
+    -2px 0 rgba(10,18,40,.42),
+     2px 0 rgba(10,18,40,.42),
+     0 -2px rgba(10,18,40,.42),
+     0  2px rgba(10,18,40,.42),
+    0 0 14px rgba(205,245,255,.58),
+    0 0 32px rgba(205,245,255,.26);
 }
 
 /* ⚡：常時ほんのり＋たまにキラッ */
@@ -160,13 +157,13 @@ body{
   font-size: .9em;
   margin: 0;
   text-shadow:
-    -1px 0 rgba(10,18,40,.25),
-     1px 0 rgba(10,18,40,.25),
-     0 -1px rgba(10,18,40,.25),
-     0  1px rgba(10,18,40,.25),
+    -1px 0 rgba(10,18,40,.20),
+     1px 0 rgba(10,18,40,.20),
+     0 -1px rgba(10,18,40,.20),
+     0  1px rgba(10,18,40,.20),
     0 0 14px rgba(255,255,255,.34),
-    0 0 28px rgba(200,245,255,.46),
-    0 0 38px rgba(200,245,255,.22);
+    0 0 30px rgba(220,255,255,.48),
+    0 0 42px rgba(220,255,255,.22);
   animation: boltShine 4.8s ease-in-out infinite;
 }
 @keyframes boltShine{
@@ -183,7 +180,7 @@ body{
 
 .tagline{
   font-size: 16px;
-  color: rgba(247,252,255,.82);
+  color: rgba(248,252,255,.84);
   margin-top: 8px;
 }
 
@@ -205,17 +202,23 @@ body{
 .btn{
   border: 1px solid var(--btnEdge);
   color: var(--text);
+
+  /* ★ボタン自体も少し明るく */
   background:
-    linear-gradient(180deg, rgba(255,255,255,.12), transparent 40%),
+    linear-gradient(180deg, rgba(255,255,255,.16), transparent 40%),
     linear-gradient(135deg, var(--btnA), var(--btnB));
+
   border-radius: 18px;
   padding: 18px 16px;
   font-weight: 900;
   letter-spacing: .3px;
   cursor: pointer;
+
+  /* ★暗く見える“黒い影”を弱める */
   box-shadow:
-    0 10px 22px rgba(0,0,0,.24),
-    inset 0 1px 0 rgba(255,255,255,.14);
+    0 10px 20px rgba(0,0,0,.18),
+    inset 0 1px 0 rgba(255,255,255,.18);
+
   transition: transform .08s ease, filter .12s ease;
   text-decoration: none;
   display:flex;
@@ -228,9 +231,9 @@ body{
 
 .btn.primary{
   background:
-    linear-gradient(180deg, rgba(235,255,255,.24), transparent 45%),
-    linear-gradient(135deg, rgba(85,170,255,.98), rgba(190,245,255,.32));
-  border-color: rgba(235,255,255,.46);
+    linear-gradient(180deg, rgba(240,255,255,.26), transparent 45%),
+    linear-gradient(135deg, rgba(105,190,255,.98), rgba(220,250,255,.30));
+  border-color: rgba(240,255,255,.46);
 }
 
 .region{
@@ -241,12 +244,11 @@ body{
      1px 0 rgba(0,0,0,.22),
      0 -1px rgba(0,0,0,.22),
      0  1px rgba(0,0,0,.22),
-    0 0 12px rgba(0,0,0,.16);
-  opacity: .96;
+    0 0 14px rgba(0,0,0,.12);
+  opacity: .98;
 }
 
-.region-one{ white-space: nowrap; }
-
+/* 2行地方（北海道/東北・中国/四国・九州/沖縄） */
 .region-2line{ padding: 16px 14px; }
 .tworegion{
   display:flex;
@@ -259,12 +261,15 @@ body{
   width: 100%;
 }
 .tworegion .l1,
-.tworegion .l2{ display:block; white-space: nowrap; }
+.tworegion .l2{
+  display:block;
+  white-space: nowrap;
+}
 
 .conquest-wrap{ margin-top: 4px; }
 .conquest-title{
   font-weight: 900;
-  color: rgba(247,252,255,.88);
+  color: rgba(248,252,255,.90);
   text-align:center;
   margin-bottom: 10px;
 }
@@ -291,8 +296,8 @@ body{
      1px 0 rgba(0,0,0,.22),
      0 -1px rgba(0,0,0,.22),
      0  1px rgba(0,0,0,.22),
-    0 0 12px rgba(0,0,0,.16);
-  opacity: .96;
+    0 0 14px rgba(0,0,0,.12);
+  opacity: .98;
 }
 
 .twoline{
@@ -322,22 +327,22 @@ body{
 }
 @keyframes crackle{
   0%, 70%, 100% { transform: translateX(-40%) rotate(18deg); opacity: 0; }
-  76% { opacity: .28; }
+  76% { opacity: .30; }
   84% { transform: translateX(40%) rotate(18deg); opacity: .0; }
 }
 
-/* ★さらに下へ（“3行分”くらい下げる） */
+/* フッター：右下固定はしない（制覇モード下に、目立たない） */
 .site-footer{
-  margin-top: 54px;      /* ←ここを増やした（前よりしっかり下） */
+  margin-top: 54px;
   padding-top: 10px;
   display:flex;
   justify-content:flex-end;
-  opacity: .36;
+  opacity: .34;
   font-size: 12px;
 }
 
 .footer-link{
   text-decoration: none;
-  color: rgba(247,252,255,.80);
+  color: rgba(248,252,255,.78);
 }
 .footer-link:hover{ opacity: 1; }
