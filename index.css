@@ -44,39 +44,31 @@ body{
     var(--bg);
 }
 
-/* ===== フレーム（外枠の“ガラス板”を消す） ===== */
+/* ===== フレーム（★ガラス板を完全に廃止） ===== */
 .frame{
   width: min(920px, 94vw);
   padding: 26px 22px;
   border-radius: 28px;
 
-  /* 枠線を消す */
+  /* 枠線なし */
   border: none;
 
-  /* 黒板感を消す：青い透明に寄せる */
-  background:
-    radial-gradient(900px 520px at 50% 18%, rgba(190,245,255,.18), transparent 62%),
-    linear-gradient(180deg, rgba(40,105,210,.18), rgba(30,70,160,.10));
+  /* ★ここが“板”だった：完全に透明へ */
+  background: transparent;
 
-  /* 影を軽く（重くしない） */
-  box-shadow: 0 18px 60px rgba(0,0,0,.30);
-  backdrop-filter: blur(6px);
+  /* ★影とブラーも板感の原因なので撤去 */
+  box-shadow: none;
+  backdrop-filter: none;
 
   position: relative;
-  overflow: hidden;
+
+  /* ★overflow:hidden も「板のエッジ」を強調するので外す */
+  overflow: visible;
 }
 
-/* うっすら内側の光（“枠っぽさ”を出さずに立体感だけ） */
+/* ★縁の光（これが“枠”に見える主犯）を完全削除 */
 .frame::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background:
-    radial-gradient(760px 360px at 50% 10%, rgba(255,255,255,.16), transparent 60%),
-    linear-gradient(135deg, rgba(255,255,255,.10), transparent 38%, rgba(255,255,255,.06));
-  opacity:.48;
-  mix-blend-mode: screen;
+  content: none;
 }
 
 .screen{ width:100%; position:relative; }
@@ -254,21 +246,17 @@ body{
     0 2px 0 rgba(0,0,0,.28),
     0 0 14px rgba(255,255,255,.18);
 
-  /* ★重要：中身を中央に（1行でも2行でも見た目の重心が崩れない） */
   display: grid;
   place-items: center;
   text-align:center;
   line-height: 1.06;
 }
 
-/* もしHTML側で 2行設計（labelbox）にしている場合の最終形 */
 .region .labelbox{
   display: inline-grid;
   grid-auto-rows: min-content;
   row-gap: 8px;
   justify-items: center;
-
-  /* ★文字ブロックの“箱”を揃える → 1行/2行でも中央が揃う */
   min-width: 4.6em;
 }
 .region .labelbox span{
@@ -342,8 +330,8 @@ body{
 .site-footer{
   position: static;
   width: min(920px, 94vw);
-  margin: 28px auto 0;   /* まず下げる */
-  padding-top: 22px;     /* さらに“3行分”の余白感 */
+  margin: 28px auto 0;
+  padding-top: 22px;
   text-align: right;
   opacity: .42;
   font-size: 12px;
