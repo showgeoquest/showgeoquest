@@ -1,26 +1,25 @@
 :root{
   color-scheme: dark;
 
-  /* ★暗さを解消（全体を明るいネイビーに） */
-  --bg: #112a60;
+  /* ★もっと明るいネイビーへ */
+  --bg: #16366f;
 
-  /* ★枠の“ガラス板”感を弱める（枠を見せすぎない） */
-  --frameEdge: rgba(170, 225, 255, .16);
+  /* ★枠は極薄（ガラス板感を減らす） */
+  --frameEdge: rgba(210, 245, 255, .10);
 
-  /* テキスト */
-  --text: #f6fbff;
-  --muted: rgba(246,251,255,.82);
+  --text: #f7fcff;
+  --muted: rgba(247,252,255,.84);
 
   /* ボタン */
-  --btnA: rgba(40, 120, 255, .78);
-  --btnB: rgba(140, 220, 255, .24);
-  --btnEdge: rgba(210, 245, 255, .30);
+  --btnA: rgba(55, 145, 255, .84);
+  --btnB: rgba(170, 235, 255, .26);
+  --btnEdge: rgba(220, 250, 255, .28);
 
-  --shine: rgba(235, 252, 255, .30);
+  --shine: rgba(245, 255, 255, .32);
 
   /* ロゴ色（アイコン寄せ） */
   --gold: #f5c84b;      /* SHOW GEO */
-  --questBlue: #49a6ff; /* QUEST */
+  --questBlue: #64b7ff; /* QUEST（少し明るく） */
 }
 
 *{ box-sizing: border-box; }
@@ -30,27 +29,34 @@ body{
   min-height:100vh;
   display:grid;
   place-items:center;
-
-  /* ★背景を明るく：光源を足す */
-  background:
-    radial-gradient(1200px 720px at 50% 8%,  rgba(150,220,255,.36), transparent 60%),
-    radial-gradient(1000px 640px at 50% 42%, rgba(110,190,255,.24), transparent 62%),
-    radial-gradient(1000px 600px at 50% 86%, rgba(110,190,255,.16), transparent 70%),
-    var(--bg);
-
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   color: var(--text);
+
+  /* ★周りをさらに明るく（光源UP） */
+  background:
+    radial-gradient(1200px 720px at 50% 7%,  rgba(190,240,255,.44), transparent 60%),
+    radial-gradient(1000px 660px at 50% 42%, rgba(150,215,255,.30), transparent 62%),
+    radial-gradient(1000px 620px at 50% 86%, rgba(150,215,255,.20), transparent 70%),
+    var(--bg);
 }
 
-/* ★“ガラスの板”を弱める：枠・黒い板を減らす */
+/* ★ガラス板っぽさの主犯：透明＋ぼかし → 透明を減らして、ぼかしをやめる */
 .frame{
   width: min(920px, 94vw);
   padding: 26px 22px;
   border-radius: 26px;
+
   border: 1px solid var(--frameEdge);
-  background: rgba(18, 34, 76, .14);
-  box-shadow: 0 18px 54px rgba(0,0,0,.32);
-  backdrop-filter: blur(6px);
+
+  /* ★透明すぎない青い板（“ガラス”ではなく“パネル”に） */
+  background: rgba(20, 46, 102, .48);
+
+  /* ★影も軽く */
+  box-shadow: 0 16px 44px rgba(0,0,0,.26);
+
+  /* ★これがガラス感を出すのでOFF */
+  backdrop-filter: none;
+
   position: relative;
   overflow: hidden;
 }
@@ -61,8 +67,8 @@ body{
   position:absolute;
   inset: 0;
   pointer-events:none;
-  opacity: .30;
-  filter: drop-shadow(0 0 14px rgba(170,230,255,.30));
+  opacity: .34;
+  filter: drop-shadow(0 0 16px rgba(200,245,255,.34));
 }
 
 .title-map .map-svg{
@@ -83,10 +89,10 @@ body{
   inset:0;
   pointer-events:none;
   background:
-    radial-gradient(720px 380px at 50% 14%, rgba(255,255,255,.12), transparent 60%),
-    linear-gradient(135deg, rgba(255,255,255,.08), transparent 35%, rgba(255,255,255,.06));
+    radial-gradient(740px 400px at 50% 14%, rgba(255,255,255,.14), transparent 60%),
+    linear-gradient(135deg, rgba(255,255,255,.10), transparent 35%, rgba(255,255,255,.08));
   mix-blend-mode: screen;
-  opacity:.42;
+  opacity:.46;
 }
 
 .hero{
@@ -102,7 +108,7 @@ body{
   font-weight: 900;
   letter-spacing: .8px;
   text-transform: uppercase;
-  filter: drop-shadow(0 0 18px rgba(170,230,255,.44));
+  filter: drop-shadow(0 0 18px rgba(210,250,255,.46));
   margin-bottom: 10px;
 }
 
@@ -111,20 +117,26 @@ body{
   white-space: nowrap;
 }
 
-/* ★アイコンっぽく「縁取り/影」感：テキストシャドウを多段に */
+/* ★縁取りを“見える”ように（太め） */
 .logo-line.showgeo{
   color: var(--gold);
+  -webkit-text-stroke: 1.2px rgba(10, 18, 40, .55);
   text-shadow:
-    0 2px 0 rgba(0,0,0,.28),
-    0 0 12px rgba(255,220,120,.34),
-    0 0 26px rgba(130,210,255,.24);
+    /* 擬似アウトライン（太め） */
+    -2px 0 rgba(10,18,40,.45),
+     2px 0 rgba(10,18,40,.45),
+     0 -2px rgba(10,18,40,.45),
+     0  2px rgba(10,18,40,.45),
+    /* 光 */
+    0 0 14px rgba(255,220,120,.38),
+    0 0 28px rgba(160,230,255,.24);
 }
 
 .logo-boltline{
   display:flex;
   align-items:baseline;
   justify-content:center;
-  gap: .10em;           /* ★⚡横の微妙な空きも減らす */
+  gap: .08em;     /* ★⚡横の空きをさらに削る */
   flex-wrap: nowrap;
   white-space: nowrap;
 }
@@ -132,10 +144,14 @@ body{
 .quest{
   display:inline-block;
   color: var(--questBlue);
+  -webkit-text-stroke: 1.2px rgba(10, 18, 40, .55);
   text-shadow:
-    0 2px 0 rgba(0,0,0,.28),
-    0 0 12px rgba(140,220,255,.46),
-    0 0 28px rgba(140,220,255,.28);
+    -2px 0 rgba(10,18,40,.45),
+     2px 0 rgba(10,18,40,.45),
+     0 -2px rgba(10,18,40,.45),
+     0  2px rgba(10,18,40,.45),
+    0 0 14px rgba(180,240,255,.52),
+    0 0 30px rgba(180,240,255,.28);
 }
 
 /* ⚡：常時ほんのり＋たまにキラッ */
@@ -144,10 +160,13 @@ body{
   font-size: .9em;
   margin: 0;
   text-shadow:
-    0 2px 0 rgba(0,0,0,.20),
-    0 0 14px rgba(255,255,255,.30),
-    0 0 26px rgba(170,235,255,.46),
-    0 0 34px rgba(170,235,255,.22);
+    -1px 0 rgba(10,18,40,.25),
+     1px 0 rgba(10,18,40,.25),
+     0 -1px rgba(10,18,40,.25),
+     0  1px rgba(10,18,40,.25),
+    0 0 14px rgba(255,255,255,.34),
+    0 0 28px rgba(200,245,255,.46),
+    0 0 38px rgba(200,245,255,.22);
   animation: boltShine 4.8s ease-in-out infinite;
 }
 @keyframes boltShine{
@@ -164,7 +183,7 @@ body{
 
 .tagline{
   font-size: 16px;
-  color: rgba(246,251,255,.80);
+  color: rgba(247,252,255,.82);
   margin-top: 8px;
 }
 
@@ -187,7 +206,7 @@ body{
   border: 1px solid var(--btnEdge);
   color: var(--text);
   background:
-    linear-gradient(180deg, rgba(255,255,255,.10), transparent 40%),
+    linear-gradient(180deg, rgba(255,255,255,.12), transparent 40%),
     linear-gradient(135deg, var(--btnA), var(--btnB));
   border-radius: 18px;
   padding: 18px 16px;
@@ -195,8 +214,8 @@ body{
   letter-spacing: .3px;
   cursor: pointer;
   box-shadow:
-    0 10px 22px rgba(0,0,0,.26),
-    inset 0 1px 0 rgba(255,255,255,.12);
+    0 10px 22px rgba(0,0,0,.24),
+    inset 0 1px 0 rgba(255,255,255,.14);
   transition: transform .08s ease, filter .12s ease;
   text-decoration: none;
   display:flex;
@@ -209,30 +228,26 @@ body{
 
 .btn.primary{
   background:
-    linear-gradient(180deg, rgba(220,250,255,.22), transparent 45%),
-    linear-gradient(135deg, rgba(70,150,255,.98), rgba(160,235,255,.30));
-  border-color: rgba(220,250,255,.46);
+    linear-gradient(180deg, rgba(235,255,255,.24), transparent 45%),
+    linear-gradient(135deg, rgba(85,170,255,.98), rgba(190,245,255,.32));
+  border-color: rgba(235,255,255,.46);
 }
 
-/* 地方ボタン：文字を大きく＋影で読みやすく */
 .region{
   min-height: 92px;
-  font-size: 24px; /* ★少し大きく */
+  font-size: 24px;
   text-shadow:
-    0 2px 0 rgba(0,0,0,.30),
-    0 0 12px rgba(0,0,0,.22);
+    -1px 0 rgba(0,0,0,.22),
+     1px 0 rgba(0,0,0,.22),
+     0 -1px rgba(0,0,0,.22),
+     0  1px rgba(0,0,0,.22),
+    0 0 12px rgba(0,0,0,.16);
   opacity: .96;
 }
 
-/* 1行の県名は「勝手改行」させない */
-.region-one{
-  white-space: nowrap;
-}
+.region-one{ white-space: nowrap; }
 
-/* ★提案どおり：3つは2行固定（4文字MAX想定） */
-.region-2line{
-  padding: 16px 14px;
-}
+.region-2line{ padding: 16px 14px; }
 .tworegion{
   display:flex;
   flex-direction:column;
@@ -244,16 +259,12 @@ body{
   width: 100%;
 }
 .tworegion .l1,
-.tworegion .l2{
-  display:block;
-  white-space: nowrap;
-}
+.tworegion .l2{ display:block; white-space: nowrap; }
 
-/* 制覇モード */
 .conquest-wrap{ margin-top: 4px; }
 .conquest-title{
   font-weight: 900;
-  color: rgba(246,251,255,.86);
+  color: rgba(247,252,255,.88);
   text-align:center;
   margin-bottom: 10px;
 }
@@ -276,12 +287,14 @@ body{
   min-height: 74px;
   font-size: 18px;
   text-shadow:
-    0 2px 0 rgba(0,0,0,.28),
-    0 0 12px rgba(0,0,0,.20);
+    -1px 0 rgba(0,0,0,.22),
+     1px 0 rgba(0,0,0,.22),
+     0 -1px rgba(0,0,0,.22),
+     0  1px rgba(0,0,0,.22),
+    0 0 12px rgba(0,0,0,.16);
   opacity: .96;
 }
 
-/* 3つとも“2行＆中央揃え”固定 */
 .twoline{
   display:flex;
   flex-direction:column;
@@ -313,18 +326,18 @@ body{
   84% { transform: translateX(40%) rotate(18deg); opacity: .0; }
 }
 
-/* ★フッター：固定しない。常に一番下で目立たない */
+/* ★さらに下へ（“3行分”くらい下げる） */
 .site-footer{
-  margin-top: 22px;         /* ★東日本縦断より“随分下” */
-  padding-top: 8px;
+  margin-top: 54px;      /* ←ここを増やした（前よりしっかり下） */
+  padding-top: 10px;
   display:flex;
-  justify-content:flex-end; /* 右下寄せ */
-  opacity: .42;             /* ★目立たない */
+  justify-content:flex-end;
+  opacity: .36;
   font-size: 12px;
 }
 
 .footer-link{
   text-decoration: none;
-  color: rgba(246,251,255,.80);
+  color: rgba(247,252,255,.80);
 }
 .footer-link:hover{ opacity: 1; }
